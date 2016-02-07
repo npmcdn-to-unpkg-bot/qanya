@@ -12,8 +12,16 @@
 */
 
 Route::get('/', function () {
-    return view('pages/home');
+    $topics = App\Topic::where('flg',1)
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+    return view('welcome',compact('topics'));
 });
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,4 +36,16 @@ Route::get('/', function () {
 
 Route::group(['middleware' => ['web']], function () {
     //
+});
+
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+
+    Route::get('/home', 'HomeController@index');
+    Route::get('/getFeed','HomeController@getFeedCate');
+
+    Route::post('/postTopic','TopicController@store');
+    Route::get('/{slug}','TopicController@show');
+
 });

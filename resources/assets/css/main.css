@@ -1,0 +1,58 @@
+body {
+    /* Show it's not fixed to the top */
+    font-family: 'Lato';
+    /*min-height:         75rem;*/
+    /*padding-top:        6rem;*/
+    background-color:   #FAFAFA;
+    height:100%;
+}
+
+.container{
+    max-width:1040px;
+}
+.white-font{
+    color: whitesmoke;
+}
+.purple{
+    background-color: #4D394B;
+}
+
+.layoutSingleColumn {
+    max-width: 700px;
+    margin: 0 auto;
+}
+.reading{
+    font-weight: 400;
+    font-style: normal;
+    font-size: 21px;
+    line-height: 1.58;
+    letter-spacing: -0.003em;
+}
+.listing-article{
+    font-size: 18px;
+    line-height: 1.5;
+    letter-spacing: -0.004em;
+}
+a {
+    color:#5DB09D;
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+}
+
+/* Bootstap hack */
+.navbar-default .navbar-brand {
+    color: whitesmoke;
+}
+
+.navbar .navbar-nav>li>a {
+    color: whitesmoke;
+}
+.navbar {
+    position: relative;
+    min-height: 50px;
+    margin-bottom: 20px;
+     border-radius: 0px;
+    /* border: 1px solid transparent; */
+}
