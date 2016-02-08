@@ -18,7 +18,7 @@
      <a href="{{ url($topic->slug) }}" target="_blank">{{ $topic->topic }}</a>
     </h3>
     <p class="listing-article">
-     {{ str_limit($topic->body,250) }}
+     {!! nl2br(str_limit($topic->body,250)) !!}
     </p>
     <div>
      <div class="pull-left">

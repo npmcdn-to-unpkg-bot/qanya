@@ -5,18 +5,25 @@ angular.module('App')
 
         postCtrl.postTopic = function()
         {
-            console.log(postCtrl.title);
-            console.log("post")
-            /*$http({
-                method : "GET",
-                url : "welcome.htm"
-            }).then(function mySucces(response) {
-                $scope.myWelcome = response.data;
-            }, function myError(response) {
-                $scope.myWelcome = response.statusText;
-            });*/
+            var imgIds = new Array();
+
+            $("div#contentBody img").each(function(){
+                imgIds.push($(this).attr('src'));
+            });
+
+            var data = { title:         postCtrl.title,
+                         categories:    postCtrl.categories,
+                         body:          $('#contentBody').html(),
+                         images:         imgIds
+                        };
+            $.post( "/api/postTopic/", { data: data} )
+                .done(function( response ) {
+                    window.location(response);
+                })
+
         }
 
+        //Preview images
         postCtrl.imageStrings = [];
         postCtrl.processFiles = function(files){
             angular.forEach(files, function(flowFile, i){
@@ -28,12 +35,10 @@ angular.module('App')
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
                             $('#contentBody').append('<img src=\"'+response+'\">');
-                            //console.log();
                         })
-
-                    $('#postBodyId').append(document.createTextNode('<img src=\"'+uri+'\">'));
                 };
                 fileReader.readAsDataURL(flowFile.file);
             });
+
         };
     })

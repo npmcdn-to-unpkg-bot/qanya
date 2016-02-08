@@ -46,23 +46,25 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        $topicUUID = rand(0,10).str_random(12).rand(0,10);
-        $topicSlug = str_slug($request->postTitle, "-").'-'.$topicUUID;
+        $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
+        $topicSlug = str_slug($request->postTitle, "-") . '-' . $topicUUID;
 
-        if($request->file('data'))
-        {
-            return $request->file('data');
+        if (Auth::user()->uuid) {
+            if ($request->data) {
+                $json = $request->data;
+
+                $topic              = new Topic;
+                $topic->uuid        = $topicUUID;
+                $topic->uid         = Auth::user()->uuid;
+                $topic->topic       = $json['title'];
+                $topic->body        = $json['body'];
+                $topic->categories  = $json['categories'];
+                $topic->slug        = $topicSlug;
+                $topic->save();
+
+                return $topicSlug;
+            }
         }
-        /*$topic              =   new Topic;
-        $topic->uuid        =   $topicUUID;
-        $topic->uid         =   Auth::user()->uuid;
-        $topic->topic       =   $request->postTitle;
-        $topic->body        =   $request->postBody;
-        $topic->categories  =   1;
-        $topic->slug        =   $topicSlug;
-        $topic->save();
-
-        return redirect('/'.$topicSlug);*/
     }
 
     /**
