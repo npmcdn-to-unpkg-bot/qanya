@@ -6,6 +6,7 @@
         <div class="container">
         <div class="col-xs-7">
 
+
             @include('html.post-create',compact('categories'))
 
             <div id="homeFeed"></div>

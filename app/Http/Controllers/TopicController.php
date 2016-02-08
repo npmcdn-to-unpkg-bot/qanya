@@ -14,7 +14,6 @@ use Carbon\Carbon as Carbon;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 
-
 class TopicController extends Controller
 {
     /**
@@ -50,25 +49,11 @@ class TopicController extends Controller
         $topicUUID = rand(0,10).str_random(12).rand(0,10);
         $topicSlug = str_slug($request->postTitle, "-").'-'.$topicUUID;
 
-        if($request->file('image'))
+        if($request->file('data'))
         {
-            $image = $request->file('image');
-            $s3 = new S3Client([
-                'version' => 'latest',
-                'region'  => 'Singapore'
-            ]);
-            try {
-                $s3->putObject([
-                    'Bucket' => 'qanya',
-                    'Key'    => 'my-object',
-                    'Body'   => fopen('/path/to/file', 'r'),
-                    'ACL'    => 'public-read',
-                ]);
-            } catch (Aws\Exception\S3Exception $e) {
-                echo "There was an error uploading the file.\n";
-            }
+            return $request->file('data');
         }
-        $topic              =   new Topic;
+        /*$topic              =   new Topic;
         $topic->uuid        =   $topicUUID;
         $topic->uid         =   Auth::user()->uuid;
         $topic->topic       =   $request->postTitle;
@@ -77,7 +62,7 @@ class TopicController extends Controller
         $topic->slug        =   $topicSlug;
         $topic->save();
 
-        return redirect('/'.$topicSlug);
+        return redirect('/'.$topicSlug);*/
     }
 
     /**

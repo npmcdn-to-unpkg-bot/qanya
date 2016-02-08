@@ -1,1 +1,2 @@
-var app = angular.module('App', ['ngMaterial']);
+
+var app = angular.module('App', ['ngMaterial','flow']);

@@ -35,19 +35,37 @@
                 @endforeach
             </md-select>
         </md-input-container>
+
         <md-input-container>
             <label>Title</label>
-            <input ng-model="postCtrl.title" name="postTitle" required autocomplete="off">
+            <input ng-model="postCtrl.title" class="reading" name="postTitle" required autocomplete="off">
         </md-input-container>
+
+        <div contenteditable="true"
+             placeholder="Enter text here..."
+             class="panel"
+             data-content="test"
+             id="contentBody"
+             onkeyup="$('#postBodyId').val($('#contentBody').text())"></div>
+
         <md-input-container class="md-block">
             <label>Body</label>
             <textarea
+                    id="postBodyId"
                     class="reading"
                     ng-model="postCtrl.body" name="postBody" rows="5" md-select-on-focus required></textarea>
         </md-input-container>
 
 
-        <input id="fileInput" name="image" type="file" multiple>
+        <div flow-init
+             flow-name="uploader.flow"
+             flow-files-added="postCtrl.processFiles($files)">
+            <button flow-btn type="file" name="image">Upload Images</button>
+            {{--<div ng-repeat="image in uploader.flow.files track by $index">
+                <span class="text">Blob image displayed with "flow-img"</span>
+                <img class="preview" flow-img="image"/><br>
+            </div>--}}
+        </div>
 
 
         <md-button type="submit" class="md-raised md-primary">Submit</md-button>

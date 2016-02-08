@@ -41,6 +41,21 @@ a:hover{
     text-decoration: none;
 }
 
+
+[contenteditable=true]:empty:before{
+    content: attr(placeholder);
+    display: block; /* For Firefox */
+}
+
+/* */
+
+div[contenteditable=true] {
+    /*border: 1px solid #AAA;*/
+    /*width: 290px;*/
+    padding: 5px;
+}
+
+
 /* Bootstap hack */
 .navbar-default .navbar-brand {
     color: whitesmoke;

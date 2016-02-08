@@ -1,13 +1,10 @@
-$('html').click(function() {
-    postCtrl.showForm=true
-});
 function getFeedCate(slug){
     $.get( "/getFeed/", { slug: slug } )
         .done(function( data ) {
             $('#homeFeed').html(data);
         });
 }
-var app = angular.module('App', ['ngMaterial']);
+var app = angular.module('App', ['ngMaterial','flow']);
 
 angular.module('App')
     .controller('PostCtrl',function($http){
@@ -27,6 +24,23 @@ angular.module('App')
                 $scope.myWelcome = response.statusText;
             });*/
         }
+
+        postCtrl.imageStrings = [];
+        postCtrl.processFiles = function(files){
+            angular.forEach(files, function(flowFile, i){
+
+                console.log(flowFile);
+
+                var fileReader = new FileReader();
+                fileReader.onload = function (event) {
+                    var uri = event.target.result;
+                    postCtrl.imageStrings[i] = uri;
+
+                    $('#contentBody').append('<img src=\"'+uri+'\">');
+                };
+                fileReader.readAsDataURL(flowFile.file);
+            });
+        };
     })
 angular.module('App')
     .controller('HomeCtrl',function(){
