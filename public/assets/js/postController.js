@@ -3,6 +3,50 @@ angular.module('App')
 
         var postCtrl = this;
 
+        postCtrl.displayname ={
+            'text' :'',
+            'saveBtn':  false,
+            'alert':    false
+        }
+
+
+        postCtrl.checkDisplayname = function(){
+
+            $http.post('/check-name', {name: postCtrl.displayname.text})
+                .then(function(response,data){
+                console.log(response);
+                console.log(data);
+                if(response.data == "0"){
+                    postCtrl.displayname.saveBtn = true;
+                    postCtrl.displayname.alert   = false;
+                }else{
+                    postCtrl.displayname.saveBtn = false;
+                    postCtrl.displayname.alert   = true;
+                }
+            });
+
+            /*$.get( "/check-name/", { data: postCtrl.displayname.text } )
+                .done(function( data ) {
+                    console.log("return "+data);
+                    if(data == 0){
+                        console.log("okay to save");
+                        postCtrl.displayname.saveBtn = true;
+                        postCtrl.displayname.alert   = false;
+                        console.log(postCtrl.displayname.alert)
+                        console.log(postCtrl.displayname.saveBtn)
+                    }
+                    else{
+                        postCtrl.displayname.saveBtn = false;
+                        postCtrl.displayname.alert   = true;
+                        console.log(postCtrl.displayname.alert)
+                        console.log(postCtrl.displayname.saveBtn)
+                    }
+                });*/
+
+        }
+
+        postCtrl
+
         postCtrl.postTopic = function()
         {
             var imgIds = new Array();

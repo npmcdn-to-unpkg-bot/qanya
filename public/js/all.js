@@ -12,7 +12,49 @@ angular.module('App')
 
         var postCtrl = this;
 
-        postCtrl.replyComment ='';
+        postCtrl.displayname ={
+            'text' :'',
+            'saveBtn':  false,
+            'alert':    false
+        }
+
+
+        postCtrl.checkDisplayname = function(){
+
+            $http.post('/check-name', {name: postCtrl.displayname.text})
+                .then(function(response,data){
+                console.log(response);
+                console.log(data);
+                if(response.data == "0"){
+                    postCtrl.displayname.saveBtn = true;
+                    postCtrl.displayname.alert   = false;
+                }else{
+                    postCtrl.displayname.saveBtn = false;
+                    postCtrl.displayname.alert   = true;
+                }
+            });
+
+            /*$.get( "/check-name/", { data: postCtrl.displayname.text } )
+                .done(function( data ) {
+                    console.log("return "+data);
+                    if(data == 0){
+                        console.log("okay to save");
+                        postCtrl.displayname.saveBtn = true;
+                        postCtrl.displayname.alert   = false;
+                        console.log(postCtrl.displayname.alert)
+                        console.log(postCtrl.displayname.saveBtn)
+                    }
+                    else{
+                        postCtrl.displayname.saveBtn = false;
+                        postCtrl.displayname.alert   = true;
+                        console.log(postCtrl.displayname.alert)
+                        console.log(postCtrl.displayname.saveBtn)
+                    }
+                });*/
+
+        }
+
+        postCtrl
 
         postCtrl.postTopic = function()
         {
@@ -29,7 +71,7 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    window.location = response;
+                    window.location(response);
                 })
 
         }
@@ -45,24 +87,12 @@ angular.module('App')
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-responsive\">');
+                            $('#contentBody').append('<img src=\"'+response+'\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);
             });
 
         };
-
-
-        //Post re
-        postCtrl.postReply = function(postId)
-        {
-            console.log(postId);
-            console.log(postCtrl.replyComment);
-           /* $.post( "/api/postReply/", { data: data} )
-                .done(function( response ) {
-                    window.location = response;
-                })*/
-        }
     })
 //# sourceMappingURL=all.js.map

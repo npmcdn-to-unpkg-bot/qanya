@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Categories;
 use App\Topic as Topic;
 use Illuminate\Support\Facades\DB as DB;
+use App\User;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -41,6 +43,15 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Categories::all();
+
+        $user = User::find(Auth::user()->id)->first();
+
+        echo $user;
+        echo $user->uuid;
+
+        if(empty($user->displayname)){
+            return redirect()->action('ProfileController@createName');
+        }
         return view('home',compact('categories'));
     }
 

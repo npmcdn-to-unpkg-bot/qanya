@@ -57,7 +57,6 @@
                             <input ng-model="postCtrl.title" name="postTitle" required autocomplete="off">
                         </md-input-container>
                         <md-button type="submit" class="md-raised md-primary">Submit</md-button>
-
                     </div>
                 </div>
 
