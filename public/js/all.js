@@ -4,6 +4,7 @@ function getFeedCate(slug){
             $('#homeFeed').html(data);
         });
 }
+
 var app = angular.module('App', ['ngMaterial','flow']);
 
 angular.module('App')
@@ -11,40 +12,57 @@ angular.module('App')
 
         var postCtrl = this;
 
+        postCtrl.replyComment ='';
+
         postCtrl.postTopic = function()
         {
-            console.log(postCtrl.title);
-            console.log("post")
-            /*$http({
-                method : "GET",
-                url : "welcome.htm"
-            }).then(function mySucces(response) {
-                $scope.myWelcome = response.data;
-            }, function myError(response) {
-                $scope.myWelcome = response.statusText;
-            });*/
+            var imgIds = new Array();
+
+            $("div#contentBody img").each(function(){
+                imgIds.push($(this).attr('src'));
+            });
+
+            var data = { title:         postCtrl.title,
+                         categories:    postCtrl.categories,
+                         body:          $('#contentBody').html(),
+                         images:         imgIds
+                        };
+            $.post( "/api/postTopic/", { data: data} )
+                .done(function( response ) {
+                    window.location = response;
+                })
+
         }
 
+        //Preview images
         postCtrl.imageStrings = [];
         postCtrl.processFiles = function(files){
             angular.forEach(files, function(flowFile, i){
-
                 console.log(flowFile);
-
                 var fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     var uri = event.target.result;
                     postCtrl.imageStrings[i] = uri;
-
-                    $('#contentBody').append('<img src=\"'+uri+'\">');
+                    $.post( "/api/previewImage/", { data: uri} )
+                        .done(function( response ) {
+                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-responsive\">');
+                        })
                 };
                 fileReader.readAsDataURL(flowFile.file);
             });
-        };
-    })
-angular.module('App')
-    .controller('HomeCtrl',function(){
 
-        var homeCtrl = this;
+        };
+
+
+        //Post re
+        postCtrl.postReply = function(postId)
+        {
+            console.log(postId);
+            console.log(postCtrl.replyComment);
+           /* $.post( "/api/postReply/", { data: data} )
+                .done(function( response ) {
+                    window.location = response;
+                })*/
+        }
     })
 //# sourceMappingURL=all.js.map
