@@ -14,7 +14,7 @@ class CreateTopicTable extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('uuid');
+            $table->uuid('uuid')->index();
             $table->integer('flg')->default(1);
             $table->uuid('uid');
             $table->string('topic');

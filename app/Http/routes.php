@@ -56,6 +56,12 @@ Route::group(['middleware' => 'web'], function () {
 
 
     Route::post('/postTopic','TopicController@store');
-    Route::get('/{slug}','TopicController@show');
+    Route::get('/{displayname}/{slug}','TopicController@show');
+
+
+    //Profile page
+    Route::get('/{displayname}','ProfileController@show');
+    Route::post('/user/update-description', 'ProfileController@updateDesc');
+
 
 });

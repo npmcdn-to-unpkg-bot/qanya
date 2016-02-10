@@ -12,7 +12,8 @@
         "webpatser/laravel-uuid": "2.*",
         "nesbot/carbon": "^1.21",
         "intervention/image": "^2.3",
-        "predis/predis": "^1.0"
+        "predis/predis": "^1.0",
+        "artesaos/seotools": "^0.8.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

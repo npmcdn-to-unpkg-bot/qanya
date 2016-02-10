@@ -54,10 +54,6 @@
              flow-name="uploader.flow"
              flow-files-added="postCtrl.processFiles($files)">
             <md-button class="md-fab md-mini" flow-btn type="file" name="image">Upload Images</md-button>
-            {{--<div ng-repeat="image in uploader.flow.files track by $index">
-                <span class="text">Blob image displayed with "flow-img"</span>
-                <img class="preview" flow-img="image"/><br>
-            </div>--}}
         </div>
 
 

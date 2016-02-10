@@ -17,7 +17,7 @@
                 <div class="media-body">
                     {{--{{ Auth::user() }}--}}
                     <h4 class="media-heading">
-                        <a href="">
+                        <a href="/{!! Auth::user()->displayname !!}">
                         {{ Auth::user()->name }}
                         </a>
                     </h4>

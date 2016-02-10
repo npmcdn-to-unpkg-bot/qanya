@@ -13,9 +13,7 @@ angular.module('App')
         postCtrl.checkDisplayname = function(){
 
             $http.post('/check-name', {name: postCtrl.displayname.text})
-                .then(function(response,data){
-                console.log(response);
-                console.log(data);
+                .then(function(response){
                 if(response.data == "0"){
                     postCtrl.displayname.saveBtn = true;
                     postCtrl.displayname.alert   = false;
@@ -24,25 +22,6 @@ angular.module('App')
                     postCtrl.displayname.alert   = true;
                 }
             });
-
-            /*$.get( "/check-name/", { data: postCtrl.displayname.text } )
-                .done(function( data ) {
-                    console.log("return "+data);
-                    if(data == 0){
-                        console.log("okay to save");
-                        postCtrl.displayname.saveBtn = true;
-                        postCtrl.displayname.alert   = false;
-                        console.log(postCtrl.displayname.alert)
-                        console.log(postCtrl.displayname.saveBtn)
-                    }
-                    else{
-                        postCtrl.displayname.saveBtn = false;
-                        postCtrl.displayname.alert   = true;
-                        console.log(postCtrl.displayname.alert)
-                        console.log(postCtrl.displayname.saveBtn)
-                    }
-                });*/
-
         }
 
         postCtrl
@@ -62,7 +41,7 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    window.location(response);
+                    window.location = response;
                 })
 
         }

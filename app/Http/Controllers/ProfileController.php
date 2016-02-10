@@ -8,15 +8,21 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
     //Only authenticated users
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
+
+    /**
+     * Displayname section
+     *
+     */
     public function createName()
     {
         return view('pages.createName');
@@ -30,8 +36,18 @@ class ProfileController extends Controller
 
     public function registerName(Request $request)
     {
+        //Not sure if this is smart putting @ here, but we will see
         User::where('uuid',Auth::user()->uuid)
-            ->update(['displayname'=>$request->displayname]);
+            ->update(['displayname'=> '@'.$request->displayname]);
+    }
+    /** end displayname section */
+
+
+
+    public function updateDesc(Request $request)
+    {
+        User::where('uuid',Auth::user()->uuid)
+            ->update(['description'=> $request->name]);
     }
 
     /**
@@ -71,9 +87,26 @@ class ProfileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($displayname)
     {
-        //
+        $user = User::where('displayname',$displayname)->first();
+        $is_user = 'false';
+
+        $topics =   DB::table('topics')
+            ->where('topics.uid', $user->uuid)
+            ->join('users','users.uuid','=','topics.uid')
+            ->get();
+
+        if(!empty(Auth::user()->uuid))
+        {
+            if(Auth::user()->uuid == $user->uuid){
+                $is_user = 'true';
+            }
+        }else{
+            $is_user = 'false';
+        }
+        return view('profile.index',
+                compact('user','is_user','topics'));
     }
 
     /**
@@ -84,7 +117,6 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**

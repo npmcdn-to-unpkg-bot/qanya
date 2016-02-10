@@ -12,8 +12,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="csrf-token" content="{!! csrf_token() !!}">
 
-
-    <title>Qanya</title>
+    {{-- SEO STUFF --}}
+    {!! SEOMeta::generate() !!}
 
     <!-- Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
@@ -27,9 +27,30 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/all.css" rel="stylesheet">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-73596733-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
 </head>
 
 <body id="app-layout" ng-app="App">
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.5&appId=182388651773669";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
     <nav class="navbar navbar-default purple" style="height: 63px;">
         <div class="">
             <div class="navbar-header">
@@ -96,11 +117,7 @@
 
     <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
-
-
-    <script src="/assets/js/ngApps.js"></script>
-    <script src="/assets/js/postController.js"></script>
-    <script src="/assets/js/home.js"></script>
+    <script src="/js/all.js"></script>
 
     <script type="text/javascript">
         $.ajaxSetup({

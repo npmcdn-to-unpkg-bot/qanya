@@ -15,7 +15,7 @@ class CreateReplyTable extends Migration
         Schema::create('topics_reply', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('flg')->default(1);
-            $table->uuid('topic_uuid');
+            $table->uuid('topic_uuid')->index();
             $table->uuid('uid');
             $table->text('body');
             $table->timestamps();

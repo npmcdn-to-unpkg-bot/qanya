@@ -150,7 +150,7 @@ return [
 
 //        'Illuminate\Html\HtmlServiceProvider',
         Collective\Html\HtmlServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
+        'Artesaos\SEOTools\Providers\SEOToolsServiceProvider',        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -188,7 +188,8 @@ return [
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
-        'Hash'      => Illuminate\Support\Facades\Hash::class,
+        'Hash'
+        => Illuminate\Support\Facades\Hash::class,
         'Lang'      => Illuminate\Support\Facades\Lang::class,
         'Log'       => Illuminate\Support\Facades\Log::class,
         'Mail'      => Illuminate\Support\Facades\Mail::class,
@@ -209,7 +210,14 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+
+        // other Facades ommited
+        //https://github.com/artesaos/seotools
+        'SEOMeta'   => 'Artesaos\SEOTools\Facades\SEOMeta',
+        'OpenGraph' => 'Artesaos\SEOTools\Facades\OpenGraph',
+        'Twitter'   => 'Artesaos\SEOTools\Facades\TwitterCard',
+        'SEO'       => 'Artesaos\SEOTools\Facades\SEOTools',
 
     ],
 

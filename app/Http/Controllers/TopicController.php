@@ -14,6 +14,13 @@ use Carbon\Carbon as Carbon;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 
+
+//SEO
+use SEOMeta;
+use OpenGraph;
+use Twitter;
+use SEO;
+
 class TopicController extends Controller
 {
     /**
@@ -73,25 +80,29 @@ class TopicController extends Controller
      * @param  char  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show($slug)
+    public function show($displayname,$slug)
     {
-        $topic = DB::table('topics')
-            ->join('users', 'topics.uid', '=', 'users.uuid')
-            ->where('topics.slug',$slug)
-//                ->select('topic','topics.body')
-            ->first();
+        DB::connection()->enableQueryLog();
+
+        $topic = new Topic();
+        $topic = $topic->getTopic($slug);
 
         if(empty($topic)){
             return "not found".$topic;
-
         }else{
 
+
+            $log = DB::getQueryLog();
+            print_r($log);
             $dt = Carbon::parse($topic->created_at);
 
             $title      = $topic->topic;
             $body       = $topic->body;
             $username   = $topic->name;
             $created_at = $dt->diffForHumans();
+
+            SEOMeta::setTitle($title);
+            SEOMeta::setDescription($body);
 
             return view('pages.topic.topic',
                 compact('title','body','username','created_at'));

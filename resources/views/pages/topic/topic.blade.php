@@ -14,10 +14,22 @@
                     {!! nl2br($body) !!}
                 </p>
 
+                {{-- Share button --}}
+                <div class="fb-share-button"
+                     data-href="https://developers.facebook.com/docs/plugins/"
+                     data-layout="icon_link"></div>
+
+                <span>
+                    <script type="text/javascript" src="//media.line.me/js/line-button.js?v=20140411" ></script>
+                    <script type="text/javascript">
+                        new media_line_me.LineButton({"pc":false,"lang":"en","type":"a"});
+                    </script>
+                </span>
 
             <md-divider></md-divider>
 
 
+            {{-- Author section --}}
             <div class="media md-margin">
                 <div class="media-left">
                     <a href="#">

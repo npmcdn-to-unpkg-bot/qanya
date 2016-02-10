@@ -6,8 +6,9 @@
   </div>
 
  @foreach($topics as $topic)
+{{--  {{ print_r($topic) }}--}}
   <div class="media panel md-padding">
-   <p class="pull-right">
+   <p class="pull-right"
     <i class="fa fa-bookmark-o fa-2x pull-right"></i>
    </p>
    <p>
@@ -15,7 +16,8 @@
    </p>
    <div class="media-body">
     <h3 class="media-heading">
-     <a href="{{ url($topic->slug) }}" target="_blank">{{ $topic->topic }}</a>
+     <a href="{{ url($topic->displayname.'/'.$topic->slug) }}"
+        target="_blank">{{ $topic->topic }}</a>
     </h3>
     <p class="listing-article">
      {!! nl2br(str_limit($topic->body,250)) !!}
@@ -31,8 +33,8 @@
            width="32px"
            src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
            alt="...">
-      {{--{{$topic->uid}}--}}
-
+        <a href="{{$topic->displayname}}" target="_blank">
+            {{ $topic->name }}</a>
      </div>
     </div>
    </div>
