@@ -8,6 +8,7 @@ use App\Categories;
 use App\Topic as Topic;
 use Illuminate\Support\Facades\DB as DB;
 use App\User;
+use App\Users_follow;
 use Auth;
 
 class HomeController extends Controller
@@ -52,7 +53,12 @@ class HomeController extends Controller
         if(empty($user->displayname)){
             return redirect()->action('ProfileController@createName');
         }
-        return view('home',compact('categories'));
+
+        $followFeed = new Users_follow();
+        $topics = $followFeed->getFeed(Auth::user()->uuid);
+//        print_r($topics);
+
+        return view('home',compact('categories','topics'));
     }
 
 

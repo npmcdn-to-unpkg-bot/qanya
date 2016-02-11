@@ -102,7 +102,14 @@ class TopicController extends Controller
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
-            SEOMeta::setDescription($body);
+            SEOMeta::setDescription(str_limit($body,152));
+
+
+            OpenGraph::setTitle($title);
+            OpenGraph::setDescription($body);
+            /*OpenGraph::setUrl('http://current.url.com');
+            OpenGraph::addProperty('type', 'articles');*/
+
 
             return view('pages.topic.topic',
                 compact('title','body','username','created_at'));

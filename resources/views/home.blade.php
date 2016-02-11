@@ -9,7 +9,13 @@
 
             @include('html.post-create',compact('categories'))
 
-            <div id="homeFeed"></div>
+            <div id="homeFeed">
+                @include('html.feed-list',compact('feeds'));
+                {{--@foreach($feeds as $feed)
+                    {{$feed->topic}}
+
+                @endforeach--}}
+            </div>
 
         </div>
         <div class="col-xs-5">

@@ -60,8 +60,6 @@ angular.module('App')
             });
         }
 
-        postCtrl
-
         postCtrl.postTopic = function()
         {
             var imgIds = new Array();
