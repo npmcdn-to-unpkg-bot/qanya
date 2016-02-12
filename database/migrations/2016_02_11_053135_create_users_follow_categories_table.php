@@ -14,7 +14,7 @@ class CreateUsersFollowCategoriesTable extends Migration
     {
         Schema::create('users_follow', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('flg');
+            $table->tinyInteger('flg')->default(1);
             $table->string('uuid');
             $table->tinyInteger('follow_type');
             $table->string('obj_id');

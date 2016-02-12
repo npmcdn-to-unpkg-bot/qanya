@@ -9,6 +9,30 @@ angular.module('App')
             'alert':    false
         }
 
+        //postCtrl.slug ='';
+
+
+        //Follow categories
+        postCtrl.followCate = function(slug){
+            console.log("test "+slug);
+
+            $http.post('/follow-cate/', {slug: slug})
+                .then(function(response){
+                    console.log(response)
+                });
+
+        }
+
+
+        postCtrl.getFeedCate = function(slug){
+            postCtrl.slug = slug;
+            $http.post('/getFeed/', {slug: slug})
+                .then(function(response){
+                    console.log(response)
+                    $('#homeFeed').html(response.data);
+                });
+        }
+
 
         postCtrl.checkDisplayname = function(){
 

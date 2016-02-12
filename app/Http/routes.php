@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/home', 'HomeController@index');
-    Route::get('/getFeed','HomeController@getFeedCate');
+    Route::post('/getFeed','HomeController@getFeedCate');
 
 
     Route::post('/api/previewImage','PhotoController@preview');
@@ -57,6 +57,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::post('/postTopic','TopicController@store');
     Route::get('/{displayname}/{slug}','TopicController@show');
+    Route::post('/follow-cate','TopicController@follow_cate');
 
 
     //Profile page

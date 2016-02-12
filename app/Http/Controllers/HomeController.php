@@ -64,12 +64,12 @@ class HomeController extends Controller
 
     public function getFeedCate(Request $request)
     {
-        $feed   =   $request->slug;
+        $slug   =   $request->slug;
         $topics =   DB::table('categories')
                         ->where('categories.slug',$request->slug)
                         ->join('topics', 'topics.categories', '=', 'categories.id')
                         ->join('users','users.uuid','=','topics.uid')
                         ->get();
-        return view('html.feed-list',compact('topics'));
+        return view('html.feed-list',compact('topics','slug'));
     }
 }

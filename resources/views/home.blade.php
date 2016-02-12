@@ -2,64 +2,57 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" ng-controller="PostCtrl as postCtrl">
         <div class="container">
-        <div class="col-xs-7">
+            <div class="col-xs-7">
+
+                @include('html.post-create',compact('categories'))
+
+                @{{ postCtrl.slug }}
+                <a class="btn btn-link"
+                   ng-if="postCtrl.slug"
+                   ng-click="postCtrl.followCate(postCtrl.slug)">
+                    follow+
+                </a>
+                <div id="homeFeed">
 
 
-            @include('html.post-create',compact('categories'))
+                    @include('html.feed-list',compact('feeds'));
+                </div>
 
-            <div id="homeFeed">
-                @include('html.feed-list',compact('feeds'));
-                {{--@foreach($feeds as $feed)
-                    {{$feed->topic}}
-
-                @endforeach--}}
             </div>
-
-        </div>
-        <div class="col-xs-5">
-            <div class="media panel md-padding">
-                <div class="media-body">
-                    {{--{{ Auth::user() }}--}}
-                    <h4 class="media-heading">
-                        <a href="/{!! Auth::user()->displayname !!}">
-                        {{ Auth::user()->name }}
+            <div class="col-xs-5">
+                <div class="media panel md-padding">
+                    <div class="media-body">
+                        {{--{{ Auth::user() }}--}}
+                        <h4 class="media-heading">
+                            <a href="/{!! Auth::user()->displayname !!}">
+                            {{ Auth::user()->name }}
+                            </a>
+                        </h4>
+                        something here
+                        <div>
+                            <b>10</b> post
+                        </div>
+                    </div>
+                    <div class="media-right">
+                        <a href="#">
+                            <img class="media-object img-fluid"
+                                 width="80px"
+                                 src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                                 alt="...">
                         </a>
-                    </h4>
-                    something here
-                    <div>
-                        <b>10</b> post
                     </div>
                 </div>
-                <div class="media-right">
-                    <a href="#">
-                        <img class="media-object img-fluid"
-                             width="80px"
-                             src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
-                             alt="...">
-                    </a>
-                </div>
+                <ul class="nav nav-pills">
+                    @foreach ($categories as $cate)
+                        <li class="nav-item btn-success-outline"
+                            role="presentation">
+                            <a href="#" ng-click="postCtrl.getFeedCate('{{ $cate->slug }}')">{{$cate->name}}</a>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
-            <ul class="nav nav-pills">
-            @foreach ($categories as $cate)
-                <li class="nav-item btn-success-outline" role="presentation">
-                    <a href="#" onclick="getFeedCate('{{ $cate->slug }}')">{{$cate->name}}</a>
-                </li>
-            @endforeach
-            </ul>
-            {{--{{ $categories }}--}}
-{{--            {{ Auth::user() }}--}}
-        </div>
-        {{--<div class="col-md-10 col-md-offset-1">
-            <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
-
-                <div class="panel-body">
-                    You are logged in!
-                </div>
-            </div>
-        </div>--}}
         </div>
     </div>
 </div>

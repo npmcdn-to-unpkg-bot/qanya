@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Carbon\Carbon as Carbon;
-
+use App\Users_follow;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
 
@@ -23,6 +23,23 @@ use SEO;
 
 class TopicController extends Controller
 {
+
+    public function follow_cate(Request $request)
+    {
+        if(Auth::user())
+        {
+            $uf = new Users_follow();
+            $uf->uuid           = Auth::user()->uuid;
+            $uf->follow_type    = 1;
+            $uf->obj_id         = $request->slug;
+            $uf->save();
+        }
+        else{
+            echo "unauthorized";
+        }
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -98,7 +115,7 @@ class TopicController extends Controller
 
             $title      = $topic->topic;
             $body       = $topic->body;
-            $username   = $topic->name;
+            $username   = $topic->displayname;
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
