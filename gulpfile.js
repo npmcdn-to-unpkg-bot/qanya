@@ -1,8 +1,5 @@
 var elixir = require('laravel-elixir');
 
-
-
-
 //https://github.com/FabioAntunes/laravel-elixir-wiredep
 require('laravel-elixir-wiredep');
 
@@ -22,6 +19,7 @@ require('laravel-elixir-livereload');
 
 elixir(function(mix) {
     mix.livereload([ 'app/**/*', 'public/**/*', 'resources/views/**/*' ]);
+    //mix.scripts(['node_modules/socket.io/lib/socket.js']);
     mix.scriptsIn('public/assets/js');
     mix.styles([
         //'normalize.css',

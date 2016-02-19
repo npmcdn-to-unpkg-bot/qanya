@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use Auth;
 use App\Topic as Topic;
+use App\Events\UserReply as UserReply;
+use App\TopicReply as TopicReply;
+use App\Users_follow;
+
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Webpatser\Uuid\Uuid;
 //use App\Http\Requests;
@@ -11,8 +17,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use Carbon\Carbon as Carbon;
-use App\Users_follow;
+
 use Illuminate\Contracts\Filesystem\Filesystem;
+use Redis;
 
 
 //SEO
@@ -39,6 +46,29 @@ class TopicController extends Controller
         }
     }
 
+    //Reply to topic
+    public function replyTopic(Request $request)
+    {
+        if(Auth::user())
+        {
+            $reply = new TopicReply();
+            $reply->topic_uuid  =   $request->uuid;
+            $reply->uid         =   Auth::user()->uuid;
+            $reply->body        =   $request->data;
+            $reply->save();
+            echo "Reply resp" .$request->data;
+
+            $user = \App\User::findOrFail(Auth::user()->id);
+
+            event(new \App\Events\TopicReply($user));
+
+        }
+        else
+        {
+            echo "unauthorized";
+        }
+
+    }
 
     /**
      * Display a listing of the resource.
@@ -86,7 +116,11 @@ class TopicController extends Controller
                 $topic->slug        = $topicSlug;
                 $topic->save();
 
-                return $topicSlug;
+                $topicEvents = Topic::where('uuid',$topicUUID)->firstOrFail();
+
+                event(new \App\Events\UserPosts($topicEvents));
+
+             //   return $topicSlug;
             }
         }
     }
@@ -116,6 +150,8 @@ class TopicController extends Controller
             $title      = $topic->topic;
             $body       = $topic->body;
             $username   = $topic->displayname;
+            $slug       = $topic->slug;
+            $uuid       = $topic->uuid;
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
@@ -129,7 +165,11 @@ class TopicController extends Controller
 
 
             return view('pages.topic.topic',
-                compact('title','body','username','created_at'));
+                compact('title','body',
+                        'username',
+                        'slug',
+                        'uuid',
+                        'created_at'));
         }
     }
 

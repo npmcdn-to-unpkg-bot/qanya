@@ -4,6 +4,9 @@
 <div class="container-fluid">
     <div class="row" ng-controller="PostCtrl as postCtrl">
         <div class="container">
+
+            <p id="power">0</p>
+
             <div class="col-xs-7">
 
                 @include('html.post-create',compact('categories'))
@@ -14,9 +17,8 @@
                    ng-click="postCtrl.followCate(postCtrl.slug)">
                     follow+
                 </a>
+
                 <div id="homeFeed">
-
-
                     @include('html.feed-list',compact('feeds'));
                 </div>
 
@@ -27,7 +29,7 @@
                         {{--{{ Auth::user() }}--}}
                         <h4 class="media-heading">
                             <a href="/{!! Auth::user()->displayname !!}">
-                            {{ Auth::user()->name }}
+                            {{ Auth::user()->firstname }}
                             </a>
                         </h4>
                         something here

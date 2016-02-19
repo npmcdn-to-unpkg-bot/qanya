@@ -2,6 +2,7 @@
 
 @section('content')
 
+    {!! $user !!}
     <div class="container"
          ng-controller="ProfileCtrl as profileCtrl">
         <div class="layoutSingleColumn">
@@ -16,15 +17,24 @@
                      width="80px">
 
                 <div class="col-xs-8">
-                    <h1 class="display-4">
-                        {{ $user->name }}
+                    <h2 class="lead">
+                        <strong>
+                        {{ $user->firstname }}
+                        {{ $user->lastname }}
+                        </strong>
                         <p>
-                        <small>
-                            {{ $user->displayname }}
-                        </small>
+                            <small>
+                                {{ $user->displayname }}
+                            </small>
                         </p>
-                    </h1>
+                    </h2>
+                    <div class="row">
+                        <h4 class="col-xs-4" id="post_{!! $user->uuid !!}">12 posts</h4>
+                        <h4 class="col-xs-4" id="follower_{!! $user->uuid !!}">12 follower</h4>
+                        <h4 class="col-xs-4" id="following_{!! $user->uuid !!}">12 following</h4>
+                    </div>
                     <div contenteditable="{{ $is_user }}"
+                         class="lead "
                          id= "profileDescription"
                          ng-blur    =   "profileCtrl.updateDescription()"
                          placeholder=   "write your status/description">
@@ -32,9 +42,6 @@
                     </div>
                 </div>
             </div>
-
-
-
             @include('html.feed-list',compact('topics'));
         </div>
     </div>

@@ -45,7 +45,7 @@ angular.module('App')
             'alert':    false
         }
 
-        //postCtrl.slug ='';
+        postCtrl.topicReply = '';
 
 
         //Follow categories
@@ -84,6 +84,30 @@ angular.module('App')
             });
         }
 
+
+        //Reply in the post
+        postCtrl.postReply = function(uuid)
+        {
+            $http.post('/replyTopic', {uuid: uuid,
+                                       data: postCtrl.topicReply })
+                .then(function(response){
+                    console.log('postctrl.js' + response);
+                    console.log(response.data);
+                    var Redis = require('ioredis');
+                    var redis = new Redis();
+                    redis.subscribe('reply-'+uuid, function(err, count) {
+                    });
+
+                    socket.on('reply-'+uuid+":App\\Events\\TopicReply", function(message){
+                        $('#reply-'+uuid).text(message.data);
+                    });
+
+                    /*socket.on("App\\Events\\UserReply", function(message){
+                        console.log(message);
+                    });*/
+                })
+        }
+
         postCtrl.postTopic = function()
         {
             var imgIds = new Array();
@@ -99,7 +123,7 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    window.location = response;
+                    //window.location = response;
                 })
 
         }

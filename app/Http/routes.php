@@ -21,7 +21,10 @@ Route::get('/', function () {
 
 
 
-
+Route::get('fire', function () {
+    event(new App\Events\EventName(10));
+    return "event fired";
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -55,9 +58,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/register-name','ProfileController@registerName');
 
 
+    //Topic Controller
     Route::post('/postTopic','TopicController@store');
     Route::get('/{displayname}/{slug}','TopicController@show');
     Route::post('/follow-cate','TopicController@follow_cate');
+    Route::post('/replyTopic','TopicController@replyTopic');
 
 
     //Profile page

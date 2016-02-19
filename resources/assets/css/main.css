@@ -6,7 +6,9 @@ body {
     background-color:   #FAFAFA;
     height:100%;
 }
-
+.hand{
+    cursor: text;
+}
 .container{
     max-width:1040px;
 }

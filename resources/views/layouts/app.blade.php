@@ -38,6 +38,17 @@
         ga('create', 'UA-73596733-1', 'auto');
         ga('send', 'pageview');
     </script>
+    {{--Socket.io--}}
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+    <script>
+        var socket = io('http://localhost:3000');
+        socket.on("test-channel:App\\Events\\EventName", function(message){
+            // increase the power everytime we load test route
+            $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
+        });
+    </script>
+
 
 </head>
 
@@ -84,7 +95,7 @@
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                                {{ Auth::user()->firstname }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
@@ -131,5 +142,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>--}}
     {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
+
+
+
 </body>
 </html>
