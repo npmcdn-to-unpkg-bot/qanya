@@ -56,11 +56,14 @@ class TopicController extends Controller
             $reply->uid         =   Auth::user()->uuid;
             $reply->body        =   $request->data;
             $reply->save();
-            echo "Reply resp" .$request->data;
+            echo $reply->id;
 
-            $user = \App\User::findOrFail(Auth::user()->id);
 
-            event(new \App\Events\TopicReply($user));
+            $replyObj =TopicReply::find($reply->id);
+
+            print_r($replyObj);
+
+            event(new \App\Events\TopicReplyEvent($request->uuid,$replyObj));
 
         }
         else
@@ -69,6 +72,15 @@ class TopicController extends Controller
         }
 
     }
+
+
+    //Create the view for topic reply
+    public function replyTopicView(Request $request)
+    {
+        $data = $request->replyReq;
+        return view('html.topic-reply',compact('data'));
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -145,13 +157,13 @@ class TopicController extends Controller
 
             $log = DB::getQueryLog();
             print_r($log);
-            $dt = Carbon::parse($topic->created_at);
+            $dt = Carbon::parse($topic->topic_created_at);
 
             $title      = $topic->topic;
             $body       = $topic->body;
             $username   = $topic->displayname;
-            $slug       = $topic->slug;
-            $uuid       = $topic->uuid;
+            $slug       = $topic->topic_slug;
+            $uuid       = $topic->topic_uuid;
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
@@ -163,13 +175,17 @@ class TopicController extends Controller
             /*OpenGraph::setUrl('http://current.url.com');
             OpenGraph::addProperty('type', 'articles');*/
 
+            $topic = new Topic();
+            $topic_replies = $topic->getReplies($uuid);
+
+//            dd($topic_replies);
 
             return view('pages.topic.topic',
                 compact('title','body',
                         'username',
                         'slug',
                         'uuid',
-                        'created_at'));
+                        'created_at','topic_replies'));
         }
     }
 

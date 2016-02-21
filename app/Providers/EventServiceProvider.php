@@ -13,11 +13,13 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-
+        'App\Events\TopicReply' => [
+            'App\Listeners\TopicReplyListeners',
+        ],
     ];
 
     protected $subscribe = [
-
+        'App\Listeners\TopicReplyListeners',
     ];
 
     /**
@@ -30,6 +32,8 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot($events);
 
-        //
+        $events->listen('*', function ($message) {
+            //
+        });
     }
 }

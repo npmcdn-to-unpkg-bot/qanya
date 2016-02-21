@@ -95,26 +95,48 @@
                 </div>
             @endif
 
-            <div id="reply-{{$uuid}}">
 
-            </div>
+
+
+
 
             <md-content>
+                <md-list id="reply_append_{{$uuid}}"></md-list>
+
+                @for($i=0;$i<count($topic_replies);$i++)
+
                 <md-list>
-                    <md-subheader class="md-no-sticky">Comments </md-subheader>
                     <md-list-item class="md-3-line">
                         <img ng-src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
-                             class="md-avatar"
-                              />
+                             class="md-avatar"/>
                         <div class="md-list-item-text" layout="column">
-                            <h3> Username </h3>
-                            <h4> item.what</h4>
-                            <p> item.notes</p>
+                            <h3>
+                                <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
+                                {{ $topic_replies[$i]->firstname }}
+                                </a>
+                            </h3>
+                            <h4> {!! $topic_replies[$i]->body !!}</h4>
+                            {!! Carbon\Carbon::parse($topic_replies[$i]->replycreated_at)->diffForHumans() !!}
                         </div>
                     </md-list-item>
                 </md-list>
+
+                @endfor
             </md-content>
         </div>
     </div>
     </md-content>
+
+    <script>
+
+       socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
+           console.log(message);
+           $.get( "/replyView/", { replyReq: message } )
+               .done(function( data ) {
+                   $('#reply_append_{{ $uuid }}').prepend(data);
+               });
+        });
+
+
+    </script>
 @endsection

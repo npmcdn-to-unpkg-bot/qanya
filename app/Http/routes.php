@@ -63,6 +63,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/{displayname}/{slug}','TopicController@show');
     Route::post('/follow-cate','TopicController@follow_cate');
     Route::post('/replyTopic','TopicController@replyTopic');
+    Route::get('/replyView','TopicController@replyTopicView');
 
 
     //Profile page
