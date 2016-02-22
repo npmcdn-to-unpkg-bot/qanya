@@ -47,6 +47,46 @@
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
         });
+        @if(Auth::user())
+            socket.on("notification_{{Auth::user()->uuid}}:App\\Events\\FollowUserEvent", function(message){
+                // increase the power everytime we load test route
+                $('#notification_{!!  Auth::user()->uuid !!}').text(message);
+            createNotificaiton('New Notification',
+                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
+                    'You have a new email!');
+            });
+        @endif
+
+        document.addEventListener('DOMContentLoaded', function () {
+            //check if the browser supports notifications
+            if (!("Notification" in window)) {
+                //do nothing
+                //This browser does not support desktop notifications
+                return;
+            }
+            if (Notification.permission !== "granted"){
+                //if permission is not granted then ask user for permission
+                Notification.requestPermission();
+            }
+            else{
+                //user has given permission
+//                alert('Desktop notifications are now allowed');
+            }
+        });
+        function createNotificaiton(theTitle, theIcon, theBody){
+            var options = {
+                icon: theIcon,
+                body: theBody,
+            };
+            var notification = new Notification(theTitle, options);
+
+//close the notification automatically after 5 seconds
+            setTimeout(notification.close.bind(notification), 5000);
+
+//attach events here
+        }
+
+//        createNotificaiton('New Notification', 'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png', 'You have a new email!');
     </script>
 
 
@@ -93,6 +133,9 @@
                         <li><a href="{{ url('/login') }}">Login</a></li>
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
+                        <li>
+                            <a href="#" id="notification_{{Auth::user()->uuid}}">Notification</a>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->firstname }} <span class="caret"></span>
@@ -119,6 +162,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-aria.min.js"></script>
+
+    <!-- load momentJS (required for angular-moment) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+
+    <!-- load angular-moment -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js"></script>
 
 
     {{--ng-flow--}}

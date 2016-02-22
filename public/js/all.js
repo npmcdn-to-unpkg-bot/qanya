@@ -6,7 +6,7 @@ function getFeedCate(slug){
 }
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment'])
 
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
@@ -45,6 +45,8 @@ angular.module('App')
             'alert':    false
         }
 
+        postCtrl.postFollow = '';
+
         postCtrl.topicReply = '';
 
 
@@ -60,11 +62,45 @@ angular.module('App')
         }
 
 
+        //Follower user
+        //@Params uuid - author ID
+        postCtrl.followUser = function(uuid)
+        {
+            $http.post('/followUser/', { data: uuid})
+                .then(function(response){
+                    if(response.data == 0)
+                    {
+                        postCtrl.postFollow = 'follow';
+                    }else{
+                        postCtrl.postFollow = 'following';
+                    }
+                });
+        }
+
+
+        //Is currently following user
+        //@Params uuid - author ID
+        postCtrl.isFollow = function(uuid)
+        {
+            $http.post('/userFollowStatus/', { data: uuid})
+                .then(function(response){
+                    if(response.data == 0)
+                    {
+                        postCtrl.postFollow = 'follow';
+                    }else{
+                        postCtrl.postFollow = 'following';
+                    }
+
+                    //postCtrl.postFollow = response.data;
+                });
+            //postCtrl.postFollow = "test "+uuid;
+        }
+
+
         postCtrl.getFeedCate = function(slug){
             postCtrl.slug = slug;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
-                    console.log(response)
                     $('#homeFeed').html(response.data);
                 });
         }
@@ -89,7 +125,6 @@ angular.module('App')
         postCtrl.postReply = function(uuid)
         {
             var replyObj = 'reply_append_'+uuid;
-            console.log(replyObj);
             $http.post('/replyTopic', {uuid: uuid,
                                        data: postCtrl.topicReply })
                 .then(function(response){
@@ -97,6 +132,8 @@ angular.module('App')
                 })
         }
 
+
+        //Post topic
         postCtrl.postTopic = function()
         {
             var imgIds = new Array();
@@ -112,7 +149,8 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    //window.location = response;
+                    url = response.author+'/'+response.slug;
+                    window.location = url;
                 })
 
         }

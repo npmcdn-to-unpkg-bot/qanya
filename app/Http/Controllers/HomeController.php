@@ -45,7 +45,7 @@ class HomeController extends Controller
     {
         $categories = Categories::all();
 
-        $user = User::find(Auth::user()->id)->first();
+        $user = User::find(Auth::user()->id);
 
         echo $user;
         echo $user->uuid;

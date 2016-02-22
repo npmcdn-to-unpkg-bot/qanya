@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -12,7 +13,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','uuid', 'email', 'password',
+        'firstname','lastname', 'uuid', 'email', 'password',
     ];
 
     /**
@@ -23,4 +24,20 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     *  Incremenet the number of posts by user
+     */
+    public function incrementPost($uuid)
+    {
+        DB::table('users')->where('uuid',$uuid)->increment('posts');
+    }
+
+    /**
+     * Get all of the posts for the user.
+     */
+    public function posts()
+    {
+        return $this->hasMany('App\Topics');
+    }
 }

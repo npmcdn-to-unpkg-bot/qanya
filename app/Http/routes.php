@@ -63,6 +63,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/{displayname}/{slug}','TopicController@show');
     Route::post('/follow-cate','TopicController@follow_cate');
     Route::post('/replyTopic','TopicController@replyTopic');
+    Route::post('/userFollowStatus','TopicController@userFollowStatus');
+    Route::post('/followUser','TopicController@followUser');
     Route::get('/replyView','TopicController@replyTopicView');
 
 
@@ -71,4 +73,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/user/update-description', 'ProfileController@updateDesc');
 
 
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+
+    Route::get('/home', 'HomeController@index');
 });

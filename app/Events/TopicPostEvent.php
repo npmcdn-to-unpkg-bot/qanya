@@ -2,19 +2,16 @@
 
 namespace App\Events;
 
-
 use App\Events\Event;
-use App\TopicReply;
-use App\Http\Controllers\TopicController;
+use App\Topic;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-
-class TopicReplyEvent extends Event implements ShouldBroadcast
+class TopicPostEvent extends Event
 {
     use SerializesModels;
 
-    public $data;
+
     public $topic;
 
     /**
@@ -22,10 +19,9 @@ class TopicReplyEvent extends Event implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct($topic_uuid, TopicReply $data)
+    public function __construct(Topic $topic)
     {
-        $this->topic = $topic_uuid;
-        $this->data = $data;
+        $this->topic = $topic;
     }
 
     /**
@@ -35,6 +31,6 @@ class TopicReplyEvent extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['reply_append_'.$this->topic];
+        return [];
     }
 }

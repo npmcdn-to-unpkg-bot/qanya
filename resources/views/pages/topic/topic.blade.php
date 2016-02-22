@@ -4,7 +4,7 @@
     <md-content ng-controller="PostCtrl as postCtrl">
     <div class="container-fluid">
         <div class="layoutSingleColumn">
-
+            {{$is_user}}
                 <span>
                     <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
                 </span>
@@ -43,10 +43,19 @@
                     <h4 class="media-heading">
                         {{ $username }}
                     </h4>
-                    something here
+                    {{ $user_descs }}
                     <div>
                         <b>10</b> post
                     </div>
+                </div>
+                <div class="media-right">
+                    @if($is_user == false)
+                        <button class="btn btn-primary"
+                                ng-init="postCtrl.isFollow('{!! $topics_uid !!}')"
+                                ng-click="postCtrl.followUser('{!! $topics_uid !!}')">
+                            @{{ postCtrl.postFollow }}
+                        </button>
+                    @endif
                 </div>
             </div>
 
@@ -130,7 +139,6 @@
     <script>
 
        socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
-           console.log(message);
            $.get( "/replyView/", { replyReq: message } )
                .done(function( data ) {
                    $('#reply_append_{{ $uuid }}').prepend(data);

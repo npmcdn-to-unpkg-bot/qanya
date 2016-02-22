@@ -1,6 +1,6 @@
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment'])
 
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {

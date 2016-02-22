@@ -31,6 +31,22 @@ use SEO;
 class TopicController extends Controller
 {
 
+    //Check User follow Status
+    public function userFollowStatus(Request $request)
+    {
+        $uf = new Users_follow();
+        return $uf->getUserFollowstatus(Auth::user()->uuid, $request->data);
+    }
+
+
+    //Follow user
+    public function followUser(Request $request)
+    {
+        $uf = new Users_follow();
+        return $uf->followUser(Auth::user()->uuid, $request->data);
+    }
+
+    //Follow categories
     public function follow_cate(Request $request)
     {
         if(Auth::user())
@@ -56,8 +72,6 @@ class TopicController extends Controller
             $reply->uid         =   Auth::user()->uuid;
             $reply->body        =   $request->data;
             $reply->save();
-            echo $reply->id;
-
 
             $replyObj =TopicReply::find($reply->id);
 
@@ -128,11 +142,14 @@ class TopicController extends Controller
                 $topic->slug        = $topicSlug;
                 $topic->save();
 
-                $topicEvents = Topic::where('uuid',$topicUUID)->firstOrFail();
+                $topicEvents = Topic::find($topic->id);
 
-                event(new \App\Events\UserPosts($topicEvents));
+                event(new \App\Events\TopicPostEvent($topicEvents));
 
-             //   return $topicSlug;
+                $data = array("slug"=>$topicSlug,
+                              "author"=>Auth::user()->displayname);
+
+                return $data;
             }
         }
     }
@@ -145,6 +162,7 @@ class TopicController extends Controller
      */
     public function show($displayname,$slug)
     {
+
         DB::connection()->enableQueryLog();
 
         $topic = new Topic();
@@ -154,6 +172,7 @@ class TopicController extends Controller
             return "not found".$topic;
         }else{
 
+            $is_user = false;
 
             $log = DB::getQueryLog();
             print_r($log);
@@ -164,6 +183,8 @@ class TopicController extends Controller
             $username   = $topic->displayname;
             $slug       = $topic->topic_slug;
             $uuid       = $topic->topic_uuid;
+            $topics_uid = $topic->topics_uid;
+            $user_descs = $topic->description;
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
@@ -178,13 +199,22 @@ class TopicController extends Controller
             $topic = new Topic();
             $topic_replies = $topic->getReplies($uuid);
 
-//            dd($topic_replies);
+            //Check if this is the owner
+            if(!empty(Auth::user()->uuid))
+            {
+                if(Auth::user()->uuid == $topics_uid){
+                    $is_user = 'true';
+                }
+            }
 
             return view('pages.topic.topic',
                 compact('title','body',
                         'username',
                         'slug',
                         'uuid',
+                        'is_user',
+                        'topics_uid',
+                        'user_descs',
                         'created_at','topic_replies'));
         }
     }

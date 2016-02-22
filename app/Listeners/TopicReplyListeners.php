@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\TopicReply;
+use App\User;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Auth;
 
 class TopicReplyListeners
 {
@@ -31,6 +33,7 @@ class TopicReplyListeners
      */
     public function handle(TopicReply $event)
     {
+        User::incrementPost(Auth::user()->uuid);
     }
 
     public function subscribe($events)

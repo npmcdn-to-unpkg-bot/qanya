@@ -39,6 +39,7 @@ class ProfileController extends Controller
         //Not sure if this is smart putting @ here, but we will see
         User::where('uuid',Auth::user()->uuid)
             ->update(['displayname'=> '@'.$request->displayname]);
+        return redirect('/home');
     }
     /** end displayname section */
 

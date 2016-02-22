@@ -37,8 +37,10 @@ class Topic extends Model
                 ->select(
                         'topics.topic',
                         'topics.body',
+                        'topics.uid as topics_uid',
                         'topics.slug as topic_slug',
                         'users.displayname',
+                        'users.description',
                         'topics.uuid as topic_uuid',
                         'topics.created_at as topic_created_at'
                         )

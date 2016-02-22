@@ -5,8 +5,6 @@
     <div class="row" ng-controller="PostCtrl as postCtrl">
         <div class="container">
 
-            <p id="power">0</p>
-
             <div class="col-xs-7">
 
                 @include('html.post-create',compact('categories'))
