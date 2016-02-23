@@ -4,6 +4,26 @@ angular.module('App')
         var profileCtrl = this;
 
         profileCtrl.profileDescription='';
+        profileCtrl.unreadNotification = 0;
+
+
+        //Acknowledge notification
+        profileCtrl.ackNotificataion = function()
+        {
+            $http.post('/ackNotification')
+                .then(function(response){
+                    profileCtrl.unreadNotification = response.data;
+                });
+        }
+
+        //Get the number of unread notificaiton
+        profileCtrl.userNotification = function()
+        {
+            $http.post('/getNotification')
+                .then(function(response){
+                    profileCtrl.unreadNotification = response.data;
+                });
+        }
 
         profileCtrl.updateDescription = function()
         {

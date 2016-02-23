@@ -42,20 +42,6 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
     <script>
-        var socket = io('http://localhost:3000');
-        socket.on("test-channel:App\\Events\\EventName", function(message){
-            // increase the power everytime we load test route
-            $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
-        });
-        @if(Auth::user())
-            socket.on("notification_{{Auth::user()->uuid}}:App\\Events\\FollowUserEvent", function(message){
-                // increase the power everytime we load test route
-                $('#notification_{!!  Auth::user()->uuid !!}').text(message);
-            createNotificaiton('New Notification',
-                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
-                    'You have a new email!');
-            });
-        @endif
 
         document.addEventListener('DOMContentLoaded', function () {
             //check if the browser supports notifications
@@ -68,25 +54,40 @@
                 //if permission is not granted then ask user for permission
                 Notification.requestPermission();
             }
-            else{
-                //user has given permission
-//                alert('Desktop notifications are now allowed');
-            }
         });
+        
         function createNotificaiton(theTitle, theIcon, theBody){
             var options = {
                 icon: theIcon,
                 body: theBody,
             };
             var notification = new Notification(theTitle, options);
-
-//close the notification automatically after 5 seconds
             setTimeout(notification.close.bind(notification), 5000);
 
-//attach events here
         }
 
-//        createNotificaiton('New Notification', 'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png', 'You have a new email!');
+        /**
+         * Prepare for sockets
+         */
+        var socket = io('http://localhost:3000');
+        socket.on("test-channel:App\\Events\\EventName", function(message){
+            // increase the power everytime we load test route
+            $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
+        });
+
+        @if(Auth::user())
+            socket.on("notification_{{Auth::user()->uuid}}:App\\Events\\FollowUserEvent", function(message){
+                createNotificaiton('New Follower!',
+                                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
+                                    'You have a new follower!');
+                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
+
+            });
+        @endif
+
+
+
+
     </script>
 
 
@@ -120,7 +121,8 @@
                 </a>
             </div>
 
-            <div class="collapse navbar-collapse container" id="app-navbar-collapse">
+            <div class="collapse navbar-collapse container" id="app-navbar-collapse"
+                 ng-controller="ProfileCtrl as profileCtrl">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
@@ -134,7 +136,13 @@
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
                         <li>
-                            <a href="#" id="notification_{{Auth::user()->uuid}}">Notification</a>
+                            <a href="#" ng-click="profileCtrl.ackNotificataion()">
+                                <i class="fa fa-bell-o fa-x"></i>
+                                <span id="notification_{{Auth::user()->uuid}}"
+                                      ng-init="profileCtrl.userNotification()">
+                                    @{{ profileCtrl.unreadNotification }}
+                                </span>
+                            </a>
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">

@@ -174,8 +174,12 @@ class TopicController extends Controller
 
             $is_user = false;
 
+            /**
+             * Performance and redis check
             $log = DB::getQueryLog();
             print_r($log);
+             */
+
             $dt = Carbon::parse($topic->topic_created_at);
 
             $title      = $topic->topic;

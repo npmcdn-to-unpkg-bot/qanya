@@ -16,13 +16,11 @@ angular.module('App')
 
         //Follow categories
         postCtrl.followCate = function(slug){
-            console.log("test "+slug);
 
             $http.post('/follow-cate/', {slug: slug})
                 .then(function(response){
                     console.log(response)
                 });
-
         }
 
 
@@ -36,6 +34,7 @@ angular.module('App')
                     {
                         postCtrl.postFollow = 'follow';
                     }else{
+
                         postCtrl.postFollow = 'following';
                     }
                 });
@@ -54,10 +53,7 @@ angular.module('App')
                     }else{
                         postCtrl.postFollow = 'following';
                     }
-
-                    //postCtrl.postFollow = response.data;
                 });
-            //postCtrl.postFollow = "test "+uuid;
         }
 
 

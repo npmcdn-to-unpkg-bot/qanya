@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Auth;
+
 class Users_follow extends Model
 {
     protected $table = 'users_follow';
@@ -32,11 +34,20 @@ class Users_follow extends Model
     {
         if($this->getUserFollowstatus($user,$to_follow_uuid) == 0)
         {
+
             $uf = new Users_follow();
             $uf->uuid           = $user;
             $uf->follow_type    = 2;
             $uf->obj_id         = $to_follow_uuid;
             $uf->save();
+
+            $notification = new Notification();
+
+            $notification->type         = 2; //type 2 is follow
+            $notification->recipient    = $to_follow_uuid;
+            $notification->sender       = $user;
+            $notification->body         = 'follow';
+            $notification->save();
 
             event(new \App\Events\FollowUserEvent($user,$to_follow_uuid));
 
@@ -47,6 +58,11 @@ class Users_follow extends Model
             DB::table('users_follow')
                 ->where('uuid',$user )
                 ->where('obj_id',$to_follow_uuid )
+                ->delete();
+
+            DB::table('notification')
+                ->where('recipient',$to_follow_uuid )
+                ->where('sender',$user )
                 ->delete();
             return 0;
         }

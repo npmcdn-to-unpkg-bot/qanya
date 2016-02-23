@@ -26,6 +26,6 @@ class FollowUserListeners
      */
     public function handle(FollowUserEvent $event)
     {
-        //
+//       print_r($event);
     }
 }

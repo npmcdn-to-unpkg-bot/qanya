@@ -52,10 +52,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/api/previewImage','PhotoController@preview');
     Route::post('/api/postTopic','TopicController@store');
 
-
+    //Users
     Route::get('/create-name','ProfileController@createName');
     Route::post('/check-name','ProfileController@checkName');
     Route::post('/register-name','ProfileController@registerName');
+    Route::post('/getNotification','ProfileController@getNotification');
+    Route::post('/ackNotification','ProfileController@ackNotification');
 
 
     //Topic Controller

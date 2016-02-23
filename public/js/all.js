@@ -52,13 +52,11 @@ angular.module('App')
 
         //Follow categories
         postCtrl.followCate = function(slug){
-            console.log("test "+slug);
 
             $http.post('/follow-cate/', {slug: slug})
                 .then(function(response){
                     console.log(response)
                 });
-
         }
 
 
@@ -72,6 +70,7 @@ angular.module('App')
                     {
                         postCtrl.postFollow = 'follow';
                     }else{
+
                         postCtrl.postFollow = 'following';
                     }
                 });
@@ -90,10 +89,7 @@ angular.module('App')
                     }else{
                         postCtrl.postFollow = 'following';
                     }
-
-                    //postCtrl.postFollow = response.data;
                 });
-            //postCtrl.postFollow = "test "+uuid;
         }
 
 
@@ -180,6 +176,26 @@ angular.module('App')
         var profileCtrl = this;
 
         profileCtrl.profileDescription='';
+        profileCtrl.unreadNotification = 0;
+
+
+        //Acknowledge notification
+        profileCtrl.ackNotificataion = function()
+        {
+            $http.post('/ackNotification')
+                .then(function(response){
+                    profileCtrl.unreadNotification = response.data;
+                });
+        }
+
+        //Get the number of unread notificaiton
+        profileCtrl.userNotification = function()
+        {
+            $http.post('/getNotification')
+                .then(function(response){
+                    profileCtrl.unreadNotification = response.data;
+                });
+        }
 
         profileCtrl.updateDescription = function()
         {

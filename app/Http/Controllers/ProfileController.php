@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Notification;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -18,6 +19,26 @@ class ProfileController extends Controller
 //        $this->middleware('auth');
     }
 
+
+    /**
+     * Acknowledge notification
+     */
+    public function ackNotification()
+    {
+        $notification = new Notification();
+        $notification->ackNotification();
+        return $notification->countNotification(Auth::user()->uuid);
+    }
+
+    /**
+     * Get user notification
+     *
+     */
+    public function getNotification()
+    {
+        $notification = new Notification();
+        return $notification->countNotification(Auth::user()->uuid);
+    }
 
     /**
      * Displayname section
