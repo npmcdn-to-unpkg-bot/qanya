@@ -82,13 +82,14 @@ angular.module('App')
 
 
         //Reply in the post
-        postCtrl.postReply = function(uuid)
+        postCtrl.postReply = function(uuid,topics_uid)
         {
             var replyObj = 'reply_append_'+uuid;
             $http.post('/replyTopic', {uuid: uuid,
+                                       topics_uid: topics_uid,
                                        data: postCtrl.topicReply })
                 .then(function(response){
-
+                    console.log(response);
                 })
         }
 

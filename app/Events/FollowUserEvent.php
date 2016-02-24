@@ -22,8 +22,8 @@ class FollowUserEvent extends Event implements ShouldBroadcast
     public function __construct($user,$to_follow_uuid)
     {
         $notification = new Notification();
-        $this->follow_uuid  = $to_follow_uuid;
         $this->count        = $notification->countNotification($to_follow_uuid);
+        $this->follow_uuid  = $to_follow_uuid;
     }
 
     /**

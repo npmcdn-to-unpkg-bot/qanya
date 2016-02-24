@@ -60,7 +60,7 @@
             </div>
 
             @if (Auth::user())
-                <form ng-submit="postCtrl.postReply('{{$uuid}}')">
+                <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}')">
                     <div class="media md-margin">
                         <div class="media-left">
                             <a href="#">
@@ -138,13 +138,19 @@
 
     <script>
 
-       socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
-           $.get( "/replyView/", { replyReq: message } )
-               .done(function( data ) {
-                   $('#reply_append_{{ $uuid }}').prepend(data);
-               });
-        });
+        socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
 
+            console.log(message);
+
+
+            $.get( "/replyView/", { replyReq: message } )
+                    .done(function( data ) {
+                        $('#reply_append_{{ $uuid }}').prepend(data);
+                        createNotificaiton('New Reply!',
+                                'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
+                                'You have a new reply from your topic!');
+                    });
+        });
 
     </script>
 @endsection

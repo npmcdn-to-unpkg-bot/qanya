@@ -7,7 +7,7 @@ return [
          */
         'defaults'       => [
             'title'       => "Qanya", // set false to total remove
-            'description' => 'For those who helped create the Genki Dama', // set false to total remove
+            'description' => 'search for stuff', // set false to total remove
             'separator'   => ' - ',
             'keywords'    => [],
         ],

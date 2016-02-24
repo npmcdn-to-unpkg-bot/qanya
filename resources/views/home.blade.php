@@ -32,7 +32,7 @@
                         </h4>
                         something here
                         <div>
-                            <b>10</b> post
+                            <b> {{ Auth::user()->posts }}</b> post
                         </div>
                     </div>
                     <div class="media-right">

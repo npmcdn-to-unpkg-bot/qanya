@@ -4,6 +4,7 @@ namespace App\Events;
 
 
 use App\Events\Event;
+use App\Notification;
 use App\TopicReply;
 use App\Http\Controllers\TopicController;
 use Illuminate\Queue\SerializesModels;
@@ -16,16 +17,22 @@ class TopicReplyEvent extends Event implements ShouldBroadcast
 
     public $data;
     public $topic;
+    public $count;
+    public $author;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($topic_uuid, TopicReply $data)
+    public function __construct($topic_uuid, $topics_uid, TopicReply $data)
     {
-        $this->topic = $topic_uuid;
-        $this->data = $data;
+        $notification   = new Notification();
+        $this->count    = $notification->countNotification($topics_uid);
+
+        $this->author   = $topics_uid;
+        $this->topic    = $topic_uuid;
+        $this->data     = $data;
     }
 
     /**
@@ -35,6 +42,7 @@ class TopicReplyEvent extends Event implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['reply_append_'.$this->topic];
+        return ['reply_append_'.$this->topic,
+               'reply_to_'.$this->author];
     }
 }

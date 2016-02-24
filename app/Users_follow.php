@@ -42,12 +42,7 @@ class Users_follow extends Model
             $uf->save();
 
             $notification = new Notification();
-
-            $notification->type         = 2; //type 2 is follow
-            $notification->recipient    = $to_follow_uuid;
-            $notification->sender       = $user;
-            $notification->body         = 'follow';
-            $notification->save();
+            $notification->store(2,$to_follow_uuid,$user,'follow');
 
             event(new \App\Events\FollowUserEvent($user,$to_follow_uuid));
 

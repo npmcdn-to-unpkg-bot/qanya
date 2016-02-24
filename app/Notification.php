@@ -10,6 +10,20 @@ class Notification extends Model
     protected $table = 'notification';
 
 
+    public function store($type,$to_follow_uuid,$user,$body='follow')
+    {
+        $notification = new Notification();
+
+        //type 1 is cate
+        //type 2 is follow
+        //type 3 is notify author
+
+        $notification->type         = $type;
+        $notification->recipient    = $to_follow_uuid;
+        $notification->sender       = $user;
+        $notification->body         = $body;
+        $notification->save();
+    }
     //Count the number of usr notification
     public function countNotification($user)
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Notification;
 use Auth;
 use App\Topic as Topic;
 use App\Events\UserReply as UserReply;
@@ -73,11 +74,13 @@ class TopicController extends Controller
             $reply->body        =   $request->data;
             $reply->save();
 
+
             $replyObj =TopicReply::find($reply->id);
 
-            print_r($replyObj);
+            $notification = new Notification();
+            $notification->store(3,$request->topics_uid,Auth::user()->uuid,'reply');
 
-            event(new \App\Events\TopicReplyEvent($request->uuid,$replyObj));
+            event(new \App\Events\TopicReplyEvent($request->uuid,$request->topics_uid,$replyObj));
 
         }
         else
