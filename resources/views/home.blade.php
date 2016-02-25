@@ -30,9 +30,11 @@
                             {{ Auth::user()->firstname }}
                             </a>
                         </h4>
-                        something here
+                        {{ Auth::user()->description }}
                         <div>
-                            <b> {{ Auth::user()->posts }}</b> post
+                            <b> {{ Auth::user()->posts }}</b> posts
+                            <b> {{ Auth::user()->followers }}</b> followers
+                            <b> {{ Auth::user()->following }}</b> following
                         </div>
                     </div>
                     <div class="media-right">

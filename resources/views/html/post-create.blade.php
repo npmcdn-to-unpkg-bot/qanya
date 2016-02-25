@@ -37,17 +37,24 @@
             </md-select>
         </md-input-container>
 
+        {{-- TITILE--}}
         <md-input-container>
             <label>Title</label>
             <input ng-model="postCtrl.title" class="reading" name="postTitle" required autocomplete="off">
         </md-input-container>
 
+        {{-- BODY --}}
         <div contenteditable="true"
              placeholder="Enter text here..."
              class="panel"
              data-content="test"
              ng-model="contentBody"
              id="contentBody"></div>
+
+        {{-- TAGS --}}
+        <md-chips ng-model="postCtrl.topicTags"
+                  class="reading"
+                  readonly="false"></md-chips>
 
 
         <div flow-init

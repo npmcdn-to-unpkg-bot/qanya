@@ -48,6 +48,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/home', 'HomeController@index');
     Route::post('/getFeed','HomeController@getFeedCate');
 
+    //Tags
+    Route::get('/tag/{tag}','TopicController@tag');
 
     Route::post('/api/previewImage','PhotoController@preview');
     Route::post('/api/postTopic','TopicController@store');

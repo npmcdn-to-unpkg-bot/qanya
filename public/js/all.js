@@ -45,8 +45,8 @@ angular.module('App')
             'alert':    false
         }
 
+        postCtrl.topicTags = [];
         postCtrl.postFollow = '';
-
         postCtrl.topicReply = '';
 
 
@@ -141,8 +141,9 @@ angular.module('App')
 
             var data = { title:         postCtrl.title,
                          categories:    postCtrl.categories,
+                         tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),
-                         images:         imgIds
+                         images:        imgIds
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
@@ -163,7 +164,7 @@ angular.module('App')
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\">');
+                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-reponsive\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);

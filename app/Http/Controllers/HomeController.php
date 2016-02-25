@@ -47,8 +47,8 @@ class HomeController extends Controller
 
         $user = User::find(Auth::user()->id);
 
-        echo $user;
-        echo $user->uuid;
+        /*echo $user;
+        echo $user->uuid;*/
 
         if(empty($user->displayname)){
             return redirect()->action('ProfileController@createName');

@@ -19,6 +19,7 @@ class CreateTopicTable extends Migration
             $table->uuid('uid');
             $table->string('topic');
             $table->string('slug');
+            $table->string('tags');
             $table->text('body');
             $table->timestamps();
         });

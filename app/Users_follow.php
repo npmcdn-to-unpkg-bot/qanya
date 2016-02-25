@@ -13,6 +13,18 @@ class Users_follow extends Model
     public function getFeed($uuid)
     {
         $topics = DB::table('users_follow')
+            ->select(
+                'topics.topic',
+                'topics.body',
+                'topics.uid as topics_uid',
+                'topics.slug as topic_slug',
+                'topics.tags',
+                'topics.uuid as topic_uuid',
+                'topics.created_at as topic_created_at',
+                'users.firstname',
+                'users.displayname',
+                'users.description'
+            )
             ->orderby('topics.created_at','desc')
             ->where('users_follow.uuid',$uuid)
             ->join('topics', 'users_follow.obj_id', '=', 'topics.categories')

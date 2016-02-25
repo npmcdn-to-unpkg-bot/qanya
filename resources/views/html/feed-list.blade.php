@@ -9,15 +9,25 @@
     <i class="fa fa-bookmark-o fa-2x pull-right"></i>
    </p>
    <p>
-    {{ Carbon\Carbon::parse($topic->created_at)->diffForHumans() }}
+    {{ Carbon\Carbon::parse($topic->topic_created_at)->diffForHumans() }}
    </p>
    <div class="media-body">
     <h3 class="media-heading">
-     <a href="{{ url($topic->displayname.'/'.$topic->slug) }}"
+     <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}"
         target="_blank">{{ $topic->topic }}</a>
     </h3>
     <p class="listing-article">
      {!! nl2br(str_limit($topic->body,250)) !!}
+    </p>
+    <p>
+
+     <?php
+     $tags = explode(',',$topic->tags);?>
+      @if($tags)
+       @foreach($tags as $tag)
+        <a href="/tag/{{$tag}}">#{{$tag}}</a>
+       @endforeach
+      @endif
     </p>
     <div>
      <div class="pull-left">

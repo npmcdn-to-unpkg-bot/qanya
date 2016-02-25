@@ -26,6 +26,13 @@
                     </script>
                 </span>
 
+                @if($tags)
+                    @foreach($tags as $tag)
+                        <a href="/tag/{{$tag}}">#{{$tag}}</a>
+                    @endforeach
+                @endif
+
+
             <md-divider></md-divider>
 
 
@@ -41,7 +48,9 @@
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">
-                        {{ $username }}
+                        <a href="/{{ $username }}">
+                            {{ $user_fname }}
+                        </a>
                     </h4>
                     {{ $user_descs }}
                     <div>
@@ -72,7 +81,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">
-                                {{ $username }}
+                                You
                             </h4>
                             <md-input-container>
                                 <label>Title</label>

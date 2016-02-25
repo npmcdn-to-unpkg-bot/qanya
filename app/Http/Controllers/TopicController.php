@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Notification;
+use App\Tags;
 use Auth;
 use App\Topic as Topic;
 use App\Events\UserReply as UserReply;
@@ -12,6 +13,7 @@ use App\Users_follow;
 
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\DocBlock\Tag;
 use Webpatser\Uuid\Uuid;
 //use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -99,6 +101,24 @@ class TopicController extends Controller
     }
 
 
+    //Tag landing page
+    public function tag($tag)
+    {
+
+        SEOMeta::setTitle($tag);
+//        SEOMeta::setDescription(str_limit($body,152));
+
+
+        OpenGraph::setTitle($tag);
+//        OpenGraph::setDescription($body);
+
+        $topic = new Topic();
+        $topics = $topic->getTagTopic($tag);
+
+        return view('tag',compact('topics'));
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -129,12 +149,14 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
-        $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
-        $topicSlug = str_slug($request->postTitle, "-") . '-' . $topicUUID;
-
         if (Auth::user()->uuid) {
             if ($request->data) {
                 $json = $request->data;
+
+                $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
+                $topicSlug = str_slug($json['title'], "-") . '-' . $topicUUID;
+
+                $taglist = implode(",", $json['tags']);
 
                 $topic              = new Topic;
                 $topic->uuid        = $topicUUID;
@@ -143,7 +165,18 @@ class TopicController extends Controller
                 $topic->body        = $json['body'];
                 $topic->categories  = $json['categories'];
                 $topic->slug        = $topicSlug;
+                $topic->tags        = $taglist;
                 $topic->save();
+
+                $tag_data = array();
+                $count=0;
+                foreach($json['tags'] as $tag)
+                {
+                    $tag_data[$count] = array('topic_uuid'=>$topicUUID,
+                                              'title'=>$tag);
+                    $count++;
+                }
+                Tags::insert($tag_data);
 
                 $topicEvents = Topic::find($topic->id);
 
@@ -188,10 +221,12 @@ class TopicController extends Controller
             $title      = $topic->topic;
             $body       = $topic->body;
             $username   = $topic->displayname;
+            $user_fname = $topic->firstname;
             $slug       = $topic->topic_slug;
             $uuid       = $topic->topic_uuid;
             $topics_uid = $topic->topics_uid;
             $user_descs = $topic->description;
+            $tags       = explode(',', $topic->tags);
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);
@@ -222,6 +257,8 @@ class TopicController extends Controller
                         'is_user',
                         'topics_uid',
                         'user_descs',
+                        'tags',
+                        'user_fname',
                         'created_at','topic_replies'));
         }
     }

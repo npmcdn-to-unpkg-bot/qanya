@@ -39,15 +39,40 @@ class Topic extends Model
                         'topics.body',
                         'topics.uid as topics_uid',
                         'topics.slug as topic_slug',
-                        'users.displayname',
-                        'users.description',
+                        'topics.tags',
                         'topics.uuid as topic_uuid',
-                        'topics.created_at as topic_created_at'
+                        'topics.created_at as topic_created_at',
+                        'users.firstname',
+                        'users.displayname',
+                        'users.description'
                         )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
                 ->where('topics.slug',$slug)
                 ->first();
         });
         return $results;
+    }
+
+
+
+    public function getTagTopic($tag)
+    {
+        return $topic = DB::table('tags')
+            ->select(
+                'topics.topic',
+                'topics.body',
+                'topics.uid as topics_uid',
+                'topics.slug as topic_slug',
+                'topics.tags',
+                'topics.uuid as topic_uuid',
+                'topics.created_at as topic_created_at',
+                'users.firstname',
+                'users.displayname',
+                'users.description'
+            )
+            ->join('topics', 'topics.uuid', '=', 'tags.topic_uuid')
+            ->join('users', 'topics.uid', '=', 'users.uuid')
+            ->where('tags.title',$tag)
+            ->get();
     }
 }
