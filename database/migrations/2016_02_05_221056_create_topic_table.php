@@ -18,6 +18,7 @@ class CreateTopicTable extends Migration
             $table->integer('flg')->default(1);
             $table->uuid('uid');
             $table->string('topic');
+            $table->tinyInteger('category');
             $table->string('slug');
             $table->string('tags');
             $table->text('body');

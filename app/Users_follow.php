@@ -27,7 +27,7 @@ class Users_follow extends Model
             )
             ->orderby('topics.created_at','desc')
             ->where('users_follow.uuid',$uuid)
-            ->join('topics', 'users_follow.obj_id', '=', 'topics.categories')
+            ->join('topics', 'users_follow.obj_id', '=', 'topics.category')
             ->join('users','users.uuid','=','topics.uid')
             ->get();
         return $topics;
