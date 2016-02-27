@@ -12,10 +12,8 @@
 */
 
 Route::get('/', function () {
-    $topics = App\Topic::where('flg',1)
-                ->orderBy('created_at', 'desc')
-                ->take(10)
-                ->get();
+    $topic = new \App\Topic();
+    $topics = $topic->recentlyCreated();
     return view('welcome',compact('topics'));
 });
 

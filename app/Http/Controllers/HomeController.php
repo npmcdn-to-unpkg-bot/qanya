@@ -43,6 +43,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+
         $categories = Categories::all();
 
         $user = User::find(Auth::user()->id);
@@ -67,7 +68,7 @@ class HomeController extends Controller
         $slug   =   $request->slug;
         $topics =   DB::table('categories')
                         ->where('categories.slug',$request->slug)
-                        ->join('topics', 'topics.categories', '=', 'categories.id')
+                        ->join('topics', 'topics.category', '=', 'categories.id')
                         ->join('users','users.uuid','=','topics.uid')
                         ->get();
         return view('html.feed-list',compact('topics','slug'));

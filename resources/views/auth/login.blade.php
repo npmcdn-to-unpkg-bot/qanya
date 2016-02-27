@@ -6,7 +6,7 @@
         <div class="col-md-8 col-md-offset-2">
             <md-card>
                 <md-card-title>
-                    <md-card-title-text>
+                    <md-card-title-text class="md-headline">
                         Login
                     </md-card-title-text>
                 </md-card-title>
@@ -17,7 +17,7 @@
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <div class="col-md-8">
                                 <md-input-container class="md-block">
-                                    <label>Email</label>
+                                    <label>Your email</label>
                                     <input type="email" name="email" value="{{ old('email') }}">
 
                                     @if ($errors->has('email'))
@@ -33,7 +33,7 @@
 
                             <div class="col-md-8">
                                 <md-input-container class="md-block">
-                                    <label>Password</label>
+                                    <label>Your Password</label>
                                     <input type="password" name="password">
 
                                     @if ($errors->has('password'))

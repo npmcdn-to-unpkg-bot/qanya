@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Cache;
@@ -11,6 +12,20 @@ class Topic extends Model
 {
 
     protected $table = 'topics';
+
+    //Get the recently created topics
+    public function recentlyCreated()
+    {
+        $time = date("Ymd");
+        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
+            return $topic = $this->where('flg', 1)
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+        });
+        return $results;
+    }
+
 
     //Get topic replies
     public function getReplies($topic_uuid)

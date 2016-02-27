@@ -3,6 +3,7 @@ body {
     font-family: 'Lato';
     /*min-height:         75rem;*/
     /*padding-top:        6rem;*/
+    margin-top:65px;
     background-color:   #FAFAFA;
     height:100%;
 }

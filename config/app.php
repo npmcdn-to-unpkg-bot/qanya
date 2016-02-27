@@ -148,9 +148,11 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-//        'Illuminate\Html\HtmlServiceProvider',
-        Collective\Html\HtmlServiceProvider::class,
-        'Artesaos\SEOTools\Providers\SEOToolsServiceProvider',        Intervention\Image\ImageServiceProvider::class,
+
+        'Illuminate\Html\HtmlServiceProvider',
+//        Collective\Html\HtmlServiceProvider::class,
+        'Artesaos\SEOTools\Providers\SEOToolsServiceProvider',
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -206,8 +208,14 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
+        /*
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        */
+
+        'Form'=> 'Illuminate\Html\FormFacade',
+        'HTML'=> 'Illuminate\Html\HtmlFacade',
+
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Image' => Intervention\Image\Facades\Image::class,
 

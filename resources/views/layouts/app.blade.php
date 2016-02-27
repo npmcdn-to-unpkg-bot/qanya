@@ -24,8 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.css">
 
     <!-- Styles -->
-    {{--<link href="/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">--}}
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/all.css" rel="stylesheet">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
@@ -38,8 +37,9 @@
         ga('create', 'UA-73596733-1', 'auto');
         ga('send', 'pageview');
     </script>
+
     {{--Socket.io--}}
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    {!! HTML::script('https://cdn.socket.io/socket.io-1.4.5.js') !!}
 
     <script>
         /* Desktop notification */
@@ -109,67 +109,64 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
 
-    <nav class="navbar navbar-default purple" style="height: 63px;">
-        <div class="">
-            <div class="navbar-header">
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+    <div class="pos-f-t">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>
+                <span>
+                    <a class="navbar-brand white-font" href="{{ url('/') }}">
+                        Qanya
+                    </a>
+                </span>
+            </h2>
+            <a class="nav-link" href="{{ url('/home') }}">
+                Home
+            </a>
+            <span flex></span>
+            @if (Auth::guest())
+                <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                    Login
+                </md-button>
+                <md-button aria-label="Join us" ng-href="{{ url('/register') }}">
+                    join us
+                </md-button>
+            @else
 
-                <!-- Branding Image -->
-                <a class="navbar-brand white-font" href="{{ url('/') }}">
-                    Qanya
-                </a>
-            </div>
+                <md-button ng-click="profileCtrl.ackNotificataion()">
+                    <i class="fa fa-bell-o fa-x"></i>
+                    <span id="notification_{{Auth::user()->uuid}}"
+                          ng-init="profileCtrl.userNotification()">
+                        @{{ profileCtrl.unreadNotification }}
+                    </span>
+                </md-button>
 
-            <div class="collapse navbar-collapse container" id="app-navbar-collapse"
-                 ng-controller="ProfileCtrl as profileCtrl">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url('/home') }}">Home</a></li>
-                </ul>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                        {{ Auth::user()->firstname }} <span class="caret"></span>
+                    </a>
 
-                <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    @if (Auth::guest())
-                        <li><a href="{{ url('/login') }}">Login</a></li>
-                        <li><a href="{{ url('/register') }}">Register</a></li>
-                    @else
-                        <li>
-                            <a href="#" ng-click="profileCtrl.ackNotificataion()">
-                                <i class="fa fa-bell-o fa-x"></i>
-                                <span id="notification_{{Auth::user()->uuid}}"
-                                      ng-init="profileCtrl.userNotification()">
-                                    @{{ profileCtrl.unreadNotification }}
-                                </span>
-                            </a>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->firstname }} <span class="caret"></span>
-                            </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                    </ul>
+                </li>
+            @endif
 
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
-                            </ul>
-                        </li>
-                    @endif
-                </ul>
-            </div>
         </div>
-    </nav>
+    </md-toolbar>
+    </div>
 
-    @yield('content')
+
+    <div class="container">
+        @yield('content')
+    </div>
 
     <!-- bower:js -->
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    {{--<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>--}}
     <!-- endbower -->
+
+{{--    {!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css') !!}--}}
+    {!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js') !!}
 
     <!-- Angular Material Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.min.js"></script>
