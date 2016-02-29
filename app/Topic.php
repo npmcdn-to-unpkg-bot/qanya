@@ -17,15 +17,51 @@ class Topic extends Model
     public function recentlyCreated()
     {
         $time = date("Ymd");
-        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
+//        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
             return $topic = $this->where('flg', 1)
-                ->orderBy('created_at', 'desc')
+                ->select(
+                    'topics.topic',
+                    'topics.body',
+                    'topics.uid as topics_uid',
+                    'topics.slug as topic_slug',
+                    'topics.tags',
+                    'topics.uuid as topic_uuid',
+                    'topics.created_at as topic_created_at',
+                    'users.firstname',
+                    'users.displayname',
+                    'users.description'
+                )
+                ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->orderBy('topics.created_at', 'desc')
                 ->take(10)
                 ->get();
-        });
+//        });
         return $results;
     }
 
+
+    // Get feed from slug
+    public function getFeed($slug)
+    {
+        $topics =   DB::table('categories')
+                        ->select(
+                                'topics.topic',
+                                'topics.body',
+                                'topics.uid as topics_uid',
+                                'topics.slug as topic_slug',
+                                'topics.tags',
+                                'topics.uuid as topic_uuid',
+                                'topics.created_at as topic_created_at',
+                                'users.firstname',
+                                'users.displayname',
+                                'users.description'
+                                )   
+                        ->where('categories.slug',$slug)
+                        ->join('topics', 'topics.category', '=', 'categories.id')
+                        ->join('users','users.uuid','=','topics.uid')
+                        ->get();
+        return $topics;
+    }
 
     //Get topic replies
     public function getReplies($topic_uuid)

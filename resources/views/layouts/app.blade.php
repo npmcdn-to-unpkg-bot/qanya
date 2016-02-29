@@ -1,6 +1,6 @@
 @if ( Config::get('app.debug') )
     <script type="text/javascript">
-        document.write('<script src="//localhost:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
+        document.write('<script src="//192.168.0.100:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
     </script>
 @endif
 
@@ -68,7 +68,7 @@
         /**
          * Prepare for sockets
          */
-        var socket = io('http://localhost:3000');
+        var socket = io('http://192.168.0.100:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
@@ -119,9 +119,12 @@
                     </a>
                 </span>
             </h2>
-            <a class="nav-link" href="{{ url('/home') }}">
-                Home
-            </a>
+            
+            @if (!Auth::guest())
+                <a class="nav-link" href="{{ url('/home') }}">
+                    Home
+                </a>
+            @endif
             <span flex></span>
             @if (Auth::guest())
                 <md-button aria-label="Login" ng-href="{{ url('/login') }}">

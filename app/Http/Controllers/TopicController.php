@@ -155,15 +155,17 @@ class TopicController extends Controller
 
                 $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
                 $topicSlug = str_slug($json['title'], "-") . '-' . $topicUUID;
-
-                $taglist = implode(",", $json['tags']);
+                if(!empty($json['tags']))
+                    $taglist = implode(",", $json['tags']);
+                else
+                    $taglist = null;
 
                 $topic              = new Topic;
                 $topic->uuid        = $topicUUID;
                 $topic->uid         = Auth::user()->uuid;
                 $topic->topic       = $json['title'];
                 $topic->body        = $json['body'];
-                $topic->categories  = $json['categories'];
+                $topic->category    = $json['categories'];
                 $topic->slug        = $topicSlug;
                 $topic->tags        = $taglist;
                 $topic->save();
@@ -208,7 +210,7 @@ class TopicController extends Controller
             return "not found".$topic;
         }else{
 
-            $is_user = false;
+            $is_user = null;
 
             /**
              * Performance and redis check

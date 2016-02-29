@@ -1,5 +1,5 @@
 angular.module('App')
-    .controller('PostCtrl',function($http){
+    .controller('PostCtrl',function($http,$mdDialog){
 
         var postCtrl = this;
 
@@ -10,8 +10,20 @@ angular.module('App')
         }
 
         postCtrl.topicTags = [];
-        postCtrl.postFollow = '';
+        postCtrl.postFollow = 'Follow';
         postCtrl.topicReply = '';
+
+
+        postCtrl.showLogin = function(ev) {
+        var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
+            $mdDialog.show({              
+              templateUrl: 'dialog1.tmpl.html',
+              parent: angular.element(document.body),
+              targetEvent: ev,
+              clickOutsideToClose:true,
+              fullscreen: useFullScreen
+            })
+        }
 
 
         //Follow categories
@@ -87,7 +99,7 @@ angular.module('App')
             var replyObj = 'reply_append_'+uuid;
             $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
-                                       data: postCtrl.topicReply })
+                                       data: $('#topicReplyContainer').html() })
                 .then(function(response){
                     console.log(response);
                 })
@@ -111,7 +123,7 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    url = response.author+'/'+response.slug;
+                    url = '/'+response.author+'/'+response.slug;
                     window.location = url;
                 })
 
@@ -128,7 +140,7 @@ angular.module('App')
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-reponsive\">');
+                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-fluid\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);
