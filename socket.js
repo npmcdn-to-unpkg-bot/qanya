@@ -9,6 +9,6 @@ redis.on('pmessage', function(subscribed, channel, message) {
     message = JSON.parse(message);
     io.emit(channel + ':' + message.event, message.data);
 });
-http.listen(3000, function(){
+http.listen(3000, '128.199.157.98', function(){
     console.log('Listening on Port 3000');
 });

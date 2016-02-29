@@ -1,6 +1,6 @@
 @if ( Config::get('app.debug') )
     <script type="text/javascript">
-        document.write('<script src="//localhost:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
+        document.write('<script src="//128.199.157.98:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
     </script>
 @endif
 
@@ -68,7 +68,7 @@
         /**
          * Prepare for sockets
          */
-        var socket = io('http://localhost:3000');
+        var socket = io('http://128.199.157.98:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
