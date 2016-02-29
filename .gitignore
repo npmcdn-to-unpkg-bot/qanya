@@ -7,3 +7,5 @@ Homestead.json
 .env
 .idea/workspace.xml
 /.idea/
+public/js/all.js.map
+public/js/all.js

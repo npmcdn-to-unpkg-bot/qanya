@@ -119,9 +119,12 @@
                     </a>
                 </span>
             </h2>
-            <a class="nav-link" href="{{ url('/home') }}">
-                Home
-            </a>
+            
+            @if (!Auth::guest())
+                <a class="nav-link" href="{{ url('/home') }}">
+                    Home
+                </a>
+            @endif
             <span flex></span>
             @if (Auth::guest())
                 <md-button aria-label="Login" ng-href="{{ url('/login') }}">

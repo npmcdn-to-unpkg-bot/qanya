@@ -6,19 +6,11 @@
 
     <div class="row">
 
-        <div class="col-md-7" style="background:lightblue">
-            <div class="card-columns">
-                @for($i=0;$i<10;$i++)
-                <div class="card">
-                    <img class="card-img-top" data-src="..." alt="Card image cap">
-                    <div class="card-block">
-                        <h4 class="card-title">Card title that wraps to a new line</h4>
-                        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                    </div>
-                </div>
-                @endfor
-            </div>
-            @include('html.topic-list',compact('topics'))
+        <div class="col-md-7">
+            {{--<div class="card-columns">--}}
+                @include('html.feed-list',compact('topics'))
+            {{--</div>--}}
+
         </div>
 
         <div class="col-md-5 col-xs-12">
@@ -26,34 +18,6 @@
             <md-header class="md-headline">
                 MOST RECOMMENDED TODAY
             </md-header>
-
-            <md-content>
-            <md-card>
-                <md-card-title>
-                    <md-card-title-text>
-                        <span class="md-headline">Card with image</span>
-                        <span class="md-subhead">Small</span>
-                    </md-card-title-text>
-                    <md-card-title-media>
-                        <div class="md-media-sm card-media">
-                            test
-                        </div>
-                    </md-card-title-media>
-                </md-card-title>
-                <md-card-actions layout="row" layout-align="end center">
-                    <md-button>Action 1</md-button>
-                    <md-button>Action 2</md-button>
-                </md-card-actions>
-            </md-card>
-            </md-content>
-
-            <div class="card">
-                <img class="card-img-right" data-src="..." alt="Card image cap">
-                <div class="card-block">
-                    <h4 class="card-title">Card title that wraps to a new line</h4>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                </div>
-            </div>
 
                 @for($i=0;$i<10;$i++)
                     <div class="media">
