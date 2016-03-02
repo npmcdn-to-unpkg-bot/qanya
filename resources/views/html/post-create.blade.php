@@ -1,5 +1,5 @@
 {{-- Post Create topic --}}
-<div>test</div>
+
 <div ng-controller="PostCtrl as postCtrl" ng-cloak="" class="row">
   <md-card class="md-padding" id="postFormCard">
       <md-card-title>

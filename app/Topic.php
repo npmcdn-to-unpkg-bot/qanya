@@ -28,6 +28,7 @@ class Topic extends Model
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
                     'users.firstname',
+                    'users.profile_img',
                     'users.displayname',
                     'users.description'
                 )
@@ -39,6 +40,16 @@ class Topic extends Model
         return $results;
     }
 
+
+    //Get user topic
+    public function getUserTopic($user_uuid)
+    {
+        $topics = $this
+                ->where('topics.uid', $user_uuid)
+                ->join('users','users.uuid','=','topics.uid')
+                ->get();
+        return $topics;
+    }
 
     // Get feed from slug
     public function getFeed($slug)
@@ -53,6 +64,7 @@ class Topic extends Model
                                 'topics.uuid as topic_uuid',
                                 'topics.created_at as topic_created_at',
                                 'users.firstname',
+                                'users.profile_img',
                                 'users.displayname',
                                 'users.description'
                                 )   
@@ -94,6 +106,7 @@ class Topic extends Model
                         'topics.uuid as topic_uuid',
                         'topics.created_at as topic_created_at',
                         'users.firstname',
+                        'users.profile_img',
                         'users.displayname',
                         'users.description'
                         )
@@ -118,6 +131,7 @@ class Topic extends Model
                 'topics.uuid as topic_uuid',
                 'topics.created_at as topic_created_at',
                 'users.firstname',
+                'users.profile_img',
                 'users.displayname',
                 'users.description'
             )

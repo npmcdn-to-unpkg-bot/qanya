@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\IpLogger;
 use App\Notification;
 use App\Tags;
 use Auth;
@@ -37,8 +38,10 @@ class TopicController extends Controller
     //Check User follow Status
     public function userFollowStatus(Request $request)
     {
-        $uf = new Users_follow();
-        return $uf->getUserFollowstatus(Auth::user()->uuid, $request->data);
+        if(Auth::user()) {
+            $uf = new Users_follow();
+            return $uf->getUserFollowstatus(Auth::user()->uuid, $request->data);
+        }
     }
 
 
@@ -49,16 +52,19 @@ class TopicController extends Controller
         return $uf->followUser(Auth::user()->uuid, $request->data);
     }
 
+
+    public function feedFollowStatus(Request $request)
+    {
+
+    }
+
     //Follow categories
     public function follow_cate(Request $request)
     {
         if(Auth::user())
         {
             $uf = new Users_follow();
-            $uf->uuid           = Auth::user()->uuid;
-            $uf->follow_type    = 1;
-            $uf->obj_id         = $request->slug;
-            $uf->save();
+            return $uf->followFeed(Auth::user()->uuid,$request->data);
         }
         else{
             echo "unauthorized";
@@ -76,12 +82,13 @@ class TopicController extends Controller
             $reply->body        =   $request->data;
             $reply->save();
 
-
             $replyObj =TopicReply::find($reply->id);
 
             $notification = new Notification();
-            $notification->store(3,$request->topics_uid,Auth::user()->uuid,'reply');
-
+            $notification->store(3,$request->topics_uid,
+                                Auth::user()->uuid,
+                                $request->topics_uid,
+                                'reply');
             event(new \App\Events\TopicReplyEvent($request->uuid,$request->topics_uid,$replyObj));
 
         }

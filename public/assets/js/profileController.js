@@ -1,11 +1,77 @@
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast){
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log){
 
         var profileCtrl = this;
 
-        profileCtrl.profileDescription='';
-        profileCtrl.unreadNotification = 0;
+        profileCtrl.profileDescription  =   '';
+        profileCtrl.notificationList    =   '';
+        profileCtrl.unreadNotification  =   0;
 
+
+        profileCtrl.toggleRight = buildToggler('alertSideNav');
+        profileCtrl.isOpenRight = function(){
+            return $mdSidenav('alertSideNav').isOpen();
+        };
+
+
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        profileCtrl.toastPosition = angular.extend({},last);
+        profileCtrl.getToastPosition = function() {
+            sanitizePosition();
+            return Object.keys(profileCtrl.toastPosition)
+                .filter(function(pos) { return profileCtrl.toastPosition[pos]; })
+                .join(' ');
+        };
+        function sanitizePosition() {
+            var current = profileCtrl.toastPosition;
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+            last = angular.extend({},current);
+        }
+
+        profileCtrl.profileImage = function(files)
+        {
+            angular.forEach(files, function(flowFile, i){
+                console.log(flowFile);
+                var fileReader = new FileReader();
+                fileReader.onload = function (event) {
+                    var uri = event.target.result;
+                    //profileCtrl.imageStrings[i] = uri;
+                    $.post( "/api/previewImage/", { data: uri} )
+                        .done(function( response ) {
+                            $http.post( "/upload-profileImage", { img: response} )
+                                .then(function( response ) {
+                                    $('#profilePhoto').attr( "src", response.data);
+                                    $mdToast.show(
+                                        $mdToast.simple()
+                                            .textContent('Save')
+                                            .position(profileCtrl.getToastPosition())
+                                            .hideDelay(3000)
+                                    );
+                                });
+                        });
+                };
+                fileReader.readAsDataURL(flowFile.file);
+            });
+        }
+
+        //List out notification
+        profileCtrl.listNotification = function()
+        {
+            $http.post('/list-notification')
+                .then(function(response){
+                    console.log(response);
+                    profileCtrl.notificationList = response.data;
+                });
+        }
 
         //Acknowledge notification
         profileCtrl.ackNotificataion = function()
@@ -34,9 +100,22 @@ angular.module('App')
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Save!')
-                            .position('top')
+                            .position('top right')
                             .hideDelay(3000)
                     );
                 });
         }
-    })
+
+        //Toggle sidebar
+        function buildToggler(navID) {
+            return function() {
+                $mdSidenav(navID)
+                    .toggle()
+                    .then(function () {
+                        $log.debug("toggle " + navID + " is done");
+                    });
+            }
+        }
+    });
+
+

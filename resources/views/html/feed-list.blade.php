@@ -3,11 +3,11 @@
 
 <div ng-controller="PostCtrl as postCtrl">
   @foreach($topics as $topic)
-
    <md-card class="row">
     <md-card-header>    
      <md-card-avatar>
-      <img class="md-user-avatar" src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"/>
+      <img class="md-user-avatar"
+           src="{{$topic->profile_img}}"/>
      </md-card-avatar>
       <md-card-header-text>    
         <span class="md-title">

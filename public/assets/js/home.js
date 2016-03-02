@@ -4,3 +4,10 @@ function getFeedCate(slug){
             $('#homeFeed').html(data);
         });
 }
+
+function ipLogger()
+{
+    $.getJSON('http://ipinfo.io', function(data){
+        return data;
+    })
+}

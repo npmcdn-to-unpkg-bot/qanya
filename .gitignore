@@ -1,11 +1,12 @@
 /public/bower_components
 /vendor
 /public/tmp
+/public/js/all.js.map
+/public/js/all.js
 /node_modules
 Homestead.yaml
 Homestead.json
 .env
 .idea/workspace.xml
 /.idea/
-public/js/all.js.map
-public/js/all.js
+

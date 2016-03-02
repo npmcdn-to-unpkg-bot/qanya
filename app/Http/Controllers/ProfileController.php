@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\IpLogger;
 use App\Notification;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +21,50 @@ class ProfileController extends Controller
 //        $this->middleware('auth');
     }
 
+
+    public function ipLogger(Request $request)
+    {
+        $ipLogger = new IpLogger();
+        $ipLogger->obj_id       = $request->topics_uid;
+        $ipLogger->action       = $request->action;
+        $ipLogger->user_uuid    = $request->uuid;
+        $ipLogger->ip           = isset($request->geoResponse['data']['ip'])?$request->geoResponse['data']['ip']:null;
+        $ipLogger->hostname     = isset($request->geoResponse['data']['hostname'])?$request->geoResponse['data']['hostname']:null;
+        $ipLogger->org          = isset($request->geoResponse['data']['org'])?$request->geoResponse['data']['org']:null;
+        $ipLogger->city         = isset($request->geoResponse['data']['city'])?$request->geoResponse['data']['city']:null;
+        $ipLogger->region       = isset($request->geoResponse['data']['region'])?$request->geoResponse['data']['region']:null;
+        $ipLogger->country      = isset($request->geoResponse['data']['country'])?$request->geoResponse['data']['country']:null;
+        $ipLogger->loc          = isset($request->geoResponse['data']['loc'])?$request->geoResponse['data']['loc']:null;
+        $ipLogger->postal       = isset($request->geoResponse['data']['postal'])?$request->geoResponse['data']['postal']:null;
+        $ipLogger->save();
+    }
+
+
+    //Update city and country
+    public function updateCityCountry(Request $request)
+    {
+        print_r($request->geo_data);
+        User::where('uuid',Auth::user()->uuid)
+            ->update([
+                        'current_country'   => $request->geo_city,
+                        'current_city'      => $request->geo_country,
+                     ]);
+    }
+
+    //Update profile image
+    public function profileImage(Request $request)
+    {
+        User::where('uuid',Auth::user()->uuid)
+            ->update(['profile_img'=> $request->img]);
+        return $request->img;
+    }
+
+    //List Notification
+    public function listNotification()
+    {
+        $notification = new Notification();
+        return $notification->listNotification(Auth::user()->uuid);
+    }
 
     /**
      * Acknowledge notification
@@ -114,18 +160,16 @@ class ProfileController extends Controller
         $user = User::where('displayname',$displayname)->first();
         $is_user = 'false';
 
-        $topics =   DB::table('topics')
-            ->where('topics.uid', $user->uuid)
-            ->join('users','users.uuid','=','topics.uid')
-            ->get();
+        $topic = new Topic();
+        $topics = $topic->getUserTopic($user->uuid);
 
         if(!empty(Auth::user()->uuid))
         {
             if(Auth::user()->uuid == $user->uuid){
-                $is_user = 'true';
+                $is_user = 'TRUE';
             }
         }else{
-            $is_user = 'false';
+            $is_user = 'FALSE';
         }
         return view('profile.index',
                 compact('user','is_user','topics'));

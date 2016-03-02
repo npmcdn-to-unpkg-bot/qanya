@@ -48,7 +48,6 @@ Route::group(['middleware' => 'web'], function () {
 
     //Tags
     Route::get('/tag/{tag}','TopicController@tag');
-
     Route::post('/api/previewImage','PhotoController@preview');
     Route::post('/api/postTopic','TopicController@store');
 
@@ -58,11 +57,16 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/register-name','ProfileController@registerName');
     Route::post('/getNotification','ProfileController@getNotification');
     Route::post('/ackNotification','ProfileController@ackNotification');
+    Route::post('/list-notification','ProfileController@listNotification');
+    Route::post('/upload-profileImage','ProfileController@profileImage');
+    Route::post('/ip-logger','ProfileController@ipLogger');
+    Route::post('/api/updateUserGeo','ProfileController@updateCityCountry');
 
 
     //Topic Controller
     Route::post('/postTopic','TopicController@store');
     Route::get('/{displayname}/{slug}','TopicController@show');
+    Route::post('/feedFollowStatus','TopicController@userFollowStatus');
     Route::post('/follow-cate','TopicController@follow_cate');
     Route::post('/replyTopic','TopicController@replyTopic');
     Route::post('/userFollowStatus','TopicController@userFollowStatus');

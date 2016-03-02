@@ -9,9 +9,10 @@ angular.module('App')
             'alert':    false
         }
 
-        postCtrl.topicTags = [];
-        postCtrl.postFollow = 'Follow';
-        postCtrl.topicReply = '';
+        postCtrl.topicTags      = [];
+        postCtrl.postFeedFollow = 'Follow';
+        postCtrl.postFollow     = 'Follow';
+        postCtrl.topicReply     = '';
 
 
         postCtrl.showLogin = function(ev) {
@@ -26,12 +27,35 @@ angular.module('App')
         }
 
 
+        postCtrl.feedFollowStatus = function(slug)
+        {
+            $http.post('/feedFollowStatus/', {data: slug})
+                .then(function(response){
+                    console.log(response);
+                    if(response.data == 0)
+                    {
+                        postCtrl.postFeedFollow = 'follow';
+                    }else{
+                        postCtrl.postFeedFollow = 'following';
+                    }
+                });
+        }
+
+
         //Follow categories
         postCtrl.followCate = function(slug){
 
-            $http.post('/follow-cate/', {slug: slug})
+            $http.post('/follow-cate/', {data: slug})
                 .then(function(response){
                     console.log(response)
+                    if(response.data== 0)
+                    {
+                        postCtrl.postFeedFollow ='follow';
+                    }
+                    else
+                    {
+                        postCtrl.postFeedFollow ='following';
+                    }
                 });
         }
 
@@ -69,8 +93,9 @@ angular.module('App')
         }
 
 
-        postCtrl.getFeedCate = function(slug){
+        postCtrl.getFeedCate = function(slug,catename){
             postCtrl.slug = slug;
+            postCtrl.feedName =  catename;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
                     $('#homeFeed').html(response.data);
@@ -101,7 +126,15 @@ angular.module('App')
                                        topics_uid: topics_uid,
                                        data: $('#topicReplyContainer').html() })
                 .then(function(response){
-                    console.log(response);
+                    $http.get("http://ipinfo.io")
+                        .then(function(response){
+                        var geo_data = response
+                        $http.post('/ip-logger', {  uuid: uuid,
+                            topics_uid: topics_uid,
+                            action: 'reply',
+                            geoResponse: geo_data
+                        })
+                    })
                 })
         }
 
@@ -123,6 +156,15 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
+                    $http.get("http://ipinfo.io")
+                        .then(function(response){
+                            var geo_data = response
+                            $http.post('/ip-logger', {  uuid: uuid,
+                                topics_uid: topics_uid,
+                                action: 'topic',
+                                geoResponse: geo_data
+                            })
+                        })
                     url = '/'+response.author+'/'+response.slug;
                     window.location = url;
                 })
@@ -145,6 +187,5 @@ angular.module('App')
                 };
                 fileReader.readAsDataURL(flowFile.file);
             });
-
         };
     })
