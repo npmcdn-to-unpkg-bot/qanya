@@ -7,7 +7,7 @@
             <div class="layoutSingleColumn">
                 <div class="row">
                     <div class="col-xs-4">
-                        <img src="{{ Auth::user()->profile_img}}"
+                        <img src="{{ $user->profile_img}}"
                              id="profilePhoto"
                              class="img-fluid img-circle"
                              width="150px">

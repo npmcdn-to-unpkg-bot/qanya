@@ -32,10 +32,10 @@
     <div class="card-block">
       <h4 class="card-title">
         <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}"
-          target="_blank">{{ $topic->topic }}</a>
+          target="_blank">{!! HTML::decode($topic->topic) !!}</a>
       </h4>    
       <p class="card-text">
-        {!! nl2br(str_limit($topic->body,250)) !!}      
+        {!! nl2br(str_limit($topic->body,250)) !!}
         <?php
        $tags = explode(',',$topic->tags);?>
         @if($tags)

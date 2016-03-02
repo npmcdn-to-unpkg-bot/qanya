@@ -153,6 +153,8 @@ return [
 //        Collective\Html\HtmlServiceProvider::class,
         'Artesaos\SEOTools\Providers\SEOToolsServiceProvider',
         Intervention\Image\ImageServiceProvider::class,
+        Mews\Purifier\PurifierServiceProvider::class,
+
 
         /*
          * Application Service Providers...
@@ -218,6 +220,8 @@ return [
 
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Purifier' => Mews\Purifier\Facades\Purifier::class,
+
 
         // other Facades ommited
         //https://github.com/artesaos/seotools
