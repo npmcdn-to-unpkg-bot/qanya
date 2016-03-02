@@ -42,7 +42,12 @@
     {!! HTML::script('https://cdn.socket.io/socket.io-1.4.5.js') !!}
 
     <script>
-        /* Desktop notification */
+
+        /*
+        *
+        * Desktop notification
+        *
+        * */
         document.addEventListener('DOMContentLoaded', function () {
             //check if the browser supports notifications
             if (!("Notification" in window)) {
@@ -65,8 +70,14 @@
         }
         /*End Desktop notification*/
 
-        /**
-         * Prepare for sockets
+
+
+        /*
+         * ---------------------------------------
+         *
+         * SOCKETS
+         *
+         * --------------------------------------
          */
         var socket = io('http://192.168.0.100:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
@@ -90,15 +101,10 @@
 
         @endif
 
-
-
-
     </script>
-
-
 </head>
 
-<body id="app-layout" ng-app="App">
+<body id="app-layout" ng-app="App" ng-controller="ProfileCtrl as profileCtrl" ng-cloak>
 
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
@@ -135,7 +141,16 @@
                 </md-button>
             @else
 
-                <md-button ng-click="profileCtrl.ackNotificataion()">
+                <md-button ng-click="profileCtrl.toggleRight();
+                                    profileCtrl.listNotification()"
+                           class="md-primary">
+                    Toggle right
+                </md-button>
+                <md-button
+                        aria-label="notification"
+                        ng-click="profileCtrl.ackNotificataion();
+                                  profileCtrl.toggleRight()
+                                  ">
                     <i class="fa fa-bell-o fa-x"></i>
                     <span id="notification_{{Auth::user()->uuid}}"
                           ng-init="profileCtrl.userNotification()">
@@ -161,7 +176,37 @@
 
     <div class="container">
         @yield('content')
+
+        {{-- Sidebar notification --}}
+        <md-sidenav class="md-sidenav-right md-whiteframe-z2"
+                    md-component-id="alertSideNav">
+            <md-toolbar class="md-theme-light">
+                <h1 class="md-toolbar-tools">Sidenav Right</h1>
+            </md-toolbar>
+            <md-content>
+                <md-list>
+                    <md-subheader class="md-no-sticky">Notification</md-subheader>
+                    <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
+                        <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
+                        <div class="md-list-item-text" layout="column">
+                            <p>
+                                @{{ notification.firstname }}
+                                @{{ notification.body }}
+                                to post
+                                @{{ notification.topic }}
+                            </p>
+                            <span am-time-ago="@{{ notification.created_at }} | amParse:'YYYY-MM-DD HH:mm:ss"></span>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </md-sidenav>
     </div>
+
+
+
+
+
 
     <!-- bower:js -->
     <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -180,7 +225,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 
     <!-- load angular-moment -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0-beta.4/angular-moment.min.js"></script>
 
 
     {{--ng-flow--}}
@@ -197,6 +242,23 @@
         $.ajaxSetup({
             headers: { 'X-CSRF-Token' : $('meta[name=_token]').attr('content') }
         });
+        <?php
+       if(empty(Auth::user()->current_city)):?>
+           {{--Local storage --}}
+           if(typeof(Storage) !== "undefined") {
+            $.getJSON('http://ipinfo.io', function(data){
+                console.log(data)
+                $.post( "/api/updateUserGeo/",
+                        {   geo_city:       data.city,
+                            geo_country:    data.country
+                        }
+                )})
+            } else {
+                // Sorry! No Web Storage support..
+            }
+        <?php
+        endif;
+        ?>
     </script>
 
     {{--

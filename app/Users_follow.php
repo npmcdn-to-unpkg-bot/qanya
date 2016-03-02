@@ -21,6 +21,7 @@ class Users_follow extends Model
                 'topics.tags',
                 'topics.uuid as topic_uuid',
                 'topics.created_at as topic_created_at',
+                'users.profile_img',
                 'users.firstname',
                 'users.displayname',
                 'users.description'
@@ -42,6 +43,38 @@ class Users_follow extends Model
         return $topics;
     }
 
+
+    //Follow feeds
+    public function followFeed($user,$to_follow_uuid)
+    {
+        if($this->getUserFollowstatus($user,$to_follow_uuid) == 0)
+        {
+
+            $uf = new Users_follow();
+            $uf->uuid           = $user;
+            $uf->follow_type    = 1;
+            $uf->obj_id         = $to_follow_uuid;
+            $uf->save();
+
+            return 1;
+        }
+        else
+        {
+            DB::table('users_follow')
+                ->where('uuid',$user )
+                ->where('obj_id',$to_follow_uuid )
+                ->delete();
+
+            DB::table('notification')
+                ->where('recipient',$to_follow_uuid )
+                ->where('sender',$user )
+                ->delete();
+            return 0;
+        }
+
+    }
+
+    //Follow User
     public function followUser($user,$to_follow_uuid)
     {
         if($this->getUserFollowstatus($user,$to_follow_uuid) == 0)

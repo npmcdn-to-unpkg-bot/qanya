@@ -8,11 +8,14 @@
         
             @include('html.post-create',compact('categories'))                 
 
-            @{{ postCtrl.slug }}
-            <a class="btn btn-link"
+            <span class="md-title">
+                @{{ postCtrl.feedName }}
+            </span>
+
+            <a class="btn btn-success-outline"
                ng-if="postCtrl.slug"
                ng-click="postCtrl.followCate(postCtrl.slug)">
-                follow+
+                @{{ postCtrl.postFeedFollow }}
             </a>
 
             <div id="homeFeed">
@@ -38,9 +41,9 @@
                 </div>
                 <div class="media-right">
                     <a href="#">
-                        <img class="media-object img-fluid"
+                        <img class="media-object"
                              width="80px"
-                             src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                             src="{{ Auth::user()->profile_img }}"
                              alt="...">
                     </a>
                 </div>
@@ -49,7 +52,10 @@
                 @foreach ($categories as $cate)
                     <li class="nav-item btn-success-outline"
                         role="presentation">
-                        <a href="#" ng-click="postCtrl.getFeedCate('{{ $cate->slug }}')">{{$cate->name}}</a>
+                        <a href="#" class="btn btn-success-outline"
+                           ng-click="postCtrl.getFeedCate('{{ $cate->slug }}','{{$cate->name}}');
+                                    postCtrl.feedFollowStatus('{{ $cate->slug }}')">
+                            {{$cate->name}}</a>
                     </li>
                 @endforeach
             </ul>

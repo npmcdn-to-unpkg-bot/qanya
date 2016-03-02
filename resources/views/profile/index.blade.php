@@ -2,47 +2,63 @@
 
 @section('content')
 
-    {!! $user !!}
-    <div class="container"
-         ng-controller="ProfileCtrl as profileCtrl">
-        <div class="layoutSingleColumn">
+    <div class="row" ng-controller="ProfileCtrl as profileCtrl">
+        <div class="container-fluid">
+            <div class="layoutSingleColumn">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <img src="{{ Auth::user()->profile_img}}"
+                             id="profilePhoto"
+                             class="img-fluid img-circle"
+                             width="150px">
 
-            DEBUG
-            <br>
-            is user? {{  $is_user }}
-
-            <div class="row">
-                <img src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
-                     class="img-responsive img-circle col-xs-4"
-                     width="80px">
-
-                <div class="col-xs-8">
-                    <h2 class="lead">
-                        <strong>
-                        {{ $user->firstname }}
-                        {{ $user->lastname }}
-                        </strong>
-                        <p>
-                            <small>
-                                {{ $user->displayname }}
-                            </small>
-                        </p>
-                    </h2>
-                    <div class="row">
-                        <h4 class="col-xs-4" id="post_{!! $user->uuid !!}">12 posts</h4>
-                        <h4 class="col-xs-4" id="follower_{!! $user->uuid !!}">12 follower</h4>
-                        <h4 class="col-xs-4" id="following_{!! $user->uuid !!}">12 following</h4>
+                            @if($is_user == 'TRUE')
+                                <div flow-init
+                                     flow-name="uploader.flow"
+                                     flow-files-added="profileCtrl.profileImage($files)">
+                                    <md-button flow-btn type="file" name="image">
+                                        Upload photo
+                                    </md-button>
+                                </div>
+                            @endif
                     </div>
-                    <div contenteditable="{{ $is_user }}"
-                         class="lead "
-                         id= "profileDescription"
-                         ng-blur    =   "profileCtrl.updateDescription()"
-                         placeholder=   "write your status/description">
-                        {{ $user->description }}
+
+                    <div class="col-xs-8">
+                        <h2 class="lead">
+                            <strong>
+                            {{ $user->firstname }}
+                            {{ $user->lastname }}
+                            </strong>
+                            <p>
+                                <small>
+                                    {{ $user->displayname }}
+                                </small>
+                            </p>
+                        </h2>
+                        <div contenteditable="{{ $is_user }}"
+                             class="md-subhead"
+                             id= "profileDescription"
+                             ng-blur    =   "profileCtrl.updateDescription()"
+                             placeholder=   "write your status/description">
+                            {{ $user->description }}
+                        </div>
+                        <div class="row">
+                            <h5 class="col-xs-4" id="post_{!! $user->uuid !!}">
+                                {!! $user->posts !!}
+                                <small class="text-muted">posts</small>
+                            </h5>
+                            <h5 class="col-xs-4" id="follower_{!! $user->uuid !!}">
+                                {!! $user->followers !!}
+                                <small class="text-muted">follower</small>
+                            </h5>
+                            <h5 class="col-xs-4" id="following_{!! $user->uuid !!}">
+                                {!! $user->following !!}
+                                <small class="text-muted">following</small>
+                        </div>
                     </div>
                 </div>
+                @include('html.feed-list',compact('topics'));
             </div>
-            @include('html.feed-list',compact('topics'));
         </div>
     </div>
 
