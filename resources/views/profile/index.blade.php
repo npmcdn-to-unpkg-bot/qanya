@@ -54,6 +54,7 @@
                             <h5 class="col-xs-4" id="following_{!! $user->uuid !!}">
                                 {!! $user->following !!}
                                 <small class="text-muted">following</small>
+                            </h5>
                         </div>
                     </div>
                 </div>

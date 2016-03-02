@@ -4,6 +4,13 @@ function getFeedCate(slug){
             $('#homeFeed').html(data);
         });
 }
+
+function ipLogger()
+{
+    $.getJSON('http://ipinfo.io', function(data){
+        return data;
+    })
+}
 //Angular config and modules
 
 var app = angular.module('App', ['ngMaterial','flow','angularMoment'])
@@ -35,7 +42,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment'])
 }])
 
 angular.module('App')
-    .controller('PostCtrl',function($http){
+    .controller('PostCtrl',function($http,$mdDialog){
 
         var postCtrl = this;
 
@@ -45,17 +52,53 @@ angular.module('App')
             'alert':    false
         }
 
-        postCtrl.topicTags = [];
-        postCtrl.postFollow = '';
-        postCtrl.topicReply = '';
+        postCtrl.topicTags      = [];
+        postCtrl.postFeedFollow = 'Follow';
+        postCtrl.postFollow     = 'Follow';
+        postCtrl.topicReply     = '';
+
+
+        postCtrl.showLogin = function(ev) {
+        var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
+            $mdDialog.show({              
+              templateUrl: 'dialog1.tmpl.html',
+              parent: angular.element(document.body),
+              targetEvent: ev,
+              clickOutsideToClose:true,
+              fullscreen: useFullScreen
+            })
+        }
+
+
+        postCtrl.feedFollowStatus = function(slug)
+        {
+            $http.post('/feedFollowStatus/', {data: slug})
+                .then(function(response){
+                    console.log(response);
+                    if(response.data == 0)
+                    {
+                        postCtrl.postFeedFollow = 'follow';
+                    }else{
+                        postCtrl.postFeedFollow = 'following';
+                    }
+                });
+        }
 
 
         //Follow categories
         postCtrl.followCate = function(slug){
 
-            $http.post('/follow-cate/', {slug: slug})
+            $http.post('/follow-cate/', {data: slug})
                 .then(function(response){
                     console.log(response)
+                    if(response.data== 0)
+                    {
+                        postCtrl.postFeedFollow ='follow';
+                    }
+                    else
+                    {
+                        postCtrl.postFeedFollow ='following';
+                    }
                 });
         }
 
@@ -93,8 +136,9 @@ angular.module('App')
         }
 
 
-        postCtrl.getFeedCate = function(slug){
+        postCtrl.getFeedCate = function(slug,catename){
             postCtrl.slug = slug;
+            postCtrl.feedName =  catename;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
                     $('#homeFeed').html(response.data);
@@ -123,9 +167,17 @@ angular.module('App')
             var replyObj = 'reply_append_'+uuid;
             $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
-                                       data: postCtrl.topicReply })
+                                       data: $('#topicReplyContainer').html() })
                 .then(function(response){
-                    console.log(response);
+                    $http.get("http://ipinfo.io")
+                        .then(function(response){
+                        var geo_data = response
+                        $http.post('/ip-logger', {  uuid: uuid,
+                            topics_uid: topics_uid,
+                            action: 'reply',
+                            geoResponse: geo_data
+                        })
+                    })
                 })
         }
 
@@ -147,7 +199,16 @@ angular.module('App')
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
-                    url = response.author+'/'+response.slug;
+                    $http.get("http://ipinfo.io")
+                        .then(function(response){
+                            var geo_data = response
+                            $http.post('/ip-logger', {  uuid: uuid,
+                                topics_uid: topics_uid,
+                                action: 'topic',
+                                geoResponse: geo_data
+                            })
+                        })
+                    url = '/'+response.author+'/'+response.slug;
                     window.location = url;
                 })
 
@@ -164,22 +225,87 @@ angular.module('App')
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-reponsive\">');
+                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-fluid\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);
             });
-
         };
     })
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast){
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log){
 
         var profileCtrl = this;
 
-        profileCtrl.profileDescription='';
-        profileCtrl.unreadNotification = 0;
+        profileCtrl.profileDescription  =   '';
+        profileCtrl.notificationList    =   '';
+        profileCtrl.unreadNotification  =   0;
 
+
+        profileCtrl.toggleRight = buildToggler('alertSideNav');
+        profileCtrl.isOpenRight = function(){
+            return $mdSidenav('alertSideNav').isOpen();
+        };
+
+
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        profileCtrl.toastPosition = angular.extend({},last);
+        profileCtrl.getToastPosition = function() {
+            sanitizePosition();
+            return Object.keys(profileCtrl.toastPosition)
+                .filter(function(pos) { return profileCtrl.toastPosition[pos]; })
+                .join(' ');
+        };
+        function sanitizePosition() {
+            var current = profileCtrl.toastPosition;
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+            last = angular.extend({},current);
+        }
+
+        profileCtrl.profileImage = function(files)
+        {
+            angular.forEach(files, function(flowFile, i){
+                console.log(flowFile);
+                var fileReader = new FileReader();
+                fileReader.onload = function (event) {
+                    var uri = event.target.result;
+                    //profileCtrl.imageStrings[i] = uri;
+                    $.post( "/api/previewImage/", { data: uri} )
+                        .done(function( response ) {
+                            $http.post( "/upload-profileImage", { img: response} )
+                                .then(function( response ) {
+                                    $('#profilePhoto').attr( "src", response.data);
+                                    $mdToast.show(
+                                        $mdToast.simple()
+                                            .textContent('Save')
+                                            .position(profileCtrl.getToastPosition())
+                                            .hideDelay(3000)
+                                    );
+                                });
+                        });
+                };
+                fileReader.readAsDataURL(flowFile.file);
+            });
+        }
+
+        //List out notification
+        profileCtrl.listNotification = function()
+        {
+            $http.post('/list-notification')
+                .then(function(response){
+                    console.log(response);
+                    profileCtrl.notificationList = response.data;
+                });
+        }
 
         //Acknowledge notification
         profileCtrl.ackNotificataion = function()
@@ -208,10 +334,24 @@ angular.module('App')
                     $mdToast.show(
                         $mdToast.simple()
                             .textContent('Save!')
-                            .position('top')
+                            .position('top right')
                             .hideDelay(3000)
                     );
                 });
         }
-    })
+
+        //Toggle sidebar
+        function buildToggler(navID) {
+            return function() {
+                $mdSidenav(navID)
+                    .toggle()
+                    .then(function () {
+                        $log.debug("toggle " + navID + " is done");
+                    });
+            }
+        }
+    });
+
+
+
 //# sourceMappingURL=all.js.map

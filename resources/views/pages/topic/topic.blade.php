@@ -47,7 +47,7 @@
                         <a href="#">
                             <img class="media-object"
                                  width="60px"
-                                 src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                                 src="/{!! $poster_img !!}"
                                  alt="...">
                         </a>
                     </div>
@@ -86,7 +86,7 @@
                                 <a href="#">
                                     <img class="media-object"
                                          width="60px"
-                                         src="{!! Auth::user()->profile_img !!}"
+                                         src="/{!! Auth::user()->profile_img !!}"
                                          alt="...">
                                 </a>
                             </div>
@@ -107,14 +107,6 @@
                     </form>
                 @else
                     <div class="media md-margin">
-                        <div class="media-left">
-                            <a href="#">
-                                <img class="media-object"
-                                     width="36px"
-                                     src="{!! Auth::user()->profile_img !!}"
-                                     alt="...">
-                            </a>
-                        </div>
                         <div class="media-body">
                             <h4 class="media-heading">
                                 Write a response
@@ -130,7 +122,7 @@
                     <md-list class="row">
 
                         <md-list-item class="md-3-line">
-                            <img ng-src="{!! $topic_replies[$i]->profile_img !!}"
+                            <img ng-src="/{!! $topic_replies[$i]->profile_img !!}"
                                  class="md-avatar"/>
                             <div class="md-list-item-text">
                                 <h3>

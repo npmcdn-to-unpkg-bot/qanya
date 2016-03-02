@@ -32,7 +32,7 @@ class PhotoController extends Controller
 
     public function preview(Request $request)
     {
-        $filename    = '/tmp/'.date("Y_m_").str_random(10).'.jpg';
+        $filename    = 'tmp/'.date("Y_m_").str_random(10).'.jpg';
         $img = Image::make($request->data);
         $img->resize(600, null, function ($constraint) {
             $constraint->aspectRatio();

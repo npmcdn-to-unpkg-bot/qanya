@@ -236,6 +236,7 @@ class TopicController extends Controller
             $uuid       = $topic->topic_uuid;
             $topics_uid = $topic->topics_uid;
             $user_descs = $topic->description;
+            $poster_img = $topic->profile_img;
             $tags       = explode(',', $topic->tags);
             $created_at = $dt->diffForHumans();
 
@@ -268,6 +269,7 @@ class TopicController extends Controller
                         'topics_uid',
                         'user_descs',
                         'tags',
+                        'poster_img',
                         'user_fname',
                         'created_at','topic_replies'));
         }
