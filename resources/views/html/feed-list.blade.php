@@ -17,9 +17,9 @@
          {{ $topic->displayname }} -
          {{ Carbon\Carbon::parse($topic->topic_created_at)->diffForHumans() }}
         </span>
-        <span class="md-subhead">
-          {{ $topic->description }}
-        </span>
+        <p class="md-subhead">
+          {!! HTML::decode($topic->description) !!}
+        </p>
 
       </md-card-header-text>
       <p class="pull-right">
@@ -32,10 +32,10 @@
     <div class="card-block">
       <h4 class="card-title">
         <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}"
-          target="_blank">{{ $topic->topic }}</a>
+          target="_blank">{!! HTML::decode($topic->topic) !!}</a>
       </h4>    
-      <p class="card-text">
-        {!! nl2br(str_limit($topic->body,250)) !!}      
+      <div class="card-text">
+        {!! HTML::decode(str_limit($topic->body,250)) !!}
         <?php
        $tags = explode(',',$topic->tags);?>
         @if($tags)
@@ -45,7 +45,7 @@
             @endforeach
          </div>
         @endif
-      </p>
+      </div>
         
       <a href="#" class="card-link"><i class="fa fa-chevron-up"></i>  99</a>
       <a href="#" class="card-link"><i class="fa fa-chevron-down"></i>  99</a>

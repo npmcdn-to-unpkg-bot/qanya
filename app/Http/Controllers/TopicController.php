@@ -79,7 +79,7 @@ class TopicController extends Controller
             $reply = new TopicReply();
             $reply->topic_uuid  =   $request->uuid;
             $reply->uid         =   Auth::user()->uuid;
-            $reply->body        =   $request->data;
+            $reply->body        =   clean($request->data);
             $reply->save();
 
             $replyObj =TopicReply::find($reply->id);
@@ -170,8 +170,8 @@ class TopicController extends Controller
                 $topic              = new Topic;
                 $topic->uuid        = $topicUUID;
                 $topic->uid         = Auth::user()->uuid;
-                $topic->topic       = $json['title'];
-                $topic->body        = $json['body'];
+                $topic->topic       = clean($json['title']);
+                $topic->body        = clean($json['body']);
                 $topic->category    = $json['categories'];
                 $topic->slug        = $topicSlug;
                 $topic->tags        = $taglist;
@@ -181,8 +181,9 @@ class TopicController extends Controller
                 $count=0;
                 foreach($json['tags'] as $tag)
                 {
-                    $tag_data[$count] = array('topic_uuid'=>$topicUUID,
-                                              'title'=>$tag);
+                    $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
+                                                'title'=>clean($tag)
+                                                );
                     $count++;
                 }
                 Tags::insert($tag_data);
@@ -235,6 +236,7 @@ class TopicController extends Controller
             $uuid       = $topic->topic_uuid;
             $topics_uid = $topic->topics_uid;
             $user_descs = $topic->description;
+            $poster_img = $topic->profile_img;
             $tags       = explode(',', $topic->tags);
             $created_at = $dt->diffForHumans();
 
@@ -267,6 +269,7 @@ class TopicController extends Controller
                         'topics_uid',
                         'user_descs',
                         'tags',
+                        'poster_img',
                         'user_fname',
                         'created_at','topic_replies'));
         }

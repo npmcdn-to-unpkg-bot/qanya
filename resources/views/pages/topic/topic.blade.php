@@ -11,17 +11,19 @@
                         <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
                     </span>
 
-                    <h1 class="md-display-1">{{ $title }}</h1>
-                    <p class="reading">
+                    <h1 class="md-display-1">
+                        {!! HTML::decode($title) !!}
+                    </h1>
+                    <div class="reading">
                         {!! nl2br($body) !!}
-                        <p>
-                            @if($tags)
-                                @foreach($tags as $tag)
-                                    <a href="/tag/{{$tag}}">#{{$tag}}</a>
-                                @endforeach
-                            @endif
-                        </p>
-                    </p>
+                    </div>
+                    <div>
+                        @if($tags)
+                            @foreach($tags as $tag)
+                                <a href="/tag/{{$tag}}">#{{$tag}}</a>
+                            @endforeach
+                        @endif
+                    </div>
 
                     {{-- Share button --}}
                     <div class="fb-share-button"
@@ -45,7 +47,7 @@
                         <a href="#">
                             <img class="media-object"
                                  width="60px"
-                                 src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                                 src="{!! $poster_img !!}"
                                  alt="...">
                         </a>
                     </div>
@@ -82,9 +84,9 @@
                         <div class="media md-margin">
                             <div class="media-left">
                                 <a href="#">
-                                    <img class="media-object img-fluid img-circle"
+                                    <img class="media-object"
                                          width="60px"
-                                         src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                                         src="{!! Auth::user()->profile_img !!}"
                                          alt="...">
                                 </a>
                             </div>
@@ -92,8 +94,11 @@
                                 <h4 class="media-heading">
                                     You
                                 </h4>
-                                <div contenteditable="true" ng-model="postCtrl.topicReply" id="topicReplyContainer" class="card">
-                                write something here
+                                <div contenteditable="true"
+                                     placeholder="Any comments?"
+                                     class="panel card"
+                                     data-content="test"
+                                     id="topicReplyContainer">
                                 </div>                                
                                 <md-button type="submit"
                                            class="md-raised md-primary">Submit</md-button>
@@ -102,14 +107,6 @@
                     </form>
                 @else
                     <div class="media md-margin">
-                        <div class="media-left">
-                            <a href="#">
-                                <img class="media-object"
-                                     width="36px"
-                                     src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
-                                     alt="...">
-                            </a>
-                        </div>
                         <div class="media-body">
                             <h4 class="media-heading">
                                 Write a response
@@ -122,17 +119,18 @@
 
                     @for($i=0;$i<count($topic_replies);$i++)
                      
-                    <md-list>
+                    <md-list class="row">
+
                         <md-list-item class="md-3-line">
-                            <img ng-src="https://avatars3.githubusercontent.com/u/11863395?v=3&s=460"
+                            <img ng-src="/{!! $topic_replies[$i]->profile_img !!}"
                                  class="md-avatar"/>
-                            <div class="md-list-item-text" layout="column">
+                            <div class="md-list-item-text">
                                 <h3>
                                     <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
                                     {{ $topic_replies[$i]->firstname }}
                                     </a>
                                 </h3>
-                                <h4> {!! $topic_replies[$i]->body !!}</h4>
+                                <p> {!! HTML::decode($topic_replies[$i]->body) !!} </p>
                                 {!! Carbon\Carbon::parse($topic_replies[$i]->replycreated_at)->diffForHumans() !!}
                             </div>
                         </md-list-item>

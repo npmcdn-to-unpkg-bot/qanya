@@ -1,6 +1,6 @@
 @if ( Config::get('app.debug') )
     <script type="text/javascript">
-        document.write('<script src="//128.199.157.98:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
+        document.write('<script src="//<?php echo getenv('SERVER_ADDRESS')?>:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
     </script>
 @endif
 
@@ -25,6 +25,7 @@
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/css/tether.min.css" rel="stylesheet">
     <link href="/assets/css/all.css" rel="stylesheet">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
@@ -79,7 +80,7 @@
          *
          * --------------------------------------
          */
-        var socket = io('http://128.199.157.98:3000');
+        var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
@@ -149,7 +150,8 @@
                 <md-button
                         aria-label="notification"
                         ng-click="profileCtrl.ackNotificataion();
-                                  profileCtrl.toggleRight()
+                                  profileCtrl.toggleRight();
+                                  profileCtrl.listNotification()
                                   ">
                     <i class="fa fa-bell-o fa-x"></i>
                     <span id="notification_{{Auth::user()->uuid}}"
@@ -158,15 +160,17 @@
                     </span>
                 </md-button>
 
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                        {{ Auth::user()->firstname }} <span class="caret"></span>
-                    </a>
+                <a href="/{!! Auth::user()->displayname !!}">
+                    {{ Auth::user()->firstname }} <span class="caret"></span>
+                </a>
+
+                {{--<li class="dropdown">
+
 
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                     </ul>
-                </li>
+                </li>--}}
             @endif
 
         </div>
@@ -174,9 +178,12 @@
     </div>
 
 
-    <div class="container">
-        @yield('content')
-
+    <section layout="row" flex>
+        <md-content flex layout-padding>
+            <div class="container">
+                @yield('content')
+            </div>
+        </md-content>
         {{-- Sidebar notification --}}
         <md-sidenav class="md-sidenav-right md-whiteframe-z2"
                     md-component-id="alertSideNav">
@@ -201,7 +208,7 @@
                 </md-list>
             </md-content>
         </md-sidenav>
-    </div>
+    </section>
 
 
 
@@ -213,6 +220,7 @@
     {{--<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>--}}
     <!-- endbower -->
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
 {{--    {!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css') !!}--}}
     {!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js') !!}
 
@@ -232,6 +240,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow-standalone.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.min.js"></script>
+
+
+
 
 
     <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
