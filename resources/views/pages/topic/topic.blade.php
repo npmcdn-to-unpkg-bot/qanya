@@ -47,7 +47,7 @@
                         <a href="#">
                             <img class="media-object"
                                  width="60px"
-                                 src="/{!! $poster_img !!}"
+                                 src="{!! $poster_img !!}"
                                  alt="...">
                         </a>
                     </div>
@@ -86,7 +86,7 @@
                                 <a href="#">
                                     <img class="media-object"
                                          width="60px"
-                                         src="/{!! Auth::user()->profile_img !!}"
+                                         src="{!! Auth::user()->profile_img !!}"
                                          alt="...">
                                 </a>
                             </div>
