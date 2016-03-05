@@ -6,7 +6,12 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Config;
 use Intervention\Image\Facades\Image;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Response;
 
 class PhotoController extends Controller
 {
@@ -32,14 +37,37 @@ class PhotoController extends Controller
 
     public function preview(Request $request)
     {
-        $filename    = 'tmp/'.date("Y_m_").str_random(10).'.jpg';
-        $img = Image::make($request->data);
+        //force all image to be jpg for now?
+        $img = Image::make($request->data)->encode('jpg');
         $img->resize(600, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
-        })->save($filename);
+        })->stream();
 
-        return $filename;
+        $imgURI = $this->uploadToS3($img);
+
+        return $imgURI;
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @param  image object $image
+     * @return S3 Obj URI
+     */
+    public function uploadToS3($image)
+    {
+        //force all image to be jpg for now?
+        $filename    = date("YmdHis_").str_random(10).'.jpg';
+
+        $s3 = Storage::disk('s3');
+        $dir = "img/";
+        $key = $dir.$filename;
+        $s3->put($key, (string) $image);
+        $client = $s3->getDriver()->getAdapter()->getClient();
+        $bucket = Config::get('filesystems.disks.s3.bucket');
+
+        return (string) $client->getObjectUrl($bucket, $key);
     }
 
 

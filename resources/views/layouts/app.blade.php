@@ -1,6 +1,6 @@
 @if ( Config::get('app.debug') )
     <script type="text/javascript">
-        document.write('<script src="//192.168.0.100:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
+        document.write('<script src="//<?php echo getenv('SERVER_ADDRESS')?>:35729/livereload.js?snipver=1" type="text/javascript"><\/script>')
     </script>
 @endif
 
@@ -80,7 +80,7 @@
          *
          * --------------------------------------
          */
-        var socket = io('http://192.168.0.100:3000');
+        var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
