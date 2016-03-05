@@ -13,11 +13,39 @@ class Topic extends Model
 
     protected $table = 'topics';
 
+    public function dwnvoteTopic($topics_uuid)
+    {
+        $this->where('uuid',$topics_uuid)->increment('dwnvote');
+
+        $count =DB::table('topics')
+                ->select('dwnvote')
+                ->where('uuid',$topics_uuid)
+                ->first();
+        return $count->upvote;
+    }
+
+    public function upvoteTopic($topics_uuid,$flg)
+    {
+        if($flg)
+        {
+            $this->where('uuid',$topics_uuid)->increment('upvote');
+        }else{
+            $this->where('uuid',$topics_uuid)->decrement('upvote');
+        }
+
+        $count =DB::table('topics')
+                    ->select('upvote')
+                    ->where('uuid',$topics_uuid)
+                    ->first();
+        return $count->upvote;
+    }
+
     //Get the recently created topics
     public function recentlyCreated()
     {
+
         $time = date("Ymd");
-//        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
+        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
             return $topic = $this->where('flg', 1)
                 ->select(
                     'topics.topic',
@@ -25,6 +53,9 @@ class Topic extends Model
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
+                    /*'topics.upvote',
+                    'topics.dwnvote',
+                    'topics.comments',*/
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
                     'users.firstname',
@@ -36,7 +67,10 @@ class Topic extends Model
                 ->orderBy('topics.created_at', 'desc')
                 ->take(10)
                 ->get();
-//        });
+        });
+        $log = DB::getQueryLog();
+        print_r($log);
+
         return $results;
     }
 
@@ -61,6 +95,9 @@ class Topic extends Model
                                 'topics.uid as topics_uid',
                                 'topics.slug as topic_slug',
                                 'topics.tags',
+                                /*'topics.upvote',
+                                'topics.dwnvote',
+                                'topics.comments',*/
                                 'topics.uuid as topic_uuid',
                                 'topics.created_at as topic_created_at',
                                 'users.firstname',
@@ -103,6 +140,9 @@ class Topic extends Model
                         'topics.uid as topics_uid',
                         'topics.slug as topic_slug',
                         'topics.tags',
+                        /*'topics.upvote',
+                        'topics.dwnvote',
+                        'topics.comments',*/
                         'topics.uuid as topic_uuid',
                         'topics.created_at as topic_created_at',
                         'users.firstname',
@@ -128,6 +168,9 @@ class Topic extends Model
                 'topics.uid as topics_uid',
                 'topics.slug as topic_slug',
                 'topics.tags',
+                /*'topics.upvote',
+                'topics.dwnvote',
+                'topics.comments',*/
                 'topics.uuid as topic_uuid',
                 'topics.created_at as topic_created_at',
                 'users.firstname',

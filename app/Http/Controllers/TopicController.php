@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\IpLogger;
 use App\Notification;
 use App\Tags;
+use App\Topic_actions;
 use Auth;
 use App\Topic as Topic;
 use App\Events\UserReply as UserReply;
@@ -34,6 +35,57 @@ use SEO;
 
 class TopicController extends Controller
 {
+
+    public function upvote(Request $request)
+    {
+        if(Auth::user())
+        {
+
+            $ta = new Topic_actions();
+
+            $has_vote = $ta->where('topic_uuid',$request->topics_uuid)
+                            ->where('user_uuid',Auth::user()->uuid)
+                            ->where('action','upvote')
+                            ->count();
+            if($has_vote ==0) {
+                $ta->action = 'upvote';
+                $ta->topic_uuid = $request->topics_uuid;
+                $ta->user_uuid = Auth::user()->uuid;
+                $ta->save();
+
+
+                $notification = new Notification();
+                $notification->store(4,
+                    $request->topic_uid,
+                    Auth::user()->uuid,
+                    $request->topics_uuid,
+                    'upvote');
+
+                event(new \App\Events\TopicUpvote($request->topic_uid, $request->topics_uuid,TRUE));
+
+                return 1;
+            }else{
+                $ta->where('topic_uuid',$request->topics_uuid)
+                    ->where('user_uuid',Auth::user()->uuid)
+                    ->where('action','upvote')
+                    ->delete();
+
+                event(new \App\Events\TopicUpvote($request->topic_uid, $request->topics_uuid,FALSE));
+
+                return 0;
+            }
+
+        }
+        else{
+            echo "no login";
+        }
+    }
+
+
+    public function downvote()
+    {
+
+    }
 
     //Check User follow Status
     public function userFollowStatus(Request $request)
@@ -182,7 +234,8 @@ class TopicController extends Controller
                 foreach($json['tags'] as $tag)
                 {
                     $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
-                                                'title'=>clean($tag)
+                                                'title'=>clean($tag),
+                                                'created_at'=> date("Y-m-d H:i:s")
                                                 );
                     $count++;
                 }
@@ -222,9 +275,10 @@ class TopicController extends Controller
 
             /**
              * Performance and redis check
+             */
             $log = DB::getQueryLog();
             print_r($log);
-             */
+
 
             $dt = Carbon::parse($topic->topic_created_at);
 

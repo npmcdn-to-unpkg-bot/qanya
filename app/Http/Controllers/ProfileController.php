@@ -43,12 +43,14 @@ class ProfileController extends Controller
     //Update city and country
     public function updateCityCountry(Request $request)
     {
-        print_r($request->geo_data);
-        User::where('uuid',Auth::user()->uuid)
-            ->update([
-                        'current_country'   => $request->geo_city,
-                        'current_city'      => $request->geo_country,
-                     ]);
+        if(Auth::user())
+        {
+            User::where('uuid',Auth::user()->uuid)
+                ->update([
+                            'current_country'   => $request->geo_city,
+                            'current_city'      => $request->geo_country,
+                         ]);
+        }
     }
 
     //Update profile image

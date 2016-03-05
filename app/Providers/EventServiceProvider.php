@@ -25,6 +25,14 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\FollowUserEvent' => [
             'App\Listeners\FollowUserListeners',
         ],
+
+        'App\Events\TopicUpvote' => [
+            'App\Listeners\TopicUpvoteListeners',
+        ],
+
+        'App\Events\TopicDwnvote' => [
+            'App\Listeners\TopicDwnvoteListeners',
+        ],
     ];
 
     protected $subscribe = [

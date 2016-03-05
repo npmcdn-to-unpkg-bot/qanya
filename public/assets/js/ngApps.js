@@ -1,7 +1,8 @@
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase'])
 
+.constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
         '50': 'ffebee',

@@ -20,7 +20,8 @@ class Notification extends Model
 
         //type 1 is cate
         //type 2 is follow
-        //type 3 is notify author
+        //type 3 is reply
+        //type 4 is upvote
 
         $notification->type         = $type;
         $notification->recipient    = $to_follow_uuid;

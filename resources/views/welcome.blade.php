@@ -7,13 +7,42 @@
     <div class="row">
 
         <div class="col-md-7">
+
+            <div class="btn-group hidden-md-up" data-toggle="buttons">
+                <label class="btn btn-success-outline active">
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                    Most Recommended
+                </label>
+                <label class="btn btn-success-outline">
+                    <input type="radio" name="options" id="option2" autocomplete="off">
+                    Most Recents
+                </label>
+                <label class="btn btn-success-outline">
+                    <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3
+                </label>
+            </div>
+
             {{--<div class="card-columns">--}}
+            <div id="homeFeed">
                 @include('html.feed-list',compact('topics'))
+            </div>
             {{--</div>--}}
 
         </div>
 
         <div class="col-md-5 col-xs-12">
+
+            <ul class="nav nav-pills">
+                @foreach ($categories as $cate)
+                    <li class="nav-item btn-success-outline"
+                        role="presentation">
+                        <a href="#" class="btn btn-success-outline"
+                           ng-click="postCtrl.getFeedCate('{{ $cate->slug }}','{{$cate->name}}');
+                                    postCtrl.feedFollowStatus('{{ $cate->slug }}')">
+                            {{$cate->name}}</a>
+                    </li>
+                @endforeach
+            </ul>
 
             <md-header class="md-headline">
                 MOST RECOMMENDED TODAY

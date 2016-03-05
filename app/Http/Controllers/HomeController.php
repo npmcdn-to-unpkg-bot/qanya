@@ -29,11 +29,13 @@ class HomeController extends Controller
     */
     public function welcome()
     {
-        $topics = Topic::where('flg',1)
-                    ->orderBy('name', 'desc')
-                    ->take(10)
-                    ->get();
-        return view('welcome',compact('topics'));
+        $topic = new \App\Topic();
+        $topics = $topic->recentlyCreated();
+
+        $categories = new \App\Categories();
+        $categories = $categories->all();
+
+        return view('welcome',compact('topics','categories'));
     }
 
     /**

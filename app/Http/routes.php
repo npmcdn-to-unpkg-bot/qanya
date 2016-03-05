@@ -10,13 +10,17 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+/*
 Route::get('/', function () {
     $topic = new \App\Topic();
     $topics = $topic->recentlyCreated();
-    return view('welcome',compact('topics'));
-});
 
+    $categories = new \App\Categories();
+    $categories = $categories->all();
+
+    return view('welcome',compact('topics','categories'));
+});
+*/
 
 
 Route::get('fire', function () {
@@ -43,6 +47,7 @@ Route::group(['middleware' => ['web']], function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
+    Route::get('/', 'HomeController@welcome');
     Route::get('/home', 'HomeController@index');
     Route::post('/getFeed','HomeController@getFeedCate');
 
@@ -71,6 +76,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/replyTopic','TopicController@replyTopic');
     Route::post('/userFollowStatus','TopicController@userFollowStatus');
     Route::post('/followUser','TopicController@followUser');
+    Route::post('/upvote','TopicController@upvote');
+    Route::post('/dwonvote','TopicController@downvote');
     Route::get('/replyView','TopicController@replyTopicView');
 
 
