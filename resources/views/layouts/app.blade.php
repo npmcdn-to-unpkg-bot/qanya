@@ -86,16 +86,27 @@
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
         });
 
-        @if(Auth::user())
-
+        @if(Auth::check())
             socket.on("reply_to_{{Auth::user()->uuid}}:App\\Events\\TopicReplyEvent", function(message){
-            $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
+                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
             });
 
             socket.on("notification_{{Auth::user()->uuid}}:App\\Events\\FollowUserEvent", function(message){
                 createNotificaiton('New Follower!',
                                     'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
                                     'You have a new follower!');
+                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
+
+            });
+
+            socket.on("topic_upv_{{Auth::user()->uuid}}:App\\Events\\TopicUpvote", function(message){
+                if(message.is_upvote == true)
+                {
+                    createNotificaiton('Upvote!',
+                            'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
+                            'You have a new Upvote!');
+                }
+                console.log(message);
                 $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
 
             });
@@ -126,7 +137,7 @@
                     </a>
                 </span>
             </h2>
-            
+
             @if (!Auth::guest())
                 <a class="nav-link" href="{{ url('/home') }}">
                     Home
@@ -229,8 +240,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-aria.min.js"></script>
 
+
     <!-- load momentJS (required for angular-moment) -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+
 
     <!-- load angular-moment -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0-beta.4/angular-moment.min.js"></script>
@@ -241,9 +254,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.min.js"></script>
 
-
-
-
+    <!-- Firebase -->
+    <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+    <!-- AngularFire -->
+    <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
 
     <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
@@ -270,6 +284,19 @@
         <?php
         endif;
         ?>
+
+        $(document).ready(function(){
+
+            $("#topicContent").find( "img" ).each(function(){
+                var t = $(this);
+                var src = t.attr('src');
+                t.attr('class','img-fluid');
+                console.log(src);
+                /*if(!src || typeof(src)!=='string') return;
+                 t.attr('src',src.replace('/thumbs/','/large/'));*/
+            });
+
+        });
     </script>
 
     {{--

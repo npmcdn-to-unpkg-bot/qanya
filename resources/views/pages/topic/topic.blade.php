@@ -3,8 +3,9 @@
 @section('content')
 
 <div class="row">
-    <md-content ng-controller="PostCtrl as postCtrl" class="md-padding">
-        
+    <md-content ng-controller="PostCtrl as postCtrl" ng-init="postCtrl.tallyView = postCtrl.incrementView('{{$uuid}}')"
+                class="md-padding">
+
             <div class="layoutSingleColumn">
                 {{$is_user}}
                     <span>
@@ -14,7 +15,7 @@
                     <h1 class="md-display-1">
                         {!! HTML::decode($title) !!}
                     </h1>
-                    <div class="reading">
+                    <div class="reading img-fluid" id="topicContent">
                         {!! nl2br($body) !!}
                     </div>
                     <div>
@@ -77,10 +78,10 @@
         </div>    
     </md-content>
 </div>
-            <div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl">
+            <div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl"  ng-init="postCtrl.replyList = postCtrl.getReplies('{{$uuid}}')" >
 
                 @if (Auth::user())
-                    <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}')">
+                    <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}','{{Auth::user()->uuid }}')">
                         <div class="media md-margin">
                             <div class="media-left">
                                 <a href="#">
@@ -114,7 +115,16 @@
                         </div>
                     </div>
                 @endif                
-                
+
+                @{{ postCtrl.replyList }}
+                    <div
+                         ng-repeat="reply in postCtrl.replyList"
+                         >
+
+                        @{{reply }}
+
+                    </div>
+
                     <md-list id="reply_append_{{$uuid}}"></md-list>
 
                     @for($i=0;$i<count($topic_replies);$i++)
