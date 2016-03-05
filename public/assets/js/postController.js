@@ -147,23 +147,7 @@ angular.module('App')
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-            var topicRef = new Firebase("https://qanya.firebaseio.com/topic/"+uuid+'/replies');
-            var list = $firebaseArray(topicRef);
-            list.$add({
-                        data:           $('#topicReplyContainer').html(),
-                        topic_uuid:     uuid,
-                        topics_author:  topics_uid,
-                        sender:         sender,
-                        });
-            /*ref.once("value", function(snapshot) {
-
-                if (snapshot.exists() == false) {
-                    postCtrl.dwnvoteReset(topic_uuid, topic_uid);
-
-
-                }
-            }*/
-            /*var replyObj = 'reply_append_'+uuid;
+            var replyObj = 'reply_append_'+uuid;
             $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
                                        data: $('#topicReplyContainer').html() })
@@ -177,7 +161,7 @@ angular.module('App')
                             geoResponse: geo_data
                         })
                     })
-                })*/
+                })
         }
 
 

@@ -88,6 +88,9 @@
 
         @if(Auth::check())
             socket.on("reply_to_{{Auth::user()->uuid}}:App\\Events\\TopicReplyEvent", function(message){
+                createNotificaiton('New Reply!',
+                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
+                    'You have a new reply from your topic!');
                 $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
             });
 
