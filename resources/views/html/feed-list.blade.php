@@ -35,46 +35,23 @@
         <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}"
           target="_blank">{!! HTML::decode($topic->topic) !!}</a>
       </h4>
-      <div class="card-text">
-{{--          {!! HTML::entities(str_limit(nl2br($topic->body),250)) !!}--}}
-        <?php
-       $tags = explode(',',$topic->tags);?>
-        @if($tags)
-          <div>
-            @foreach($tags as $tag)
-              <a href="/tag/{{$tag}}">#{{$tag}}</a>
-            @endforeach
-         </div>
-        @endif
-      </div>
 
-    {{-- Upvote/Downvote/Comment --}}
-        <a href="#" id="upvote_btn_status_{{ $topic->topic_uuid }}"
-            class="card-link"
-            ng-init="postCtrl.upvoteTally('{{ $topic->topic_uuid }}')"
-            ng-click="postCtrl.upvote('{{ $topic->topic_uuid }}','{!! $topic->topics_uid !!}')">
-                <i class="fa fa-chevron-up"></i>
-                    <span id="upv_cnt_{{$topic->topic_uuid}}">
-                        {{--{!! $topic->upvote !!}--}}
-                        {{ postCtrl.upvote_<?= $topic->topic_uuid?> }}
-                    </span>
-      </a>
-        <a href="#" id="dwnvote_btn_status_{{ $topic->topic_uuid }}"
-            class="card-link"
-            ng-init="postCtrl.dwnvoteTally('{{ $topic->topic_uuid }}')"
-            ng-click="postCtrl.dwnvote('{{ $topic->topic_uuid }}','{!! $topic->topics_uid !!}')">
-                <i class="fa fa-chevron-down"></i>
-                    <span id="dwn_cnt_{{$topic->topic_uuid}}">
-        {{--                {!! $topic->dwnvote !!}--}}
-                        {{ postCtrl.dwnvote_<?= $topic->topic_uuid?> }}
-                    </span>
-      </a>
-      <a href="#" class="card-link" ng-click="postCtrl.commentCount('{{ $topic->topic_uuid }}','{!! $topic->topics_uid !!}')">
-          <i class="fa fa-comment-o"></i>
-            <span id="coments_cnt_{{$topic->topic_uuid}}">
-{{--                {!! $topic->comments !!}--}}
-            </span>
-      </a>
+        <div class="card-text">
+{{--          {!! HTML::entities(str_limit(nl2br($topic->body),250)) !!}--}}
+            <?php
+           $tags = explode(',',$topic->tags);?>
+            @if($tags)
+              <div>
+                @foreach($tags as $tag)
+                  <a href="/tag/{{$tag}}">#{{$tag}}</a>
+                @endforeach
+             </div>
+            @endif
+        </div>
+
+        @include('html.topic-tally',['topics_uid' => $topic->topics_uid,
+                                 'uuid'       => $topic->topic_uuid])
+
     </div>
    {{-- end --}}
 

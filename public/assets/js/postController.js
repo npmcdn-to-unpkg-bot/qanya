@@ -1,5 +1,5 @@
 angular.module('App')
-    .controller('PostCtrl',function($http,$mdDialog,$firebaseObject,$firebaseArray,Topics){
+    .controller('PostCtrl',function($http,$scope,$mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
 
         var postCtrl = this;
 
@@ -22,7 +22,7 @@ angular.module('App')
         postCtrl.showLogin = function(ev) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
             $mdDialog.show({              
-              templateUrl: 'dialog1.tmpl.html',
+              templateUrl: 'http://192.168.0.100:8888/login',
               parent: angular.element(document.body),
               targetEvent: ev,
               clickOutsideToClose:true,
@@ -198,19 +198,26 @@ angular.module('App')
         };
 
 
-        postCtrl.incrementView = function(topic_uuid)
+
+        //Login for material
+        postCtrl.showMdLogin = function(ev) {
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            $mdDialog.show({
+                //controller: 'AuthCtrl as authCtrl',
+                //templateUrl: 'templates/html/form-login',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: useFullScreen
+            })
+        }
+
+        postCtrl.commentsTally    =   function(topic_uuid)
         {
-            var ref = new Firebase("https://qanya.firebaseio.com/topic/"+topic_uuid+'/view');
-            return ref.on("value", function(snapshot) {
-                console.log("view: "+snapshot.val());
-                if(snapshot.val() ==0)
-                {
-                    ref.set(1);
-                }else
-                {
-                    ref.set(snapshot.val()+1)
-                }
-                return snapshot.val();
+            var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/comments')
+            ref.on("value", function (snapshot) {
+                var key = 'comments_'+topic_uuid;
+                postCtrl[key]  = snapshot.val();
             });
         }
 
