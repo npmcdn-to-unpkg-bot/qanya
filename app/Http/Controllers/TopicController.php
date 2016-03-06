@@ -82,11 +82,6 @@ class TopicController extends Controller
     }
 
 
-    public function downvote()
-    {
-
-    }
-
     //Check User follow Status
     public function userFollowStatus(Request $request)
     {
@@ -105,10 +100,6 @@ class TopicController extends Controller
     }
 
 
-    public function feedFollowStatus(Request $request)
-    {
-
-    }
 
     //Follow categories
     public function follow_cate(Request $request)
@@ -136,6 +127,7 @@ class TopicController extends Controller
 
             $replyObj =TopicReply::find($reply->id);
 
+            //Add to notification
             $notification = new Notification();
             $notification->store(3,$request->topics_uid,
                                 Auth::user()->uuid,
@@ -155,7 +147,11 @@ class TopicController extends Controller
     //Create the view for topic reply
     public function replyTopicView(Request $request)
     {
-        $data = $request->replyReq;
+        $topic = new Topic();
+
+        $reply_id   =   $request->replyReq['data']['id'];
+        $data       =   $topic->getSingleReply($reply_id);
+
         return view('html.topic-reply',compact('data'));
     }
 

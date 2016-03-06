@@ -28,7 +28,7 @@ return [
          * The default configurations to be used by the opengraph generator.
          */
         'defaults' => [
-            'title'       => 'Over 9000 Thousand!', // set false to total remove
+            'title'       => 'Qanya!', // set false to total remove
             'description' => 'For those who helped create the Genki Dama', // set false to total remove
             'url'         => false,
             'type'        => false,

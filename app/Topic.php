@@ -54,8 +54,8 @@ class Topic extends Model
                     'topics.slug as topic_slug',
                     'topics.tags',
                     /*'topics.upvote',
-                    'topics.dwnvote',
-                    'topics.comments',*/
+                    'topics.dwnvote',*/
+                    'topics.comments',
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
                     'users.firstname',
@@ -110,6 +110,25 @@ class Topic extends Model
                         ->join('users','users.uuid','=','topics.uid')
                         ->get();
         return $topics;
+    }
+
+
+    //Return only one reply
+    public function getSingleReply($reply_id)
+    {
+        return $topic = DB::table('topics_reply')
+            ->select('topics_reply.topic_uuid as topic_uuid',
+                'topics_reply.body',
+                'topics_reply.created_at as replycreated_at',
+                'users.firstname',
+                'users.profile_img',
+                'users.displayname',
+                'users.description'
+            )
+            ->orderBy('topics_reply.created_at', 'desc')
+            ->join('users', 'topics_reply.uid', '=', 'users.uuid')
+            ->where('topics_reply.id', $reply_id)
+            ->first();
     }
 
     //Get topic replies
@@ -180,7 +199,7 @@ class Topic extends Model
             )
             ->join('topics', 'topics.uuid', '=', 'tags.topic_uuid')
             ->join('users', 'topics.uid', '=', 'users.uuid')
-            ->where('tags.title',$tag)
+            ->where('tags.title',clean($tag))
             ->get();
     }
 }

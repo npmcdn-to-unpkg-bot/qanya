@@ -18,7 +18,9 @@ require('laravel-elixir-livereload');
  */
 
 elixir(function(mix) {
-    mix.livereload([ 'app/**/*', 'public/**/*', 'resources/views/**/*' ]);
+    mix.livereload([ 'app/**/*', 'public/**/*',
+                     'resources/views/**/*',
+                     'resources/assets/**/*']);
     //mix.scripts(['node_modules/socket.io/lib/socket.js']);
     mix.scriptsIn('public/assets/js');
     mix.styles([

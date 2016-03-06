@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container">
-        @include('html.feed-list',compact('topics'));
+        <div class="col-xs-12 col-sm-8">
+            @include('html.feed-list',compact('topics'))
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            Other tags
+        </div>
     </div>
 @endsection

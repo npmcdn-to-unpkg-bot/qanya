@@ -15,7 +15,8 @@
             {{ $topic->firstname }}
          </a>
          {{ $topic->displayname }} -
-         {{ Carbon\Carbon::parse($topic->topic_created_at)->diffForHumans() }}
+        <span am-time-ago="'{!! $topic->topic_created_at !!}' | amParse:'YYYY-MM-DD H:i:s'"></span>
+{{--         {{ Carbon\Carbon::parse($topic->topic_created_at)->diffForHumans() }}--}}
         </span>
         <p class="md-subhead">
           {!! HTML::decode($topic->description) !!}
@@ -71,7 +72,7 @@
       <a href="#" class="card-link" ng-click="postCtrl.commentCount('{{ $topic->topic_uuid }}','{!! $topic->topics_uid !!}')">
           <i class="fa fa-comment-o"></i>
             <span id="coments_cnt_{{$topic->topic_uuid}}">
-                {!! $topic->comments !!}
+{{--                {!! $topic->comments !!}--}}
             </span>
       </a>
     </div>

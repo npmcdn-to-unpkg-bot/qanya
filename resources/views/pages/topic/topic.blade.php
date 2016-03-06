@@ -11,11 +11,14 @@
                     <span>
                         <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
                     </span>
+                    <span class="pull-right" ng-click="postCtrl.editable='true';
+                                                       $('#topicContent').css("background","yellow")">edit</span>
 
                     <h1 class="md-display-1">
                         {!! HTML::decode($title) !!}
                     </h1>
-                    <div class="reading img-fluid" id="topicContent">
+                    <div class="reading img-fluid" id="topicContent" contenteditable="@{{ postCtrl.editable }}">
+                        @{{ postCtrl.editable }}
                         {!! nl2br($body) !!}
                     </div>
                     <div>
@@ -26,6 +29,29 @@
                         @endif
                     </div>
 
+
+                <div>
+                    <a href="#" id="upvote_btn_status_{{ $uuid }}"
+                       class="card-link"
+                       ng-init="postCtrl.upvoteTally('{{ $uuid }}')"
+                       ng-click="postCtrl.upvote('{{ $uuid }}','{!! $topics_uid !!}')">
+                        <i class="fa fa-chevron-up"></i>
+                        <span id="upv_cnt_{{$uuid}}">
+                            {{--{!! $topic->upvote !!}--}}
+                            {{ postCtrl.upvote_<?= $uuid?> }}
+                        </span>
+                    </a>
+                    <a href="#" id="dwnvote_btn_status_{{ $uuid }}"
+                       class="card-link"
+                       ng-init="postCtrl.dwnvoteTally('{{ $uuid }}')"
+                       ng-click="postCtrl.dwnvote('{{ $uuid }}','{!! $topics_uid !!}')">
+                        <i class="fa fa-chevron-down"></i>
+                    <span id="dwn_cnt_{{$uuid}}">
+                        {{ postCtrl.dwnvote_<?= $uuid ?> }}
+                    </span>
+                    </a>
+
+                </div>
                     {{-- Share button --}}
                     <div class="fb-share-button"
                          data-href="https://developers.facebook.com/docs/plugins/"
@@ -36,8 +62,11 @@
                         <script type="text/javascript">
                             new media_line_me.LineButton({"pc":false,"lang":"en","type":"a"});
                         </script>
-                    </span>                
+                    </span>
 
+                <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                    {{-- end share --}}
 
                 <md-divider></md-divider>
             
@@ -78,6 +107,8 @@
         </div>    
     </md-content>
 </div>
+
+
             <div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl"  ng-init="postCtrl.replyList = postCtrl.getReplies('{{$uuid}}')" >
 
                 @if (Auth::user())
@@ -87,7 +118,7 @@
                                 <a href="#">
                                     <img class="media-object"
                                          width="60px"
-                                         src="/{!! Auth::user()->profile_img !!}"
+                                         src="{!! Auth::user()->profile_img !!}"
                                          alt="...">
                                 </a>
                             </div>
@@ -132,16 +163,20 @@
                     <md-list class="row">
 
                         <md-list-item class="md-3-line">
-                            <img ng-src="/{!! $topic_replies[$i]->profile_img !!}"
+                            <img ng-src="{!! $topic_replies[$i]->profile_img !!}"
                                  class="md-avatar"/>
                             <div class="md-list-item-text">
                                 <h3>
                                     <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
                                     {{ $topic_replies[$i]->firstname }}
                                     </a>
+
+                                    <small> -
+                                        <span am-time-ago="'{!! $topic_replies[$i]->replycreated_at !!}' | amParse:'YYYY-MM-DD HH:mm:ss'"></span>
+                                    </small>
                                 </h3>
                                 <p> {!! HTML::decode($topic_replies[$i]->body) !!} </p>
-                                {!! Carbon\Carbon::parse($topic_replies[$i]->replycreated_at)->diffForHumans() !!}
+
                             </div>
                         </md-list-item>
                     </md-list>
