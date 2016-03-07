@@ -152,14 +152,17 @@ angular.module('App')
         {
             var imgIds = new Array();
 
+            //Search for images in the content
             $("div#contentBody img").each(function(){
                 imgIds.push($(this).attr('src'));
             });
+
 
             var data = { title:         postCtrl.title,
                          categories:    postCtrl.categories,
                          tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),
+                         text:          $('#contentBody').text(),
                          images:        imgIds
                         };
             $.post( "/api/postTopic/", { data: data} )
@@ -309,6 +312,7 @@ angular.module('App')
         {
             postCtrl.dwnvoteReset(topic_uuid,topic_uid);
             var btn = "#upvote_btn_status_"+topic_uuid;
+            
             //UserUpvote Value
             var userUpvoteRef = postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {

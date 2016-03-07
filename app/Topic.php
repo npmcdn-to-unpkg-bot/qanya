@@ -50,6 +50,7 @@ class Topic extends Model
                 ->select(
                     'topics.topic',
                     'topics.body',
+                    'topics.text',
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
@@ -92,6 +93,7 @@ class Topic extends Model
                         ->select(
                                 'topics.topic',
                                 'topics.body',
+                                'topics.text',
                                 'topics.uid as topics_uid',
                                 'topics.slug as topic_slug',
                                 'topics.tags',
@@ -156,6 +158,7 @@ class Topic extends Model
                 ->select(
                         'topics.topic',
                         'topics.body',
+                        'topics.text',
                         'topics.uid as topics_uid',
                         'topics.slug as topic_slug',
                         'topics.tags',
@@ -184,6 +187,7 @@ class Topic extends Model
             ->select(
                 'topics.topic',
                 'topics.body',
+                'topics.text',
                 'topics.uid as topics_uid',
                 'topics.slug as topic_slug',
                 'topics.tags',

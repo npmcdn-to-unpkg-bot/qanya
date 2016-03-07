@@ -37,7 +37,7 @@
       </h4>
 
         <div class="card-text">
-{{--          {!! HTML::entities(str_limit(nl2br($topic->body),250)) !!}--}}
+          {!! clean(str_limit(nl2br($topic->text),250)) !!}
             <?php
            $tags = explode(',',$topic->tags);?>
             @if($tags)

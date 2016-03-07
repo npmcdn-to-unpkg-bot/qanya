@@ -7,6 +7,7 @@ use App\IpLogger;
 use App\Notification;
 use App\Tags;
 use App\Topic_actions;
+use App\TopicImages;
 use Auth;
 use App\Topic as Topic;
 use App\Events\UserReply as UserReply;
@@ -210,6 +211,7 @@ class TopicController extends Controller
 
                 $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
                 $topicSlug = str_slug($json['title'], "-") . '-' . $topicUUID;
+
                 if(!empty($json['tags']))
                     $taglist = implode(",", $json['tags']);
                 else
@@ -219,7 +221,8 @@ class TopicController extends Controller
                 $topic->uuid        = $topicUUID;
                 $topic->uid         = Auth::user()->uuid;
                 $topic->topic       = clean($json['title']);
-                $topic->body        = clean($json['body']);
+                $topic->body        = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean($json['body']));
+                $topic->text        = clean($json['text']);
                 $topic->category    = $json['categories'];
                 $topic->slug        = $topicSlug;
                 $topic->tags        = $taglist;
@@ -227,15 +230,35 @@ class TopicController extends Controller
 
                 $tag_data = array();
                 $count=0;
-                foreach($json['tags'] as $tag)
+
+                if(!empty($json['images']))
                 {
-                    $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
-                                                'title'=>clean($tag),
-                                                'created_at'=> date("Y-m-d H:i:s")
-                                                );
-                    $count++;
+                    //Insert images in another table
+                    foreach($json['images'] as $image)
+                    {
+                        $img_data[$count] = array(  'topic_uuid'=>$topicUUID,
+                            'user_uuid'=>Auth::user()->uuid,
+                            'filename'=>clean($image),
+                            'created_at'=> date("Y-m-d H:i:s")
+                        );
+                        $count++;
+                    }
+                    TopicImages::insert($img_data);
                 }
-                Tags::insert($tag_data);
+
+                if(!empty($json['tags']))
+                {
+                    //Insert tags in another table
+                    foreach($json['tags'] as $tag)
+                    {
+                        $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
+                                                    'title'=>clean($tag),
+                                                    'created_at'=> date("Y-m-d H:i:s")
+                                                    );
+                        $count++;
+                    }
+                    Tags::insert($tag_data);
+                }
 
                 $topicEvents = Topic::find($topic->id);
 
