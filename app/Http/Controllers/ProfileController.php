@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\IpLogger;
 use App\Notification;
+use App\TopicReply;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -159,11 +160,17 @@ class ProfileController extends Controller
      */
     public function show($displayname)
     {
+        //Show displayname
         $user = User::where('displayname',$displayname)->first();
         $is_user = 'false';
 
+        //Show topics created by user
         $topic = new Topic();
         $topics = $topic->getUserTopic($user->uuid);
+
+        //Get user replies
+        $userReplies = new TopicReply();
+        $userReplies = $userReplies->getUserReplies($user->uuid);
 
         if(!empty(Auth::user()->uuid))
         {
@@ -174,7 +181,7 @@ class ProfileController extends Controller
             $is_user = 'FALSE';
         }
         return view('profile.index',
-                compact('user','is_user','topics'));
+                compact('user','is_user','topics','userReplies'));
     }
 
     /**

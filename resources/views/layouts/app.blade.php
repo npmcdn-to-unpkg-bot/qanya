@@ -203,7 +203,7 @@
 
 
     <section layout="row" flex>
-        <md-content flex layout-padding>
+        <md-content flex>
             <div class="container">
                 @yield('content')
             </div>
@@ -212,7 +212,7 @@
         <md-sidenav class="md-sidenav-right md-whiteframe-z2"
                     md-component-id="alertSideNav">
             <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">Sidenav Right</h1>
+                <h1 class="md-toolbar-tools">Notification</h1>
             </md-toolbar>
             <md-content>
                 <md-list>

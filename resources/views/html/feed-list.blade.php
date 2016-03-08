@@ -24,9 +24,7 @@
 
       </md-card-header-text>
       <p class="pull-right">
-        <md-button class="md-icon-button" aria-label="More">
-          <i class="md-fab md-mini fa fa-bookmark-o fa-2x pull-right" ng-click="postCtrl.bookMark($event)"></i>
-        </md-button>
+        Travel
       </p>
     </md-card-header>
 

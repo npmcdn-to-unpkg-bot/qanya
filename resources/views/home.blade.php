@@ -2,28 +2,28 @@
 
 @section('content')
 
-<div class="row" ng-controller="PostCtrl as postCtrl">
     <div class="row">
-        <div class="col-xs-12 col-sm-7">
-        
-            @include('html.post-create',compact('categories'))                 
+    <section layout="row" flex ng-controller="PostCtrl as postCtrl">
+        <md-content flex layout-padding>
+            <div layout="column" layout-fill>
+                @include('html.post-create',compact('categories'))
 
-            <span class="md-title">
-                @{{ postCtrl.feedName }}
-            </span>
+                <span class="md-title">
+                    @{{ postCtrl.feedName }}
+                </span>
 
-            <a class="btn btn-success-outline"
-               ng-if="postCtrl.slug"
-               ng-click="postCtrl.followCate(postCtrl.slug)">
-                @{{ postCtrl.postFeedFollow }}
-            </a>
+                <a class="btn btn-success-outline"
+                   ng-if="postCtrl.slug"
+                   ng-click="postCtrl.followCate(postCtrl.slug)">
+                    @{{ postCtrl.postFeedFollow }}
+                </a>
 
-            <div id="homeFeed">
-                @include('html.feed-list',compact('feeds'));
+                <div id="homeFeed">
+                    @include('html.feed-list',compact('feeds'))
+                </div>
             </div>
-            
-        </div>
-        <div class="col-xs-12 col-sm-5">
+        </md-content>
+        <md-sidenav class="md-sidenav-right md-component-id="right" md-is-locked-open="$mdMedia('gt-sm')">
             <div class="media panel md-padding">
                 <div class="media-body">
                     {{--{{ Auth::user() }}--}}
@@ -59,7 +59,7 @@
                     </li>
                 @endforeach
             </ul>
-        </div>        
+        </md-sidenav>
+    </section>
     </div>
-</div>
 @endsection

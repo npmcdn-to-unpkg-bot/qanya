@@ -9,7 +9,7 @@ angular.module('App')
         var Topics = {
 
             // Reply listing
-            upvoteURL: function (user_uuid){
+            userUrl: function (user_uuid){
                 return ref.child('user/'+user_uuid)
             },
             replyList: function (topic_uuid) {

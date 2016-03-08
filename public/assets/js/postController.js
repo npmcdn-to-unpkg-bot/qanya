@@ -147,6 +147,8 @@ angular.module('App')
         }
 
 
+
+
         //Post topic
         postCtrl.postTopic = function()
         {
@@ -215,6 +217,46 @@ angular.module('App')
             })
         }
 
+
+        //Count the number of bookmark per topic
+        postCtrl.bookMarkTally = function(topic_uuid)
+        {
+            var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/bookmark')
+            ref.on("value", function (snapshot) {
+                var key = 'bookmarks_'+topic_uuid;
+                postCtrl[key]  = snapshot.val();
+            });
+        }
+
+        postCtrl.bookMark = function(user_uuid,topic_uuid)
+        {
+            var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+
+            userBookmark.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).set(moment().format());
+
+                    var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
+                    topicRef.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+                }
+                else{
+                    postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
+                    var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
+                    topicRef.transaction(function (current_value) {
+                        if(current_value < 0 || current_value == 0 )
+                        {
+                            return 0;
+                        }else {
+                            return (current_value || 0) - 1;
+                        }
+                    });
+                }
+            })
+        }
+
         postCtrl.commentsTally    =   function(topic_uuid)
         {
             var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/comments')
@@ -248,13 +290,13 @@ angular.module('App')
             var btn = "#dwnvote_btn_status_"+topic_uuid;
 
             //UserDownvote Value
-            var userUpvoteRef = postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid);
+            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {
 
                 //Chck if user already voted
                 if (snapshot.exists() == false) {
 
-                    postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid).set(moment().format());
+                    postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).set(moment().format());
 
                     //Topic Upvote tally
                     var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
@@ -273,7 +315,7 @@ angular.module('App')
         {
             var btn = "#upvote_btn_status_"+topic_uuid;
             //Remove voted user
-            postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid).remove();
+            postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).remove();
 
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
@@ -293,7 +335,7 @@ angular.module('App')
         {
             var btn = "#dwnvote_btn_status_"+topic_uuid;
             //Remove voted user
-            postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid).remove();
+            postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).remove();
 
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
@@ -314,13 +356,13 @@ angular.module('App')
             var btn = "#upvote_btn_status_"+topic_uuid;
             
             //UserUpvote Value
-            var userUpvoteRef = postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid);
+            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {
 
                 //Chck if user already voted
                 if (snapshot.exists() == false) {
 
-                    postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid).set(moment().format());
+                    postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).set(moment().format());
 
                     //Topic Upvote tally
                     var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
