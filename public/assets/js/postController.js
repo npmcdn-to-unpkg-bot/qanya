@@ -1,5 +1,5 @@
 angular.module('App')
-    .controller('PostCtrl',function($http,$scope,$mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
+    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
 
         var postCtrl = this;
 
@@ -102,7 +102,8 @@ angular.module('App')
             postCtrl.feedName =  catename;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
-                    $('#homeFeed').html(response.data);
+                    //$('#homeFeed').html(response.data);
+                    postCtrl.FeedHtml = $sce.trustAsHtml(response.data);
                 });
         }
 
@@ -215,6 +216,18 @@ angular.module('App')
                 clickOutsideToClose: true,
                 fullscreen: useFullScreen
             })
+        }
+
+
+        postCtrl.getPostImage = function(uuid)
+        {
+            $http.post('/getPostImages', {uuid: uuid })
+                .then(function(response) {
+                    console.log(response);
+
+                    var key = '#previewImage_'+uuid;
+                    $(key).html(response.data);
+                })
         }
 
 

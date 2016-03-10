@@ -13,7 +13,15 @@
                     var ref = new Firebase("https://qanya.firebaseio.com/topic/{{$uuid}}/view");
                     ref.transaction(function (current_value) {
                         return (current_value || 0) + 1;
-                    });
+                    })
+
+                    @if(Auth::user())
+                        //Put this in user's history
+                        var ref = new Firebase("https://qanya.firebaseio.com/user/{{Auth::user()->uuid}}/history");
+                        ref.once("value", function(snapshot) {
+                            ref.child('{{$uuid}}').set(moment().format());
+                        })
+                    @endif
                 </script>
 
                 <span>

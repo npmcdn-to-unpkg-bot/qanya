@@ -1,7 +1,7 @@
  {{-- Feed --}}
 
 
-<div ng-controller="PostCtrl as postCtrl">
+<div ng-controller="PostCtrl as postCtrl" class="animated bounce">
   @foreach($topics as $topic)
    <md-card class="row">
     <md-card-header>
@@ -34,8 +34,16 @@
           target="_blank">{!! HTML::decode($topic->topic) !!}</a>
       </h4>
 
+
+
         <div class="card-text">
           {!! clean(str_limit(nl2br($topic->text),250)) !!}
+
+
+            <div ng-init="postCtrl.getPostImage('{{$topic->topic_uuid}}')"
+                 id="previewImage_<?=$topic->topic_uuid?>">
+                {{postCtrl.previewImage_<?=$topic->topic_uuid?> }}
+            </div>
             <?php
            $tags = explode(',',$topic->tags);?>
             @if($tags)
@@ -47,8 +55,7 @@
             @endif
         </div>
 
-        @include('html.topic-tally',['topics_uid' => $topic->topics_uid,
-                                 'uuid'       => $topic->topic_uuid])
+        @include('html.topic-tally',['topics_uid' => $topic->topics_uid, 'uuid'       => $topic->topic_uuid])
 
     </div>
    {{-- end --}}

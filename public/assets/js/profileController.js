@@ -6,7 +6,7 @@ angular.module('App')
         profileCtrl.profileDescription  =   '';
         profileCtrl.notificationList    =   '';
         profileCtrl.unreadNotification  =   0;
-
+        profileCtrl.userBookmark        =   0;
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
         profileCtrl.isOpenRight = function(){
@@ -104,6 +104,35 @@ angular.module('App')
                             .hideDelay(3000)
                     );
                 });
+        }
+
+        profileCtrl.getUserBookmark = function(user_uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/bookmark");
+            ref.on("value",function (snapshot) {
+
+                $http.post('/user/getBookmark',
+                    {data: snapshot.val()})
+                    .then(function(response){
+                        console.log(response);
+                        $('#userBookmark').html(response.data);
+                    })
+
+                //profileCtrl.userBookmark = snapshot.val();
+            });
+        }
+
+        profileCtrl.getUserHistory = function(user_uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
+            ref.on("value",function (snapshot) {
+
+                $http.post('/user/getHistory',
+                    {data: snapshot.val()})
+                    .then(function(response){
+                        $('#userViewHistory').html(response.data);
+                    })
+            });
         }
 
         //Toggle sidebar

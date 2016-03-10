@@ -13,31 +13,9 @@ class Topic extends Model
 
     protected $table = 'topics';
 
-    public function dwnvoteTopic($topics_uuid)
+    public function postImages($uuid)
     {
-        $this->where('uuid',$topics_uuid)->increment('dwnvote');
-
-        $count =DB::table('topics')
-                ->select('dwnvote')
-                ->where('uuid',$topics_uuid)
-                ->first();
-        return $count->upvote;
-    }
-
-    public function upvoteTopic($topics_uuid,$flg)
-    {
-        if($flg)
-        {
-            $this->where('uuid',$topics_uuid)->increment('upvote');
-        }else{
-            $this->where('uuid',$topics_uuid)->decrement('upvote');
-        }
-
-        $count =DB::table('topics')
-                    ->select('upvote')
-                    ->where('uuid',$topics_uuid)
-                    ->first();
-        return $count->upvote;
+        return  DB::table('topics_img')->where('topic_uuid',$uuid)->limit(4)->get();
     }
 
     //Get the recently created topics
@@ -69,8 +47,6 @@ class Topic extends Model
                 ->take(10)
                 ->get();
         });
-        $log = DB::getQueryLog();
-        print_r($log);
 
         return $results;
     }
@@ -176,6 +152,33 @@ class Topic extends Model
                 ->where('topics.slug',$slug)
                 ->first();
         });
+        return $results;
+    }
+
+
+    //Get topic list array (wherein)
+    public function getTopicList($uuid_array)
+    {
+//        $results = Cache::remember('topic_posts_cache_'.$slug,1,function() use ($slug){
+            return $topic = DB::table('topics')
+                ->select(
+                    'topics.topic',
+                    'topics.body',
+                    'topics.text',
+                    'topics.uid as topics_uid',
+                    'topics.slug as topic_slug',
+                    'topics.tags',
+                    'topics.uuid as topic_uuid',
+                    'topics.created_at as topic_created_at',
+                    'users.firstname',
+                    'users.profile_img',
+                    'users.displayname',
+                    'users.description'
+                )
+                ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->wherein('topics.uuid',$uuid_array)
+                ->get();
+//        });
         return $results;
     }
 

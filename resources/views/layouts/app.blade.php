@@ -27,6 +27,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/css/tether.min.css" rel="stylesheet">
     <link href="/assets/css/all.css" rel="stylesheet">
+    <link href="/assets/css/animate.css" rel="stylesheet">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
     <script>
@@ -48,6 +49,8 @@
     <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
     <!-- AngularFire -->
     <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+
 
     {{--Socket.io--}}
     {!! HTML::script('https://cdn.socket.io/socket.io-1.4.5.js') !!}
@@ -245,9 +248,7 @@
     <!-- endbower -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
-{{--    {!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css') !!}--}}
     {!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js') !!}
-
 
 
 
@@ -302,6 +303,7 @@
                 /*if(!src || typeof(src)!=='string') return;
                  t.attr('src',src.replace('/thumbs/','/large/'));*/
             });
+
 
         });
     </script>

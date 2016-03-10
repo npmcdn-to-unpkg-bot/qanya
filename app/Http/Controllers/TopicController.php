@@ -34,53 +34,28 @@ use OpenGraph;
 use Twitter;
 use SEO;
 
+
 class TopicController extends Controller
 {
 
-    public function upvote(Request $request)
+    public function getPostImages(Request $request)
     {
-        if(Auth::user())
-        {
+        $html = null;
+        $topic = new Topic();
+        $images= $topic->postImages($request->uuid);
 
-            $ta = new Topic_actions();
+        if(!empty($images)) {
+            $html = "<div class='row'>";
+            foreach ($images as $image) {
 
-            $has_vote = $ta->where('topic_uuid',$request->topics_uuid)
-                            ->where('user_uuid',Auth::user()->uuid)
-                            ->where('action','upvote')
-                            ->count();
-            if($has_vote ==0) {
-                $ta->action = 'upvote';
-                $ta->topic_uuid = $request->topics_uuid;
-                $ta->user_uuid = Auth::user()->uuid;
-                $ta->save();
-
-
-                $notification = new Notification();
-                $notification->store(4,
-                    $request->topic_uid,
-                    Auth::user()->uuid,
-                    $request->topics_uuid,
-                    'upvote');
-
-                event(new \App\Events\TopicUpvote($request->topic_uid, $request->topics_uuid,TRUE));
-
-                return 1;
-            }else{
-                $ta->where('topic_uuid',$request->topics_uuid)
-                    ->where('user_uuid',Auth::user()->uuid)
-                    ->where('action','upvote')
-                    ->delete();
-
-                event(new \App\Events\TopicUpvote($request->topic_uid, $request->topics_uuid,FALSE));
-
-                return 0;
+                $html .= "<div><img src=\"$image->filename\" class=\"img-rounded img-fluid col-xs-12 col-sm-4\" style='max-width: 470px'></div>";
             }
+            $html .= "</div>";
+            return $html;
+        }
 
-        }
-        else{
-            echo "no login";
-        }
     }
+
 
 
     //Check User follow Status
@@ -238,7 +213,7 @@ class TopicController extends Controller
                     {
                         $img_data[$count] = array(  'topic_uuid'=>$topicUUID,
                             'user_uuid'=>Auth::user()->uuid,
-                            'filename'=>clean($image),
+                            'filename'=>$image,
                             'created_at'=> date("Y-m-d H:i:s")
                         );
                         $count++;

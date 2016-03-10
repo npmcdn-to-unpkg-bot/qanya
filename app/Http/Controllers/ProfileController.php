@@ -23,6 +23,44 @@ class ProfileController extends Controller
     }
 
 
+    //Get user bookmarks
+    public function getBookmark(Request $request)
+    {
+        if($request->data) {
+            $topicList = [];
+            $count = 0;
+            $bookmarks = $request->data;
+            foreach ($bookmarks as $data => $item) {
+                $topicList[$count] = $data;
+                $count++;
+            }
+
+            $topics = new Topic();
+            $topics = $topics->getTopicList($topicList);
+
+            return view('html.feed-list', compact('topics'));
+        }
+    }
+
+    //Get user history
+    public function getHistory(Request $request)
+    {
+        if($request->data) {
+            $topicList = [];
+            $count = 0;
+            $history = $request->data;
+            foreach ($history as $data => $item) {
+                $topicList[$count] = $data;
+                $count++;
+            }
+
+            $topics = new Topic();
+            $topics = $topics->getTopicList($topicList);
+
+            return view('html.feed-list', compact('topics'));
+        }
+    }
+
     public function ipLogger(Request $request)
     {
         $ipLogger = new IpLogger();

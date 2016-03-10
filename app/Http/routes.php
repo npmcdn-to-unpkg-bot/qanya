@@ -79,11 +79,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/upvote','TopicController@upvote');
     Route::post('/dwonvote','TopicController@downvote');
     Route::get('/replyView','TopicController@replyTopicView');
-
+    Route::post('/getPostImages','TopicController@getPostImages');
 
     //Profile page
-    Route::get('/{displayname}','ProfileController@show');
-    Route::post('/user/update-description', 'ProfileController@updateDesc');
+    Route::get('/{displayname}'             ,   'ProfileController@show');
+    Route::post('/user/update-description'  ,   'ProfileController@updateDesc');
+    Route::post('/user/getHistory'          ,   'ProfileController@getHistory');
+    Route::post('/user/getBookmark'         ,   'ProfileController@getBookmark');
 
 
 });

@@ -97,18 +97,19 @@
                                                         <span am-time-ago="'{!! $reply->replycreated_at !!}' | amParse:'YYYY-MM-DD H:i:s'"></span>
                                                     </footer>
                                             </div>
-
-
                                         </md-card>
 
                                     @endforeach
                                 </md-content>
                             </md-tab>
+
+                            {{--PHOTOS--}}
                             <md-tab label="photos">
                                 <md-content class="md-padding">
 
                                 </md-content>
                             </md-tab>
+
                         </md-tabs>
                     </md-content>
                 </div>
