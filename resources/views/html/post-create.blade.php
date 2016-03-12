@@ -27,6 +27,20 @@
           A Story by...
 
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+
+          <md-input-container class="md-block" flex-gt-sm>
+              <label>Category</label>
+              <md-select ng-model="postCtrl.postTypes" name="postTypes">
+
+                  <md-option value="1">กระทู้</md-option>
+                  <md-option value="2">รีวิว</md-option>
+                  <md-option value="3">คำถาม</md-option>
+
+              </md-select>
+          </md-input-container>
+
+
           <md-input-container class="md-block" flex-gt-sm>
               <label>Category</label>
               <md-select ng-model="postCtrl.categories" name="postCategories">

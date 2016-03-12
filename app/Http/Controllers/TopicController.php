@@ -146,7 +146,15 @@ class TopicController extends Controller
         $topic = new Topic();
         $topics = $topic->getTagTopic($tag);
 
-        return view('tag',compact('topics'));
+        return view('tag',compact('topics','tag'));
+    }
+
+
+    //Return tag buttons to view
+    public function getTagButton(Request $request)
+    {
+        $data = $request->data;
+        return view('html.tag-buttons',compact('data'));
     }
 
 

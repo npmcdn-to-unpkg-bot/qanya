@@ -4,7 +4,7 @@ var io = require('socket.io')(http);
 var Redis = require('ioredis');
 var redis = new Redis();
 
-require('dotenv').config();
+//require('dotenv').config();
 
 redis.psubscribe('*', function(err, count) {
 });

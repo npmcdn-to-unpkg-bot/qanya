@@ -16,8 +16,7 @@
          </a>
          {{ $topic->displayname }} -
         <span am-time-ago="'{!! $topic->topic_created_at !!}' | amParse:'YYYY-MM-DD H:i:s'"></span>
-{{--         {{ Carbon\Carbon::parse($topic->topic_created_at)->diffForHumans() }}--}}
-        </span>
+
         <p class="md-subhead">
           {!! HTML::decode($topic->description) !!}
         </p>
@@ -29,10 +28,11 @@
     </md-card-header>
 
     <div class="card-block">
-      <h4 class="card-title">
+
+        <h4 class="card-title">
         <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}"
           target="_blank">{!! HTML::decode($topic->topic) !!}</a>
-      </h4>
+        </h4>
 
 
 
@@ -42,7 +42,7 @@
 
             <div ng-init="postCtrl.getPostImage('{{$topic->topic_uuid}}')"
                  id="previewImage_<?=$topic->topic_uuid?>">
-                {{postCtrl.previewImage_<?=$topic->topic_uuid?> }}
+                @{{postCtrl.previewImage_<?=$topic->topic_uuid?> }}
             </div>
             <?php
            $tags = explode(',',$topic->tags);?>
@@ -55,16 +55,14 @@
             @endif
         </div>
 
+
+        <topic-tally author="'<?=$topic->topics_uid ?>'" topic="'<?= $topic->topic_uuid ?>'"></topic-tally>
+
         @include('html.topic-tally',['topics_uid' => $topic->topics_uid, 'uuid'       => $topic->topic_uuid])
 
     </div>
    {{-- end --}}
 
-    <script>
-        socket.on("upv_cnt_{{$topic->topic_uuid}}:App\\Events\\TopicUpvote", function(message){
-            $('#upv_cnt_{!! $topic->topic_uuid !!}').text(message.upv_cnt);
-        });
-    </script>
    </md-card>
 
    @endforeach

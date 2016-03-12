@@ -55,6 +55,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/tag/{tag}','TopicController@tag');
     Route::post('/api/previewImage','PhotoController@preview');
     Route::post('/api/postTopic','TopicController@store');
+    Route::post('/getTagButton','TopicController@getTagButton');
+
 
     //Users
     Route::get('/create-name','ProfileController@createName');

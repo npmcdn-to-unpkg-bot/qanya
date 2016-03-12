@@ -3,14 +3,20 @@
 
 @section('content')
 
-    <div class="row" ng-controller="PostCtrl as postCtrl">
+    <div class="row" >
 
         <div class="col-md-7">
 
+            @if(Auth::user())
+                @include('html.post-create',compact('categories'))
+            @endif
 
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab label="Latest feed">
                     <md-content class="md-padding">
+                        <div ng-include="postCtrl.feedHtml" ng-if="postCtrl.feedHtml">
+                            template
+                        </div>
                         <div id="homeFeed">
                             @include('html.feed-list',compact('topics'))
                         </div>
@@ -25,28 +31,62 @@
                 </md-tab>
                 {{-- IF user login --}}
                 @if(Auth::user())
-                <md-tab label="bookmark" ng-click="profileCtrl.getUserBookmark('{{Auth::user()->uuid}}')">
-                    <md-content class="md-padding">
-                        <div id="userBookmark">
-                            @{{profileCtrl.userBookmark}}
-                        </div>
-                    </md-content>
-                </md-tab>
+                {{--<div ng-controller="ProfileCtrl as profileCtrl">--}}
+                    <md-tab label="bookmark" ng-click="profileCtrl.getUserBookmark('{{Auth::user()->uuid}}')">
+                        <md-content class="md-padding">
+                            <div id="userBookmark">
+                                @{{profileCtrl.userBookmark}}
+                            </div>
+                        </md-content>
+                    </md-tab>
 
-                <md-tab label="history" ng-click="profileCtrl.getUserHistory('{{Auth::user()->uuid}}')">
-                    <md-content class="md-padding">
-                        <div id="userViewHistory">
-                            @{{ profileCtrl.userHistory }}
-                        </div>
-                    </md-content>
-                </md-tab>
+                    <md-tab label="history" ng-click="profileCtrl.getUserHistory('{{Auth::user()->uuid}}')">
+                        <md-content class="md-padding">
+                            <div id="userViewHistory">
+                                @{{ profileCtrl.userHistory }}
+                            </div>
+                        </md-content>
+                    </md-tab>
+                {{--</div>--}}
                 @endif
             </md-tabs>
 
 
         </div>
 
-        <div class="col-md-5 col-xs-12">
+        <div class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
+            @if(Auth::user())
+                <div class="media panel md-padding">
+                    <div class="media-body">
+                        <h4 class="media-heading">
+                            <a href="/{!! Auth::user()->displayname !!}">
+                                {{ Auth::user()->firstname }}
+                            </a>
+                        </h4>
+                        {{ Auth::user()->description }}
+                        <div>
+                            <b> {{ Auth::user()->posts }}</b> posts
+                            <b> {{ Auth::user()->followers }}</b> followers
+                            <b> {{ Auth::user()->following }}</b> following
+                        </div>
+                    </div>
+                    <div class="media-right">
+                        <a href="#">
+                            <img class="media-object"
+                                 width="80px"
+                                 src="{{ Auth::user()->profile_img }}"
+                                 alt="...">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="media panel md-padding">
+                    <div ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
+                            id="userTagList">
+                    </div>
+                </div>
+
+            @endif
 
             <ul class="nav nav-pills">
                 @foreach ($categories as $cate)

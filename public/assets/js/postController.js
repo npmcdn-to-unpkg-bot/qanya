@@ -46,6 +46,59 @@ angular.module('App')
         }
 
 
+
+        //Tags that user follow
+        postCtrl.userTagList = function(user_uuid)
+        {
+            var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
+            ref.on("value", function(snapshot) {
+
+                $http.post('/getTagButton/', {data: snapshot.val()})
+                    .then(function(response){
+                        console.log(response.data)
+                        $('#userTagList').html(response.data)
+                })
+                console.log(snapshot.val());
+                var data = snapshot.val();
+                postCtrl.userTags = snapshot.val();
+                //$('#userTagList').html(data)
+            })
+        }
+
+        //Check the current status on this tag for this user
+        postCtrl.followTagStatus = function(user_uuid,tag)
+        {
+            var followTag = postCtrl.topics.userUrl(user_uuid).child('follow_tag/'+tag);
+            followTag.once("value", function(snapshot) {
+                if(snapshot.exists()) {
+                    postCtrl.tagFollowStatus = 'following';
+                }else{
+                    postCtrl.tagFollowStatus = 'follow';
+                }
+            })
+        }
+
+
+        //Follow Tag
+        postCtrl.followTag = function(user_uuid,tag)
+        {
+            var followTag = postCtrl.topics.userUrl(user_uuid).child('follow_tag/'+tag);
+            followTag.once("value", function(snapshot) {
+                if(snapshot.exists())
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_tag/' + tag).remove();
+                    postCtrl.tagFollowStatus = 'follow';
+                }
+                else
+                {
+                    //Add this tag to user's follow tag list
+                    postCtrl.topics.userUrl(user_uuid).child('follow_tag/' + tag).set(moment().format());
+                    postCtrl.tagFollowStatus = 'following';
+                }
+            })
+        }
+
+
         //Follow categories
         postCtrl.followCate = function(slug){
 
@@ -102,8 +155,9 @@ angular.module('App')
             postCtrl.feedName =  catename;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
-                    //$('#homeFeed').html(response.data);
-                    postCtrl.FeedHtml = $sce.trustAsHtml(response.data);
+                    postCtrl.feedHtml = response.data;
+                    $('#homeFeed').html(response.data);
+                    //postCtrl.FeedHtml = $sce.trustAsHtml(response.data);
                 });
         }
 

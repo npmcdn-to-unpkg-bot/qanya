@@ -40,27 +40,50 @@
         ga('send', 'pageview');
     </script>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+
     <!-- Angular Material Dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-aria.min.js"></script>
 
-    <!-- Firebase -->
-    <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
-    <!-- AngularFire -->
+    <!-- Firebase & AngularFire-->
+    <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script><!--  -->
     <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
 
 
 
+    <!-- bower:js -->
+
+    <!-- endbower -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
+
+    <!-- load momentJS (required for angular-moment) -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0-beta.4/angular-moment.min.js"></script>
+
+
+    {{--ng-flow--}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow-standalone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.min.js"></script>
+
     {{--Socket.io--}}
-    {!! HTML::script('https://cdn.socket.io/socket.io-1.4.5.js') !!}
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+    <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
+
+
+
 
     <script>
 
         /*
-        *
         * Desktop notification
-        *
         * */
         document.addEventListener('DOMContentLoaded', function () {
             //check if the browser supports notifications
@@ -242,33 +265,9 @@
 
 
 
-    <!-- bower:js -->
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    {{--<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>--}}
-    <!-- endbower -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
-    {!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js') !!}
 
 
 
-    <!-- load momentJS (required for angular-moment) -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-
-
-    <!-- load angular-moment -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0-beta.4/angular-moment.min.js"></script>
-
-
-    {{--ng-flow--}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow-standalone.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.min.js"></script>
-
-
-
-    <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
     <script src="/js/all.js"></script>
 
     <script type="text/javascript">
