@@ -69,10 +69,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/ip-logger','ProfileController@ipLogger');
     Route::post('/api/updateUserGeo','ProfileController@updateCityCountry');
 
+    //Channel Controller
+    Route::get('/channel/{channel_name}','ChannelController@index');
 
     //Topic Controller
     Route::post('/postTopic','TopicController@store');
-    Route::get('/{displayname}/{slug}','TopicController@show');
+    Route::post('/updateTopicContent','TopicController@update');
+    Route::get('/{displayname}/{category}','TopicController@show');
     Route::post('/feedFollowStatus','TopicController@userFollowStatus');
     Route::post('/follow-cate','TopicController@follow_cate');
     Route::post('/replyTopic','TopicController@replyTopic');
@@ -82,6 +85,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/dwonvote','TopicController@downvote');
     Route::get('/replyView','TopicController@replyTopicView');
     Route::post('/getPostImages','TopicController@getPostImages');
+    Route::post('/replyInReply','TopicController@postReplyInReply');
+    Route::post('/replyInReplyList','TopicController@replyInReplyList');
 
     //Profile page
     Route::get('/{displayname}'             ,   'ProfileController@show');

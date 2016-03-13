@@ -126,12 +126,41 @@ class Topic extends Model
             ->get();
     }
 
+    //Get topic channel
+    public function getTopicChannel($category)
+    {
+//        $results = Cache::remember('topic_channel_cache_'.$category,1,function() use ($category){
+            return $topic = DB::table('topics')
+                ->select(
+                    'topics.id',
+                    'topics.topic',
+                    'topics.body',
+                    'topics.text',
+                    'topics.uid as topics_uid',
+                    'topics.slug as topic_slug',
+                    'topics.tags',
+                    'topics.uuid as topic_uuid',
+                    'topics.created_at as topic_created_at',
+                    'users.firstname',
+                    'users.profile_img',
+                    'users.displayname',
+                    'users.description'
+                )
+                ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->join('categories', 'topics.category', '=', 'categories.id')
+                ->where('categories.slug',$category)
+                ->get();
+//        });
+//        return $results;
+    }
+
     //Get topic information
     public function getTopic($slug)
     {
         $results = Cache::remember('topic_posts_cache_'.$slug,1,function() use ($slug){
             return $topic = DB::table('topics')
                 ->select(
+                        'topics.id',
                         'topics.topic',
                         'topics.body',
                         'topics.text',

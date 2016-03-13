@@ -123,6 +123,7 @@
         });
 
         @if(Auth::check())
+
             socket.on("reply_to_{{Auth::user()->uuid}}:App\\Events\\TopicReplyEvent", function(message){
                 createNotificaiton('New Reply!',
                     'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
@@ -157,6 +158,7 @@
 
 <body id="app-layout" ng-app="App" ng-controller="ProfileCtrl as profileCtrl" ng-cloak>
 
+
     <div id="fb-root"></div>
     <script>(function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
@@ -177,11 +179,6 @@
                 </span>
             </h2>
 
-            @if (!Auth::guest())
-                <a class="nav-link" href="{{ url('/home') }}">
-                    Home
-                </a>
-            @endif
             <span flex></span>
             @if (Auth::guest())
                 <md-button aria-label="Login" ng-href="{{ url('/login') }}">

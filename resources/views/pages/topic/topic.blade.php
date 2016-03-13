@@ -28,16 +28,34 @@
                     <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
                 </span>
 
-                <span class="pull-right" ng-click="postCtrl.editable='true';
-                                                   $('#topicContent').css("background","yellow")">edit</span>
+                @if($is_user)
+                    <span class="pull-right"
+                          ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
+                          Remove
+                    </span>
+
+                    <span class="pull-right" ng-click="postCtrl.editable='true';"
+                    onclick="$('#topicContent').css('background-color', '#FFFFA5');">edit</span>
+
+                    <span class="pull-right"
+                          ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
+                          save
+                    </span>
+                @endif
 
                 <h1 class="md-display-1">
                     {!! HTML::decode($title) !!}
                 </h1>
-                <div class="reading img-fluid" id="topicContent" contenteditable="@{{ postCtrl.editable }}">
-                    @{{ postCtrl.editable }}
+
+
+                <div class="reading img-fluid"
+                     id="topicContent"
+                     ng-init    =   "postCtrl.editable='false'"
+                     contenteditable="@{{ postCtrl.editable }}">
                     {!! nl2br($body) !!}
                 </div>
+
+
                 <div>
                     @if($tags)
                         @foreach($tags as $tag)
@@ -92,11 +110,13 @@
                     <!-- Follow Button -->
                     <div class="media-right">                        
                         @if(is_null($is_user))
+                            @if(Auth::check())
                             <button class="btn btn-success-outline"
-                                    ng-init="postCtrl.isFollow('{!! $topics_uid !!}')"
-                                    ng-click="postCtrl.followUser('{!! $topics_uid !!}')">
+                                    ng-init="postCtrl.isFollow('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')"
+                                    ng-click="postCtrl.followUser('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')">
                                 @{{ postCtrl.postFollow }}
                             </button>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -143,19 +163,88 @@
                     </div>
                 @endif                
 
-                @{{ postCtrl.replyList }}
-                    <div
-                         ng-repeat="reply in postCtrl.replyList"
-                         >
 
-                        @{{reply }}
+                    <md-list id="reply_append_{{$uuid}}">hmmm</md-list>
 
-                    </div>
-
-                    <md-list id="reply_append_{{$uuid}}"></md-list>
 
                     @for($i=0;$i<count($topic_replies);$i++)
-                     
+
+                        <div class="media md-margin">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object"
+                                         width="60px"
+                                         src="{!! $topic_replies[$i]->profile_img !!}"
+                                         alt="...">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h5 class="media-heading">
+                                    <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
+                                        {{ $topic_replies[$i]->firstname }}
+                                    </a>
+                                    <small> -
+                                        <span am-time-ago="'{!! $topic_replies[$i]->replycreated_at !!}' | amParse:'YYYY-MM-DD HH:mm:ss'"></span>
+                                    </small>
+                                </h5>
+                                <div class="card-block">
+                                    {!! HTML::decode($topic_replies[$i]->body) !!}
+
+                                    <p>
+                                        <a href="#" class="card-link">
+                                            <i class="fa fa-chevron-up"></i>Upvote</a>
+                                        <a href="#" class="card-link">
+                                            <i class="fa fa-chevron-down"></i>Downvote</a>
+                                        <a href="#replyInReply_{{$topic_replies[$i]->id}}"
+                                           class="card-link"
+                                           ng-click="postCtrl.showInReply_{{$topic_replies[$i]->id}}=true">Reply</a>
+                                        <a href="#" class="card-link">Report</a>
+                                    </p>
+
+                                    <div ng-init="postCtrl.replyInReplyList('{{$topic_replies[$i]->id}}')"
+                                         id="replyInReply_<?= $topic_replies[$i]->id?>">
+                                        @{{ postCtrl.replyInReply_<?= $topic_replies[$i]->id?> }}
+                                    </div>
+
+                                    @if(Auth::user())
+                                    {{-- Reply in reply form--}}
+                                    <div id="replyInReply_{{$topic_replies[$i]->id}}"
+                                         ng-show="postCtrl.showInReply_{{$topic_replies[$i]->id}}"
+                                         ng-init="postCtrl.showInReply_{{$topic_replies[$i]->id}}=false">
+
+                                        <div class="media md-margin">
+                                            <div class="media-left">
+                                                <a href="#">
+                                                    <img class="media-object"
+                                                         width="60px"
+                                                         src="{!! Auth::user()->profile_img !!}"
+                                                         alt="...">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <h4 class="media-heading">
+                                                    You
+                                                </h4>
+                                                <div contenteditable="true"
+                                                     placeholder="Any comments?"
+                                                     class="panel card"
+                                                     data-content="test"
+                                                     id="replyInReplyContainer_{{$topic_replies[$i]->id}}">
+                                                </div>
+                                                <md-button type="submit"
+                                                           ng-click="postCtrl.submitReplyInReply('{{$topic_replies[$i]->id}}',
+                                                                                                 '{{ $uuid }}',
+                                                                                                 '{{Auth::user()->uuid}}')"
+                                                           class="md-raised md-primary">Submit</md-button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                     <md-list class="row">
 
                         <md-list-item class="md-3-line">
@@ -173,8 +262,20 @@
                                 </h3>
                                 <p> {!! HTML::decode($topic_replies[$i]->body) !!} </p>
 
+                                <div ng-show="">
+                                    test
+                                </div>
+
                             </div>
+                            <div class="card-block">
+                                <a href="#" class="card-link">Reply</a>
+                                <a href="#" class="card-link">Another link</a>
+                            </div>
+
                         </md-list-item>
+
+
+
                     </md-list>
 
                     @endfor

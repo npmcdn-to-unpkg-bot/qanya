@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
+    protected $table = 'users';
     /**
      * The attributes that are mass assignable.
      *
@@ -31,6 +32,13 @@ class User extends Authenticatable
     public function incrementPost($uuid)
     {
         DB::table('users')->where('uuid',$uuid)->increment('posts');
+    }
+
+
+    //Get user info using wherein
+    public function getUserInfo($uuid_array)
+    {
+        return $this->wherein('users.uuid',$uuid_array)->get();
     }
 
     /**

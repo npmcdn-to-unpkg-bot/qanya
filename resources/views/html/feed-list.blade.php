@@ -56,7 +56,8 @@
         </div>
 
 
-        <topic-tally author="'<?=$topic->topics_uid ?>'" topic="'<?= $topic->topic_uuid ?>'"></topic-tally>
+        {{--<topic-tally data="'{{ ['topics_uid' => $topic->topics_uid, 'uuid'       => $topic->topic_uuid] }}'">
+        </topic-tally>--}}
 
         @include('html.topic-tally',['topics_uid' => $topic->topics_uid, 'uuid'       => $topic->topic_uuid])
 

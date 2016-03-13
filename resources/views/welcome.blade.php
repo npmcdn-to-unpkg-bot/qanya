@@ -14,9 +14,6 @@
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab label="Latest feed">
                     <md-content class="md-padding">
-                        <div ng-include="postCtrl.feedHtml" ng-if="postCtrl.feedHtml">
-                            template
-                        </div>
                         <div id="homeFeed">
                             @include('html.feed-list',compact('topics'))
                         </div>
@@ -56,7 +53,7 @@
 
         <div class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
             @if(Auth::user())
-                <div class="media panel md-padding">
+                <div class="media panel md-padding" ng-init="profileCtrl.getUserStat('{{Auth::user()->uuid}}')">
                     <div class="media-body">
                         <h4 class="media-heading">
                             <a href="/{!! Auth::user()->displayname !!}">
@@ -64,10 +61,10 @@
                             </a>
                         </h4>
                         {{ Auth::user()->description }}
-                        <div>
+                        <div ng-controlloer="ProfileCtrl as profileCtrl">
                             <b> {{ Auth::user()->posts }}</b> posts
-                            <b> {{ Auth::user()->followers }}</b> followers
-                            <b> {{ Auth::user()->following }}</b> following
+                            <b> @{{ profileCtrl.userFollower }}</b> followers
+                            <b> @{{ profileCtrl.userUpvoted }}</b> upvote
                         </div>
                     </div>
                     <div class="media-right">
@@ -92,7 +89,7 @@
                 @foreach ($categories as $cate)
                     <li class="nav-item btn-success-outline"
                         role="presentation">
-                        <a href="#" class="btn btn-success-outline md-margin"
+                        <a href="/channel/{{ $cate->slug }}" class="btn btn-success-outline md-margin"
                            ng-click="postCtrl.getFeedCate('{{ $cate->slug }}','{{$cate->name}}');
                                     postCtrl.feedFollowStatus('{{ $cate->slug }}')">
                             {{$cate->name}}</a>

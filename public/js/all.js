@@ -41,8 +41,32 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase']
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
 }])
+
+/*.directive('topicTally',function(){
+    return {
+
+
+        //controller: 'PostCtrl as postCtrl',
+        scope: {
+            author: '='
+        },
+        templateUrl: '/assets/templates/topic-tally.html'
+    }
+
+})*/
+.directive('topicTally', function () {
+    return {
+        //controller: 'TopicCtrl as topicCtrl',
+        restrict: 'EA',
+        transclude:   true,
+        templateUrl: '/assets/templates/topic-tally.html',
+        scope: {
+            data: '='
+        }
+    }
+})
 angular.module('App')
-    .controller('PostCtrl',function($http,$mdDialog,$firebaseObject,$firebaseArray,Topics){
+    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
 
         var postCtrl = this;
 
@@ -65,7 +89,7 @@ angular.module('App')
         postCtrl.showLogin = function(ev) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
             $mdDialog.show({              
-              templateUrl: 'dialog1.tmpl.html',
+              templateUrl: 'http://192.168.0.100:8888/login',
               parent: angular.element(document.body),
               targetEvent: ev,
               clickOutsideToClose:true,
@@ -89,6 +113,59 @@ angular.module('App')
         }
 
 
+
+        //Tags that user follow
+        postCtrl.userTagList = function(user_uuid)
+        {
+            var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
+            ref.on("value", function(snapshot) {
+
+                $http.post('/getTagButton/', {data: snapshot.val()})
+                    .then(function(response){
+                        console.log(response.data)
+                        $('#userTagList').html(response.data)
+                })
+                console.log(snapshot.val());
+                var data = snapshot.val();
+                postCtrl.userTags = snapshot.val();
+                //$('#userTagList').html(data)
+            })
+        }
+
+        //Check the current status on this tag for this user
+        postCtrl.followTagStatus = function(user_uuid,tag)
+        {
+            var followTag = postCtrl.topics.userUrl(user_uuid).child('follow_tag/'+tag);
+            followTag.once("value", function(snapshot) {
+                if(snapshot.exists()) {
+                    postCtrl.tagFollowStatus = 'following';
+                }else{
+                    postCtrl.tagFollowStatus = 'follow';
+                }
+            })
+        }
+
+
+        //Follow Tag
+        postCtrl.followTag = function(user_uuid,tag)
+        {
+            var followTag = postCtrl.topics.userUrl(user_uuid).child('follow_tag/'+tag);
+            followTag.once("value", function(snapshot) {
+                if(snapshot.exists())
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_tag/' + tag).remove();
+                    postCtrl.tagFollowStatus = 'follow';
+                }
+                else
+                {
+                    //Add this tag to user's follow tag list
+                    postCtrl.topics.userUrl(user_uuid).child('follow_tag/' + tag).set(moment().format());
+                    postCtrl.tagFollowStatus = 'following';
+                }
+            })
+        }
+
+
         //Follow categories
         postCtrl.followCate = function(slug){
 
@@ -109,34 +186,50 @@ angular.module('App')
 
         //Follower user
         //@Params uuid - author ID
-        postCtrl.followUser = function(uuid)
+        postCtrl.followUser = function(user_uuid,uuid)
         {
-            $http.post('/followUser/', { data: uuid})
-                .then(function(response){
-                    if(response.data == 0)
-                    {
-                        postCtrl.postFollow = 'follow';
-                    }else{
+            var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
+            followStatus.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
+                    postCtrl.postFollow = 'following'
 
-                        postCtrl.postFollow = 'following';
-                    }
-                });
+                    //Update stat for user being follow
+                    var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    })
+                }
+                else
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).remove();
+                    postCtrl.postFollow = 'follow'
+
+                    var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) - 1;
+                    })
+                }
+            })
         }
 
 
         //Is currently following user
         //@Params uuid - author ID
-        postCtrl.isFollow = function(uuid)
+        postCtrl.isFollow = function(user_uuid,uuid)
         {
-            $http.post('/userFollowStatus/', { data: uuid})
-                .then(function(response){
-                    if(response.data == 0)
-                    {
-                        postCtrl.postFollow = 'follow';
-                    }else{
-                        postCtrl.postFollow = 'following';
-                    }
-                });
+            var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
+            followStatus.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.postFollow = 'follow'
+                }
+                else
+                {
+                    postCtrl.postFollow = 'following'
+                }
+            })
         }
 
 
@@ -145,7 +238,9 @@ angular.module('App')
             postCtrl.feedName =  catename;
             $http.post('/getFeed/', {slug: slug})
                 .then(function(response){
+                    postCtrl.feedHtml = response.data;
                     $('#homeFeed').html(response.data);
+                    //postCtrl.FeedHtml = $sce.trustAsHtml(response.data);
                 });
         }
 
@@ -190,19 +285,61 @@ angular.module('App')
         }
 
 
+        //Get all messages for reply in reply
+        postCtrl.replyInReplyList = function(reply_id)
+        {
+            var key = '#replyInReply_'+reply_id;
+            $http.post('/replyInReplyList', { reply_id: reply_id })
+                .then(function(response){
+                    $(key).html(response.data);
+                })
+
+            /*console.log(reply_id);
+            var key = 'replyInReply_'+reply_id;
+            var messageListRef = postCtrl.topics.ref.child('reply-in-reply/'+reply_id);
+            messageListRef.on("value", function(snapshot) {
+                console.log(snapshot.val());
+                $http.post('/replyInReplyList', {data: snapshot.val().replies})
+                    .then(function(response){
+                        console.log(response)
+                        $('#'+key).html(response.data);
+                })
+
+                postCtrl[key]  = snapshot.val();
+            })*/
+        }
+
+        //Submit reply in reply
+        postCtrl.submitReplyInReply = function(reply_id,topic_uuid,user_uuid)
+        {
+            var key = '#replyInReplyContainer_'+reply_id;
+            $http.post('/replyInReply', {   uuid: user_uuid,
+                                            topics_uuid: topic_uuid,
+                                            reply_id: reply_id,
+                                            data: $(key).html() })
+                .then(function(response){
+                    postCtrl.replyInReplyList(reply_id);
+                })
+        }
+
+
+
         //Post topic
         postCtrl.postTopic = function()
         {
             var imgIds = new Array();
 
+            //Search for images in the content
             $("div#contentBody img").each(function(){
                 imgIds.push($(this).attr('src'));
             });
+
 
             var data = { title:         postCtrl.title,
                          categories:    postCtrl.categories,
                          tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),
+                         text:          $('#contentBody').text(),
                          images:        imgIds
                         };
             $.post( "/api/postTopic/", { data: data} )
@@ -240,20 +377,91 @@ angular.module('App')
             });
         };
 
-
-        postCtrl.incrementView = function(topic_uuid)
+        postCtrl.updateTopicContent = function(topic_uuid,topic_id)
         {
-            var ref = new Firebase("https://qanya.firebaseio.com/topic/"+topic_uuid+'/view');
-            return ref.on("value", function(snapshot) {
-                console.log("view: "+snapshot.val());
-                if(snapshot.val() ==0)
+            var data = {
+                topic_id: topic_id,
+                body: $('#topicContent').html(),
+                text: $('#topicContent').text()
+            }
+            $http.post('/updateTopicContent', {data: data })
+                .then(function(response){
+
+                })
+
+        }
+
+        //Login for material
+        postCtrl.showMdLogin = function(ev) {
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            $mdDialog.show({
+                //controller: 'AuthCtrl as authCtrl',
+                //templateUrl: 'templates/html/form-login',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: useFullScreen
+            })
+        }
+
+
+        postCtrl.getPostImage = function(uuid)
+        {
+            $http.post('/getPostImages', {uuid: uuid })
+                .then(function(response) {
+                    console.log(response);
+
+                    var key = '#previewImage_'+uuid;
+                    $(key).html(response.data);
+                })
+        }
+
+
+        //Count the number of bookmark per topic
+        postCtrl.bookMarkTally = function(topic_uuid)
+        {
+            var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/bookmark')
+            ref.on("value", function (snapshot) {
+                var key = 'bookmarks_'+topic_uuid;
+                postCtrl[key]  = snapshot.val();
+            });
+        }
+
+        postCtrl.bookMark = function(user_uuid,topic_uuid)
+        {
+            var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+
+            userBookmark.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
                 {
-                    ref.set(1);
-                }else
-                {
-                    ref.set(snapshot.val()+1)
+                    postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).set(moment().format());
+
+                    var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
+                    topicRef.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
                 }
-                return snapshot.val();
+                else{
+                    postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
+                    var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
+                    topicRef.transaction(function (current_value) {
+                        if(current_value < 0 || current_value == 0 )
+                        {
+                            return 0;
+                        }else {
+                            return (current_value || 0) - 1;
+                        }
+                    });
+                }
+            })
+        }
+
+        postCtrl.commentsTally    =   function(topic_uuid)
+        {
+            var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/comments')
+            ref.on("value", function (snapshot) {
+                var key = 'comments_'+topic_uuid;
+                postCtrl[key]  = snapshot.val();
             });
         }
 
@@ -281,13 +489,13 @@ angular.module('App')
             var btn = "#dwnvote_btn_status_"+topic_uuid;
 
             //UserDownvote Value
-            var userUpvoteRef = postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid);
+            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {
 
                 //Chck if user already voted
                 if (snapshot.exists() == false) {
 
-                    postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid).set(moment().format());
+                    postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).set(moment().format());
 
                     //Topic Upvote tally
                     var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
@@ -306,7 +514,7 @@ angular.module('App')
         {
             var btn = "#upvote_btn_status_"+topic_uuid;
             //Remove voted user
-            postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid).remove();
+            postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).remove();
 
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
@@ -326,7 +534,7 @@ angular.module('App')
         {
             var btn = "#dwnvote_btn_status_"+topic_uuid;
             //Remove voted user
-            postCtrl.topics.upvoteURL(topic_uid).child('downvote/'+topic_uuid).remove();
+            postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).remove();
 
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
@@ -345,22 +553,41 @@ angular.module('App')
         {
             postCtrl.dwnvoteReset(topic_uuid,topic_uid);
             var btn = "#upvote_btn_status_"+topic_uuid;
+            
             //UserUpvote Value
-            var userUpvoteRef = postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid);
+            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {
 
                 //Chck if user already voted
                 if (snapshot.exists() == false) {
 
-                    postCtrl.topics.upvoteURL(topic_uid).child('upvote/'+topic_uuid).set(moment().format());
+                    postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).set(moment().format());
 
                     //Topic Upvote tally
                     var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
                     topicRef.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     });
+
+                    //Update stat for poster
+                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    })
+
                 }else{ //value already exist
                     postCtrl.upvoteReset(topic_uuid,topic_uid);
+                    
+                    //Update stat for poster
+                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+                    followStatus.transaction(function (current_value) {
+                        if(current_value < 0 || current_value == 0 )
+                        {
+                            return 0;
+                        }else{
+                            return current_value - 1;
+                        }
+                    })
                 }
             })
 
@@ -389,7 +616,7 @@ angular.module('App')
         var Topics = {
 
             // Reply listing
-            upvoteURL: function (user_uuid){
+            userUrl: function (user_uuid){
                 return ref.child('user/'+user_uuid)
             },
             replyList: function (topic_uuid) {
@@ -411,7 +638,7 @@ angular.module('App')
         profileCtrl.profileDescription  =   '';
         profileCtrl.notificationList    =   '';
         profileCtrl.unreadNotification  =   0;
-
+        profileCtrl.userBookmark        =   0;
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
         profileCtrl.isOpenRight = function(){
@@ -441,6 +668,17 @@ angular.module('App')
             if ( current.left && last.right ) current.right = false;
             last = angular.extend({},current);
         }
+
+
+        profileCtrl.getUserStat = function(uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+uuid+"/stat/");
+            ref.on("value", function(snapshot) {
+                profileCtrl.userFollower = snapshot.val().follower;
+                profileCtrl.userUpvoted  = snapshot.val().upvote;
+            })
+        }
+
 
         profileCtrl.profileImage = function(files)
         {
@@ -509,6 +747,35 @@ angular.module('App')
                             .hideDelay(3000)
                     );
                 });
+        }
+
+        profileCtrl.getUserBookmark = function(user_uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/bookmark");
+            ref.on("value",function (snapshot) {
+
+                $http.post('/user/getBookmark',
+                    {data: snapshot.val()})
+                    .then(function(response){
+                        console.log(response);
+                        $('#userBookmark').html(response.data);
+                    })
+
+                //profileCtrl.userBookmark = snapshot.val();
+            });
+        }
+
+        profileCtrl.getUserHistory = function(user_uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
+            ref.on("value",function (snapshot) {
+
+                $http.post('/user/getHistory',
+                    {data: snapshot.val()})
+                    .then(function(response){
+                        $('#userViewHistory').html(response.data);
+                    })
+            });
         }
 
         //Toggle sidebar

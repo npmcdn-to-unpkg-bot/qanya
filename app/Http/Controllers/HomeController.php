@@ -35,6 +35,13 @@ class HomeController extends Controller
         $categories = new \App\Categories();
         $categories = $categories->all();
 
+        if(Auth::user())
+        {
+            if(empty(Auth::user()->displayname)){
+                return redirect()->action('ProfileController@createName');
+            }
+        }
+
         return view('welcome',compact('topics','categories'));
     }
 

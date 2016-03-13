@@ -119,34 +119,50 @@ angular.module('App')
 
         //Follower user
         //@Params uuid - author ID
-        postCtrl.followUser = function(uuid)
+        postCtrl.followUser = function(user_uuid,uuid)
         {
-            $http.post('/followUser/', { data: uuid})
-                .then(function(response){
-                    if(response.data == 0)
-                    {
-                        postCtrl.postFollow = 'follow';
-                    }else{
+            var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
+            followStatus.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
+                    postCtrl.postFollow = 'following'
 
-                        postCtrl.postFollow = 'following';
-                    }
-                });
+                    //Update stat for user being follow
+                    var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    })
+                }
+                else
+                {
+                    postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).remove();
+                    postCtrl.postFollow = 'follow'
+
+                    var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) - 1;
+                    })
+                }
+            })
         }
 
 
         //Is currently following user
         //@Params uuid - author ID
-        postCtrl.isFollow = function(uuid)
+        postCtrl.isFollow = function(user_uuid,uuid)
         {
-            $http.post('/userFollowStatus/', { data: uuid})
-                .then(function(response){
-                    if(response.data == 0)
-                    {
-                        postCtrl.postFollow = 'follow';
-                    }else{
-                        postCtrl.postFollow = 'following';
-                    }
-                });
+            var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
+            followStatus.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.postFollow = 'follow'
+                }
+                else
+                {
+                    postCtrl.postFollow = 'following'
+                }
+            })
         }
 
 
@@ -201,6 +217,43 @@ angular.module('App')
                 })
         }
 
+
+        //Get all messages for reply in reply
+        postCtrl.replyInReplyList = function(reply_id)
+        {
+            var key = '#replyInReply_'+reply_id;
+            $http.post('/replyInReplyList', { reply_id: reply_id })
+                .then(function(response){
+                    $(key).html(response.data);
+                })
+
+            /*console.log(reply_id);
+            var key = 'replyInReply_'+reply_id;
+            var messageListRef = postCtrl.topics.ref.child('reply-in-reply/'+reply_id);
+            messageListRef.on("value", function(snapshot) {
+                console.log(snapshot.val());
+                $http.post('/replyInReplyList', {data: snapshot.val().replies})
+                    .then(function(response){
+                        console.log(response)
+                        $('#'+key).html(response.data);
+                })
+
+                postCtrl[key]  = snapshot.val();
+            })*/
+        }
+
+        //Submit reply in reply
+        postCtrl.submitReplyInReply = function(reply_id,topic_uuid,user_uuid)
+        {
+            var key = '#replyInReplyContainer_'+reply_id;
+            $http.post('/replyInReply', {   uuid: user_uuid,
+                                            topics_uuid: topic_uuid,
+                                            reply_id: reply_id,
+                                            data: $(key).html() })
+                .then(function(response){
+                    postCtrl.replyInReplyList(reply_id);
+                })
+        }
 
 
 
@@ -257,7 +310,19 @@ angular.module('App')
             });
         };
 
+        postCtrl.updateTopicContent = function(topic_uuid,topic_id)
+        {
+            var data = {
+                topic_id: topic_id,
+                body: $('#topicContent').html(),
+                text: $('#topicContent').text()
+            }
+            $http.post('/updateTopicContent', {data: data })
+                .then(function(response){
 
+                })
+
+        }
 
         //Login for material
         postCtrl.showMdLogin = function(ev) {
@@ -436,8 +501,26 @@ angular.module('App')
                     topicRef.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     });
+
+                    //Update stat for poster
+                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    })
+
                 }else{ //value already exist
                     postCtrl.upvoteReset(topic_uuid,topic_uid);
+                    
+                    //Update stat for poster
+                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+                    followStatus.transaction(function (current_value) {
+                        if(current_value < 0 || current_value == 0 )
+                        {
+                            return 0;
+                        }else{
+                            return current_value - 1;
+                        }
+                    })
                 }
             })
 

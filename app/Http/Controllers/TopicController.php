@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\IpLogger;
 use App\Notification;
+use App\ReplyInReply;
 use App\Tags;
 use App\Topic_actions;
 use App\TopicImages;
@@ -37,6 +38,42 @@ use SEO;
 
 class TopicController extends Controller
 {
+
+
+    public function postReplyInReply(Request $request)
+    {
+        $rir = new ReplyInReply();
+        $rir->reply_id      = $request->reply_id;
+        $rir->topic_uuid    = $request->topics_uuid;
+        $rir->user_uuid     = $request->uuid;
+        $rir->body          = $request->data;
+        $rir->save();
+
+    }
+
+
+    //Format the replies in reply
+    public function replyInReplyList(Request $request)
+    {
+        $rir = new ReplyInReply();
+        $data= $rir->getReplyInReply($request->reply_id);
+      /*  $fb_data = $request->data;
+        $userList = [];
+        $count = 0;
+        foreach ($fb_data as $reply) {
+            $userList[$count] = $reply['user_uuid'];
+            $count++;
+        }
+
+        $userdata = DB::table('users')
+                ->wherein('users.uuid',$userList)->get();
+        echo is_array($userdata);
+        echo is_array($fb_data);*/
+
+//        $data = array_combine($fb_data, $userdata);
+//        print_r($data);
+        return view('html.reply-in-reply',compact('data'));
+    }
 
     public function getPostImages(Request $request)
     {
@@ -283,7 +320,7 @@ class TopicController extends Controller
 
 
             $dt = Carbon::parse($topic->topic_created_at);
-
+            $topic_id   = $topic->id;
             $title      = $topic->topic;
             $body       = $topic->body;
             $username   = $topic->displayname;
@@ -317,7 +354,9 @@ class TopicController extends Controller
             }
 
             return view('pages.topic.topic',
-                compact('title','body',
+                compact('topic_id',
+                        'title',
+                        'body',
                         'username',
                         'slug',
                         'uuid',
@@ -349,9 +388,20 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $data =  $request->data;
+        print_r($data);
+
+        $topic = Topic::find($data['topic_id']);
+
+        print_r($topic);
+
+        $topic->body = $data['body'];
+        $topic->text = $data['text'];;
+
+        $topic->save();
+
     }
 
     /**

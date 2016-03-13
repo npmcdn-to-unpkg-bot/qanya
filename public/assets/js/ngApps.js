@@ -48,8 +48,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase']
         transclude:   true,
         templateUrl: '/assets/templates/topic-tally.html',
         scope: {
-            author: '=',
-            topic: '='
+            data: '='
         }
     }
 })

@@ -37,6 +37,17 @@ angular.module('App')
             last = angular.extend({},current);
         }
 
+
+        profileCtrl.getUserStat = function(uuid)
+        {
+            var ref = new Firebase("https://qanya.firebaseio.com/user/"+uuid+"/stat/");
+            ref.on("value", function(snapshot) {
+                profileCtrl.userFollower = snapshot.val().follower;
+                profileCtrl.userUpvoted  = snapshot.val().upvote;
+            })
+        }
+
+
         profileCtrl.profileImage = function(files)
         {
             angular.forEach(files, function(flowFile, i){
