@@ -196,7 +196,6 @@ angular.module('App')
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-            var replyObj = 'reply_append_'+uuid;
             $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
                                        data: $('#topicReplyContainer').html() })
@@ -226,20 +225,6 @@ angular.module('App')
                 .then(function(response){
                     $(key).html(response.data);
                 })
-
-            /*console.log(reply_id);
-            var key = 'replyInReply_'+reply_id;
-            var messageListRef = postCtrl.topics.ref.child('reply-in-reply/'+reply_id);
-            messageListRef.on("value", function(snapshot) {
-                console.log(snapshot.val());
-                $http.post('/replyInReplyList', {data: snapshot.val().replies})
-                    .then(function(response){
-                        console.log(response)
-                        $('#'+key).html(response.data);
-                })
-
-                postCtrl[key]  = snapshot.val();
-            })*/
         }
 
         //Submit reply in reply
@@ -253,6 +238,130 @@ angular.module('App')
                 .then(function(response){
                     postCtrl.replyInReplyList(reply_id);
                 })
+        }
+
+        //Upvote user in reply in reply
+        postCtrl.replyInReplyUpvote = function(reply_id,topic_uuid,recipient,user_uuid)
+        {
+            postCtrl.replyInReplyDownvoteReset(reply_id,user_uuid);
+
+            var upvoteReplyInReply = postCtrl.topics.ref.child('rir/'+reply_id+'/upvote');
+
+            upvoteReplyInReply.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.topics.ref.child('rir/'+reply_id+'/upvote/'+'/'+user_uuid)
+                        .set({'recipient': recipient ,'created_at':moment().format()});
+
+                    var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/upvote_total')
+                    ttlUpvote.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/upvote');
+                    recipientRef.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/downvote');
+                    recipientRef.transaction(function (current_value) {
+                        return negCurrentValueCheck(current_value);
+                    });
+                }
+                else{
+                    postCtrl.replyInReplyUpvoteReset(reply_id,user_uuid);
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/upvote');
+                    recipientRef.transaction(function (current_value) {
+                        return negCurrentValueCheck(current_value);
+                    });
+                }
+            })
+        }
+
+        //Upvote user in reply in reply
+        postCtrl.replyInReplyDownvote = function(reply_id,topic_uuid,recipient,user_uuid)
+        {
+            postCtrl.replyInReplyUpvoteReset(reply_id,user_uuid);
+
+            var upvoteReplyInReply = postCtrl.topics.ref.child('rir/'+reply_id+'/downvote');
+
+            upvoteReplyInReply.once("value", function(snapshot) {
+                if(snapshot.exists() == false)
+                {
+                    postCtrl.topics.ref.child('rir/'+reply_id+'/downvote/'+'/'+user_uuid)
+                        .set({'recipient': recipient ,'created_at':moment().format()});
+
+                    var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/downvote_total')
+                    ttlUpvote.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/downvote');
+                    recipientRef.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/upvote');
+                    recipientRef.transaction(function (current_value) {
+                        return negCurrentValueCheck(current_value);
+                    });
+                }
+                else{
+
+                    postCtrl.replyInReplyDownvoteReset(reply_id,user_uuid);
+
+                    var recipientRef = postCtrl.topics.userUrl(recipient).child('stat/downvote');
+                    recipientRef.transaction(function (current_value) {
+                        return negCurrentValueCheck(current_value);
+                    });
+                }
+            })
+        }
+
+
+        //Reply In Reply Upvote Tally
+        postCtrl.replyInReplyUpvoteTally = function(reply_id)
+        {
+            var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/upvote_total')
+            ttlUpvote.on("value",function(snapshot){
+                var key = 'reply_upvote_'+reply_id;
+                postCtrl[key]  = snapshot.val();
+            })
+        }
+
+        postCtrl.replyInReplyDownvoteTally = function(reply_id)
+        {
+            var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/downvote_total')
+            ttlUpvote.on("value",function(snapshot){
+                var key = 'reply_downvote_'+reply_id;
+                postCtrl[key]  = snapshot.val();
+            })
+        }
+
+        //Reset upvote to zero
+        postCtrl.replyInReplyUpvoteReset =function(reply_id,user_uuid)
+        {
+            postCtrl.topics.ref.child('rir/'+reply_id+'/upvote/'+user_uuid).remove();
+
+            var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/upvote_total')
+            ttlUpvote.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            });
+
+        }
+
+        //Reset downvote to zero
+        postCtrl.replyInReplyDownvoteReset =function(reply_id,user_uuid)
+        {
+            postCtrl.topics.ref.child('rir/'+reply_id+'/downvote/'+user_uuid).remove();
+
+            var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/downvote_total')
+            ttlUpvote.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            });
         }
 
 
@@ -452,12 +561,7 @@ angular.module('App')
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
             topicRef.transaction(function (current_value) {
-                if(current_value < 0 || current_value == 0 )
-                {
-                    return 0;
-                }else{
-                    return current_value - 1;
-                }
+                return negCurrentValueCheck(current_value);
             });
             
         }
@@ -472,12 +576,7 @@ angular.module('App')
             //Decrement the tally
             var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
             topicRef.transaction(function (current_value) {
-                if(current_value < 0 || current_value == 0 )
-                {
-                    return 0;
-                }else{
-                    return current_value - 1;
-                }
+                return negCurrentValueCheck(current_value);
             });
         }
 
@@ -538,3 +637,13 @@ angular.module('App')
             });*/
         }
     })
+
+function negCurrentValueCheck(current_value)
+{
+    if(current_value < 0 || current_value == 0 || current_value == '' || current_value == null)
+    {
+        return 0;
+    }else {
+        return (current_value) - 1;
+    }
+}

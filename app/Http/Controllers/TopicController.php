@@ -330,7 +330,10 @@ class TopicController extends Controller
             $topics_uid = $topic->topics_uid;
             $user_descs = $topic->description;
             $poster_img = $topic->profile_img;
-            $tags       = explode(',', $topic->tags);
+            if(!empty($topic->tags))
+                $tags       = explode(',', $topic->tags);
+            else
+                $tags = null;
             $created_at = $dt->diffForHumans();
 
             SEOMeta::setTitle($title);

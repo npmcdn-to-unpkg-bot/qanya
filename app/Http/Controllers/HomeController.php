@@ -57,16 +57,13 @@ class HomeController extends Controller
 
         $user = User::find(Auth::user()->id);
 
-        /*echo $user;
-        echo $user->uuid;*/
-
         if(empty($user->displayname)){
             return redirect()->action('ProfileController@createName');
         }
 
         $followFeed = new Users_follow();
         $topics = $followFeed->getFeed(Auth::user()->uuid);
-//        print_r($topics);
+
 
         return view('home',compact('categories','topics'));
     }

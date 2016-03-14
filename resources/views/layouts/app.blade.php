@@ -169,59 +169,59 @@
     }(document, 'script', 'facebook-jssdk'));</script>
 
     <div class="pos-f-t">
-    <md-toolbar>
-        <div class="md-toolbar-tools">
-            <h2>
-                <span>
-                    <a class="navbar-brand white-font" href="{{ url('/') }}">
-                        Qanya
-                    </a>
-                </span>
-            </h2>
-
-            <span flex></span>
-            @if (Auth::guest())
-                <md-button aria-label="Login" ng-href="{{ url('/login') }}">
-                    Login
-                </md-button>
-                <md-button aria-label="Join us" ng-href="{{ url('/register') }}">
-                    join us
-                </md-button>
-            @else
-
-                <md-button ng-click="profileCtrl.toggleRight();
-                                    profileCtrl.listNotification()"
-                           class="md-primary">
-                    Toggle right
-                </md-button>
-                <md-button
-                        aria-label="notification"
-                        ng-click="profileCtrl.ackNotificataion();
-                                  profileCtrl.toggleRight();
-                                  profileCtrl.listNotification()
-                                  ">
-                    <i class="fa fa-bell-o fa-x"></i>
-                    <span id="notification_{{Auth::user()->uuid}}"
-                          ng-init="profileCtrl.userNotification()">
-                        @{{ profileCtrl.unreadNotification }}
+        <md-toolbar>
+            <div class="md-toolbar-tools container">
+                <h2>
+                    <span>
+                        <a class="navbar-brand white-font" href="{{ url('/') }}">
+                            Qanya
+                        </a>
                     </span>
-                </md-button>
+                </h2>
 
-                <a href="/{!! Auth::user()->displayname !!}">
-                    {{ Auth::user()->firstname }} <span class="caret"></span>
-                </a>
+                <span flex></span>
+                @if (Auth::guest())
+                    <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                        Login
+                    </md-button>
+                    <md-button aria-label="Join us" ng-href="{{ url('/register') }}">
+                        join us
+                    </md-button>
+                @else
 
-                {{--<li class="dropdown">
+                    <md-button ng-click="profileCtrl.toggleRight();
+                                        profileCtrl.listNotification()"
+                               class="md-primary">
+                        Toggle right
+                    </md-button>
+                    <md-button
+                            aria-label="notification"
+                            ng-click="profileCtrl.ackNotificataion();
+                                      profileCtrl.toggleRight();
+                                      profileCtrl.listNotification()
+                                      ">
+                        <i class="fa fa-bell-o fa-x"></i>
+                        <span id="notification_{{Auth::user()->uuid}}"
+                              ng-init="profileCtrl.userNotification()">
+                            @{{ profileCtrl.unreadNotification }}
+                        </span>
+                    </md-button>
+
+                    <a href="/{!! Auth::user()->displayname !!}">
+                        <img src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
+                    </a>
+
+                    {{--<li class="dropdown">
 
 
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
-                    </ul>
-                </li>--}}
-            @endif
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                        </ul>
+                    </li>--}}
+                @endif
 
-        </div>
-    </md-toolbar>
+            </div>
+        </md-toolbar>
     </div>
 
 

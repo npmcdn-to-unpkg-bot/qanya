@@ -48,45 +48,53 @@
                 </h1>
 
 
-                <div class="reading img-fluid"
-                     id="topicContent"
+                <div class="reading img-fluid" id="topicContent"
                      ng-init    =   "postCtrl.editable='false'"
                      contenteditable="@{{ postCtrl.editable }}">
                     {!! nl2br($body) !!}
                 </div>
 
-
+                {{-- Tag list --}}
                 <div>
-                    @if($tags)
+                    @if(!empty($tags))
                         @foreach($tags as $tag)
                             <a href="/tag/{{$tag}}">#{{$tag}}</a>
                         @endforeach
                     @endif
                 </div>
 
-                @include('html.topic-tally',compact('topics_uid','uuid'))
+                {{-- Tally and share --}}
+                <div class="container-fluid">
+                    <div class="pull-left">
+                        <h5>
+                            @include('html.topic-tally',compact('topics_uid','uuid'))
+                        </h5>
+                    </div>
 
-                {{-- Share button --}}
-                <div class="fb-share-button"
-                     data-href="https://developers.facebook.com/docs/plugins/"
-                     data-layout="icon_link"></div>
+                    <div class="pull-right">
+                        {{-- Share button --}}
+                        <div class="fb-share-button"
+                             data-href="https://developers.facebook.com/docs/plugins/"
+                             data-layout="icon_link"></div>
 
-                <span>
-                    <script type="text/javascript" src="//media.line.me/js/line-button.js?v=20140411" ></script>
-                    <script type="text/javascript">
-                        new media_line_me.LineButton({"pc":false,"lang":"en","type":"a"});
-                    </script>
-                </span>
-
-                <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
-                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                        <span>
+                            <script type="text/javascript" src="//media.line.me/js/line-button.js?v=20140411" ></script>
+                            <script type="text/javascript">
+                                new media_line_me.LineButton({"pc":false,"lang":"en","type":"a"});
+                            </script>
+                        </span>
+                        <div>
+                            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                        </div>
+                    </div>
                     {{-- end share --}}
+                </div>
 
-                <md-divider></md-divider>
             
 
                 {{-- Author section --}}
-                <div class="media md-margin">
+                <div class="media md-margin md-card">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object"
@@ -110,13 +118,15 @@
                     <!-- Follow Button -->
                     <div class="media-right">                        
                         @if(is_null($is_user))
-                            @if(Auth::check())
+
                             <button class="btn btn-success-outline"
-                                    ng-init="postCtrl.isFollow('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')"
-                                    ng-click="postCtrl.followUser('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')">
+                                    @if(Auth::check())
+                                        ng-init ="postCtrl.isFollow('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')"
+                                        ng-click="postCtrl.followUser('{!! Auth::user()->uuid !!}', '{!! $topics_uid !!}')"
+                                    @endif>
                                 @{{ postCtrl.postFollow }}
                             </button>
-                            @endif
+
                         @endif
                     </div>
                 </div>
@@ -125,175 +135,160 @@
 </div>
 
 
-            <div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl"  ng-init="postCtrl.replyList = postCtrl.getReplies('{{$uuid}}')" >
+<div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl"  ng-init="postCtrl.replyList = postCtrl.getReplies('{{$uuid}}')" >
 
-                @if (Auth::user())
-                    <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}','{{Auth::user()->uuid }}')">
-                        <div class="media md-margin">
-                            <div class="media-left">
-                                <a href="#">
-                                    <img class="media-object"
-                                         width="60px"
-                                         src="{!! Auth::user()->profile_img !!}"
-                                         alt="...">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h4 class="media-heading">
-                                    You
-                                </h4>
-                                <div contenteditable="true"
-                                     placeholder="Any comments?"
-                                     class="panel card"
-                                     data-content="test"
-                                     id="topicReplyContainer">
-                                </div>                                
-                                <md-button type="submit"
-                                           class="md-raised md-primary">Submit</md-button>
-                            </div>
-                        </div>
-                    </form>
-                @else
-                    <div class="media md-margin">
-                        <div class="media-body">
-                            <h4 class="media-heading">
-                                Write a response
-                            </h4>
-                        </div>
+    @if (Auth::user())
+        <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}','{{Auth::user()->uuid }}')">
+            <div class="media md-margin">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object"
+                             width="60px"
+                             src="{!! Auth::user()->profile_img !!}"
+                             alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        You
+                    </h4>
+                    <div contenteditable="true"
+                         placeholder="Any comments?"
+                         class="panel card"
+                         data-content="test"
+                         id="topicReplyContainer">
                     </div>
-                @endif                
+                    <md-button type="submit"
+                               class="md-raised md-primary">Submit</md-button>
+                </div>
+            </div>
+        </form>
+    @else
+        <div class="media md-margin">
+            <div class="media-body">
+                <h4 class="media-heading">
+                    Write a response
+                </h4>
+            </div>
+        </div>
+    @endif
+
+        {{-- Appending new reply--}}
+        <md-list id="reply_append_{{$uuid}}"></md-list>
 
 
-                    <md-list id="reply_append_{{$uuid}}">hmmm</md-list>
+        @for($i=0;$i<count($topic_replies);$i++)
 
+            <div class="media md-margin" id="reply_message_<?=$i?>">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object"
+                             width="60px"
+                             src="{!! $topic_replies[$i]->profile_img !!}"
+                             alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
+                            {{ $topic_replies[$i]->firstname }}
+                        </a>
+                        <small> -
+                            <span am-time-ago="'{!! $topic_replies[$i]->replycreated_at !!}' | amParse:'YYYY-MM-DD HH:mm:ss'"></span>
+                        </small>
+                    </h5>
 
-                    @for($i=0;$i<count($topic_replies);$i++)
+                    <div class="card-block">
 
-                        <div class="media md-margin">
-                            <div class="media-left">
-                                <a href="#">
-                                    <img class="media-object"
-                                         width="60px"
-                                         src="{!! $topic_replies[$i]->profile_img !!}"
-                                         alt="...">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <h5 class="media-heading">
-                                    <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
-                                        {{ $topic_replies[$i]->firstname }}
-                                    </a>
-                                    <small> -
-                                        <span am-time-ago="'{!! $topic_replies[$i]->replycreated_at !!}' | amParse:'YYYY-MM-DD HH:mm:ss'"></span>
-                                    </small>
-                                </h5>
-                                <div class="card-block">
-                                    {!! HTML::decode($topic_replies[$i]->body) !!}
+                        {!! HTML::decode($topic_replies[$i]->body) !!}
 
-                                    <p>
-                                        <a href="#" class="card-link">
-                                            <i class="fa fa-chevron-up"></i>Upvote</a>
-                                        <a href="#" class="card-link">
-                                            <i class="fa fa-chevron-down"></i>Downvote</a>
-                                        <a href="#replyInReply_{{$topic_replies[$i]->id}}"
-                                           class="card-link"
-                                           ng-click="postCtrl.showInReply_{{$topic_replies[$i]->id}}=true">Reply</a>
-                                        <a href="#" class="card-link">Report</a>
-                                    </p>
+                        <p>
+                            <a href="#reply_message_<?=$i?>" class="card-link"
+                                @if(Auth::check())
+                                    ng-click="postCtrl.replyInReplyUpvote('{{$topic_replies[$i]->id}}',
+                                                                          '{{ $uuid }}',
+                                                                          '{{$topic_replies[$i]->uuid}}',
+                                                                          '{{Auth::user()->uuid}}')"
+                                @endif
+                                ng-init="postCtrl.replyInReplyUpvoteTally('{{$topic_replies[$i]->id}}')">
+                                <i class="fa fa-chevron-up"></i>
+                                {{ postCtrl.reply_upvote_<?= $topic_replies[$i]->id ?>  }}
+                            </a>
 
-                                    <div ng-init="postCtrl.replyInReplyList('{{$topic_replies[$i]->id}}')"
-                                         id="replyInReply_<?= $topic_replies[$i]->id?>">
-                                        @{{ postCtrl.replyInReply_<?= $topic_replies[$i]->id?> }}
-                                    </div>
+                            <a href="#reply_message_<?=$i?>" class="card-link"
+                               @if(Auth::check())
+                                ng-click="postCtrl.replyInReplyDownvote('{{$topic_replies[$i]->id}}',
+                                                                          '{{ $uuid }}',
+                                                                          '{{$topic_replies[$i]->uuid}}',
+                                                                          '{{Auth::user()->uuid}}')"
+                               @endif
+                               ng-init="postCtrl.replyInReplyDownvoteTally('{{$topic_replies[$i]->id}}')">
 
-                                    @if(Auth::user())
-                                    {{-- Reply in reply form--}}
-                                    <div id="replyInReply_{{$topic_replies[$i]->id}}"
-                                         ng-show="postCtrl.showInReply_{{$topic_replies[$i]->id}}"
-                                         ng-init="postCtrl.showInReply_{{$topic_replies[$i]->id}}=false">
+                                <i class="fa fa-chevron-down"></i>
+                                {{ postCtrl.reply_downvote_<?= $topic_replies[$i]->id ?>  }}
+                            </a>
 
-                                        <div class="media md-margin">
-                                            <div class="media-left">
-                                                <a href="#">
-                                                    <img class="media-object"
-                                                         width="60px"
-                                                         src="{!! Auth::user()->profile_img !!}"
-                                                         alt="...">
-                                                </a>
-                                            </div>
-                                            <div class="media-body">
-                                                <h4 class="media-heading">
-                                                    You
-                                                </h4>
-                                                <div contenteditable="true"
-                                                     placeholder="Any comments?"
-                                                     class="panel card"
-                                                     data-content="test"
-                                                     id="replyInReplyContainer_{{$topic_replies[$i]->id}}">
-                                                </div>
-                                                <md-button type="submit"
-                                                           ng-click="postCtrl.submitReplyInReply('{{$topic_replies[$i]->id}}',
-                                                                                                 '{{ $uuid }}',
-                                                                                                 '{{Auth::user()->uuid}}')"
-                                                           class="md-raised md-primary">Submit</md-button>
-                                            </div>
-                                        </div>
+                            <a href="#reply_message_<?=$i?>" class="card-link">Report</a>
+                        </p>
 
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
+                        {{-- Reply in Reply List --}}
+                        <div ng-init="postCtrl.replyInReplyList('{{$topic_replies[$i]->id}}')"
+                             id="replyInReply_<?= $topic_replies[$i]->id?>" layout-fill>
+                            {{ postCtrl.replyInReply_<?= $topic_replies[$i]->id?> }}
                         </div>
 
-                    <md-list class="row">
 
-                        <md-list-item class="md-3-line">
-                            <img ng-src="{!! $topic_replies[$i]->profile_img !!}"
-                                 class="md-avatar"/>
-                            <div class="md-list-item-text">
-                                <h3>
-                                    <a href="/{{ $topic_replies[$i]->displayname }}" target="_blank">
-                                    {{ $topic_replies[$i]->firstname }}
-                                    </a>
+                        @if(Auth::user())
 
-                                    <small> -
-                                        <span am-time-ago="'{!! $topic_replies[$i]->replycreated_at !!}' | amParse:'YYYY-MM-DD HH:mm:ss'"></span>
-                                    </small>
-                                </h3>
-                                <p> {!! HTML::decode($topic_replies[$i]->body) !!} </p>
+                            {{-- Reply in reply form--}}
+                            <div id="replyInReply_{{$topic_replies[$i]->id}}"
+                                 ng-show="postCtrl.showInReply_{{$topic_replies[$i]->id}}"
+                                 ng-init="postCtrl.showInReply_{{$topic_replies[$i]->id}}=true">
 
-                                <div ng-show="">
-                                    test
+                                <div class="media md-margin">
+                                    <div class="media-left">
+                                        <a href="#">
+                                            <img class="media-object"
+                                                 width="60px"
+                                                 src="{!! Auth::user()->profile_img !!}"
+                                                 alt="...">
+                                        </a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            You
+                                        </h4>
+                                        <div contenteditable="true"
+                                             placeholder="Any comments?"
+                                             class="panel card"
+                                             data-content="test"
+                                             id="replyInReplyContainer_{{$topic_replies[$i]->id}}">
+                                        </div>
+                                        <md-button type="submit"
+                                                   ng-click="postCtrl.submitReplyInReply('{{$topic_replies[$i]->id}}',
+                                                                                         '{{ $uuid }}',
+                                                                                         '{{Auth::user()->uuid}}')"
+                                                   class="md-raised md-primary">Submit</md-button>
+                                    </div>
                                 </div>
 
                             </div>
-                            <div class="card-block">
-                                <a href="#" class="card-link">Reply</a>
-                                <a href="#" class="card-link">Another link</a>
-                            </div>
-
-                        </md-list-item>
-
-
-
-                    </md-list>
-
-                    @endfor
-                
-            
+                        @endif
+                    </div>
+                </div>
             </div>
+        @endfor
+</div>
 
-    <script>
+<script>
 
-        socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
+    socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
 
-            console.log(message);
-            $.get( "/replyView/", { replyReq: message } )
-                    .done(function( data ) {
-                        $('#reply_append_{{ $uuid }}').prepend(data);
+        $.get( "/replyView/", { replyReq: message } )
+                .done(function( data ) {
+                    $('#reply_append_{{ $uuid }}').prepend(data);
+                });
+    });
 
-                    });
-        });
-
-    </script>
+</script>
 @endsection
