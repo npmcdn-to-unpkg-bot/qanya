@@ -145,4 +145,8 @@ body::-webkit-scrollbar-thumb {
     outline: 1px solid #5DB09D;
 }
 
+.toast-success {
+    background-color: #5DB09D;
+}
+
 /*# sourceMappingURL=all.css.map */

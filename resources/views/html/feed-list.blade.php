@@ -18,7 +18,7 @@
         <span am-time-ago="'{!! $topic->topic_created_at !!}' | amParse:'YYYY-MM-DD H:i:s'"></span>
 
         <p class="md-subhead">
-          {!! HTML::decode($topic->description) !!}
+          {!! HTML::decode(trim($topic->description)) !!}
         </p>
 
       </md-card-header-text>

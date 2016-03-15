@@ -1,5 +1,5 @@
 angular.module('App')
-    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
+    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics,toastr){
 
         var postCtrl = this;
 
@@ -55,13 +55,10 @@ angular.module('App')
 
                 $http.post('/getTagButton/', {data: snapshot.val()})
                     .then(function(response){
-                        console.log(response.data)
                         $('#userTagList').html(response.data)
                 })
-                console.log(snapshot.val());
-                var data = snapshot.val();
+
                 postCtrl.userTags = snapshot.val();
-                //$('#userTagList').html(data)
             })
         }
 
@@ -122,7 +119,7 @@ angular.module('App')
         postCtrl.followUser = function(user_uuid,uuid)
         {
             var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
-            followStatus.once("value", function(snapshot) {
+            followStatus.on("value", function(snapshot) {
                 if(snapshot.exists() == false)
                 {
                     postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
@@ -191,6 +188,7 @@ angular.module('App')
                 }
             });
         }
+        
 
 
         //Reply in the post
@@ -364,6 +362,30 @@ angular.module('App')
             });
         }
 
+        postCtrl.showConfirmDelete = function(ev,topic_uuid,user_uuid) {
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.confirm()
+                .title('Delete this?')
+                .textContent('If you remove this, you will not be able to get it back')
+                .ariaLabel('Delete')
+                .targetEvent(ev)
+                .ok('Please do it!')
+                .cancel('nah...');
+            $mdDialog.show(confirm).then(function() {
+                var data = {
+                    topic_uuid: topic_uuid,
+                    user_uuid:  user_uuid
+                }
+                $http.post('/removeTopic', {data: data })
+                    .then(function(response){
+                        window.location = '/';
+                    })
+                $scope.status = 'You decided to get rid of your debt.';
+
+            }, function() {
+                $scope.status = 'You decided to keep your debt.';
+            });
+        };
 
 
         //Post topic
@@ -403,16 +425,19 @@ angular.module('App')
 
         //Preview images
         postCtrl.imageStrings = [];
-        postCtrl.processFiles = function(files){
+        postCtrl.processFiles = function(files,container){
             angular.forEach(files, function(flowFile, i){
-                console.log(flowFile);
                 var fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     var uri = event.target.result;
+                    toastr.info('uploading...!');
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-fluid\">');
+                            toastr.success('Done!',{
+                                iconClass: 'toast-success'
+                            });
+                            $(container).append('<img src=\"'+response+'\" class=\"img-fluid\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);
@@ -428,9 +453,10 @@ angular.module('App')
             }
             $http.post('/updateTopicContent', {data: data })
                 .then(function(response){
-
+                    toastr.success('Save!',{
+                        iconClass: 'toast-success'
+                    });
                 })
-
         }
 
         //Login for material
@@ -487,12 +513,7 @@ angular.module('App')
                     postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
                     var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
                     topicRef.transaction(function (current_value) {
-                        if(current_value < 0 || current_value == 0 )
-                        {
-                            return 0;
-                        }else {
-                            return (current_value || 0) - 1;
-                        }
+                        return negCurrentValueCheck(current_value);
                     });
                 }
             })

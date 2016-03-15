@@ -76,7 +76,7 @@
 
           <div flow-init
                flow-name="uploader.flow"
-               flow-files-added="postCtrl.processFiles($files)">
+               flow-files-added="postCtrl.processFiles($files,'#contentBody')">
               <md-button class="md-fab md-mini" flow-btn type="file" name="image">Upload Images</md-button>
           </div>
 

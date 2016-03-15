@@ -32,8 +32,6 @@ class Topic extends Model
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
-                    /*'topics.upvote',
-                    'topics.dwnvote',*/
                     'topics.comments',
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
@@ -43,6 +41,7 @@ class Topic extends Model
                     'users.description'
                 )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->where('topics.flg',1)
                 ->orderBy('topics.created_at', 'desc')
                 ->take(10)
                 ->get();
@@ -73,19 +72,17 @@ class Topic extends Model
                                 'topics.uid as topics_uid',
                                 'topics.slug as topic_slug',
                                 'topics.tags',
-                                /*'topics.upvote',
-                                'topics.dwnvote',
-                                'topics.comments',*/
                                 'topics.uuid as topic_uuid',
                                 'topics.created_at as topic_created_at',
                                 'users.firstname',
                                 'users.profile_img',
                                 'users.displayname',
                                 'users.description'
-                                )   
-                        ->where('categories.slug',$slug)
+                                )
                         ->join('topics', 'topics.category', '=', 'categories.id')
                         ->join('users','users.uuid','=','topics.uid')
+                        ->where('categories.slug',$slug)
+                        ->where('topics.flg',1)
                         ->get();
         return $topics;
     }
@@ -149,6 +146,7 @@ class Topic extends Model
                 ->join('users', 'topics.uid', '=', 'users.uuid')
                 ->join('categories', 'topics.category', '=', 'categories.id')
                 ->where('categories.slug',$category)
+                ->where('topics.flg',1)
                 ->get();
 //        });
 //        return $results;
@@ -179,6 +177,7 @@ class Topic extends Model
                         )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
                 ->where('topics.slug',$slug)
+                ->where('topics.flg',1)
                 ->first();
         });
         return $results;
@@ -206,6 +205,7 @@ class Topic extends Model
                 )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
                 ->wherein('topics.uuid',$uuid_array)
+                ->where('topics.flg',1)
                 ->get();
 //        });
         return $results;
@@ -236,6 +236,7 @@ class Topic extends Model
             ->join('topics', 'topics.uuid', '=', 'tags.topic_uuid')
             ->join('users', 'topics.uid', '=', 'users.uuid')
             ->where('tags.title',clean($tag))
+            ->where('topics.flg',1)
             ->get();
     }
 }

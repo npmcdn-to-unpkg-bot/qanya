@@ -57,21 +57,6 @@ class TopicController extends Controller
     {
         $rir = new ReplyInReply();
         $data= $rir->getReplyInReply($request->reply_id);
-      /*  $fb_data = $request->data;
-        $userList = [];
-        $count = 0;
-        foreach ($fb_data as $reply) {
-            $userList[$count] = $reply['user_uuid'];
-            $count++;
-        }
-
-        $userdata = DB::table('users')
-                ->wherein('users.uuid',$userList)->get();
-        echo is_array($userdata);
-        echo is_array($fb_data);*/
-
-//        $data = array_combine($fb_data, $userdata);
-//        print_r($data);
         return view('html.reply-in-reply',compact('data'));
     }
 
@@ -195,27 +180,6 @@ class TopicController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($slug)
-    {
-
-
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -315,8 +279,8 @@ class TopicController extends Controller
             /**
              * Performance and redis check
              */
-            $log = DB::getQueryLog();
-            print_r($log);
+            /*$log = DB::getQueryLog();
+            print_r($log);*/
 
 
             $dt = Carbon::parse($topic->topic_created_at);
@@ -394,11 +358,8 @@ class TopicController extends Controller
     public function update(Request $request)
     {
         $data =  $request->data;
-        print_r($data);
 
         $topic = Topic::find($data['topic_id']);
-
-        print_r($topic);
 
         $topic->body = $data['body'];
         $topic->text = $data['text'];;
@@ -409,12 +370,21 @@ class TopicController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $data =  $request->data;
+
+        DB::table('topics')
+        ->where('uid', $data['user_uuid'])
+        ->where('uuid', $data['topic_uuid'])
+        ->update(['flg' => 0]);
+
+
+        DB::table('users')
+        ->where('uuid', $data['user_uuid'])
+        ->decrement('posts');
+        
     }
 }

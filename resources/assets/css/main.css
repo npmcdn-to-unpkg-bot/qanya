@@ -144,3 +144,7 @@ body::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid #5DB09D;
 }
+
+.toast-success {
+    background-color: #5DB09D;
+}

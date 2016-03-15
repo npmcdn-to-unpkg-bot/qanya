@@ -1,6 +1,6 @@
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
@@ -28,27 +28,3 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase']
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
 }])
-
-/*.directive('topicTally',function(){
-    return {
-
-
-        //controller: 'PostCtrl as postCtrl',
-        scope: {
-            author: '='
-        },
-        templateUrl: '/assets/templates/topic-tally.html'
-    }
-
-})*/
-.directive('topicTally', function () {
-    return {
-        //controller: 'TopicCtrl as topicCtrl',
-        restrict: 'EA',
-        transclude:   true,
-        templateUrl: '/assets/templates/topic-tally.html',
-        scope: {
-            data: '='
-        }
-    }
-})

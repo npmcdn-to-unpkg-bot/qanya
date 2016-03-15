@@ -26,6 +26,8 @@
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/css/tether.min.css" rel="stylesheet">
+
+
     <link href="/assets/css/all.css" rel="stylesheet">
     <link href="/assets/css/animate.css" rel="stylesheet">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
@@ -53,11 +55,6 @@
     <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
 
 
-
-    <!-- bower:js -->
-
-    <!-- endbower -->
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"></script>
 
@@ -78,6 +75,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
 
 
+    {{-- Toastr -> https://github.com/Foxandxss/angular-toastr --}}
+    <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
+    <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
 
 
     <script>
@@ -154,6 +154,9 @@
         @endif
 
     </script>
+
+    <script src="/js/all.js"></script>
+
 </head>
 
 <body id="app-layout" ng-app="App" ng-controller="ProfileCtrl as profileCtrl" ng-cloak>
@@ -265,7 +268,7 @@
 
 
 
-    <script src="/js/all.js"></script>
+
 
     <script type="text/javascript">
         $.ajaxSetup({

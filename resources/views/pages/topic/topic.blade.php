@@ -7,7 +7,6 @@
                 class="md-padding">
 
             <div class="layoutSingleColumn">
-                {{$is_user}}
                 <script>
                     {{-- Increment page view --}}
                     var ref = new Firebase("https://qanya.firebaseio.com/topic/{{$uuid}}/view");
@@ -24,31 +23,63 @@
                     @endif
                 </script>
 
-                <span>
-                    <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
-                </span>
 
-                @if($is_user)
-                    <span class="pull-right"
-                          ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
-                          Remove
-                    </span>
 
-                    <span class="pull-right" ng-click="postCtrl.editable='true';"
-                    onclick="$('#topicContent').css('background-color', '#FFFFA5');">edit</span>
 
-                    <span class="pull-right"
-                          ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
-                          save
-                    </span>
-                @endif
+                <div class="container-fluid">
+                    <div class="pull-left">
+                        <span>
+                            <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
+                        </span>
+                    </div>
+
+                    <div class="pull-right">
+                    @if($is_user)
+                        <md-fab-toolbar md-open="false" count="0" md-direction="left">
+                            <md-fab-trigger class="align-with-text">
+                                <md-button aria-label="edit" class="md-fab md-mini md-primary"
+                                           ng-click="postCtrl.editable='true';"
+                                           onclick="$('#topicContent').css({'border-style': 'dotted',
+                                                                            'border-color': '#5DB09D'
+                                                              });">
+                                    <md-icon md-svg-src="/assets/icons/ic_mode_edit_white_24px.svg">></md-icon>
+                                </md-button>
+                            </md-fab-trigger>
+                            <md-toolbar>
+                                <md-fab-actions class="md-toolbar-tools">
+                                    <md-button aria-label="save" class="md-icon-button"
+                                               ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
+                                        <md-icon md-svg-src="/assets/icons/ic_save_white_24px.svg"></md-icon>
+                                    </md-button>
+
+                                    <div flow-init
+                                         flow-name="uploader.flow"
+                                         flow-files-added="postCtrl.processFiles($files,'#topicContent')">
+                                        <md-button aria-label="photo" class="md-icon-button"
+                                                   flow-btn type="file" name="image">
+                                            <md-icon md-svg-src="/assets/icons/ic_insert_photo_white_24px.svg"></md-icon>
+                                        </md-button>
+                                    </div>
+
+                                    <md-button aria-label="delete" class="md-icon-button"
+                                               ng-click="postCtrl.showConfirmDelete($event,'{{$uuid}}','{{Auth::user()->uuid}}')" >
+                                        <md-icon md-svg-src="/assets/icons/ic_delete_white_24px.svg"></md-icon>
+                                    </md-button>
+                                </md-fab-actions>
+                            </md-toolbar>
+                        </md-fab-toolbar>
+                    @endif
+                    </div>
+                </div>
 
                 <h1 class="md-display-1">
                     {!! HTML::decode($title) !!}
                 </h1>
 
 
-                <div class="reading img-fluid" id="topicContent"
+
+                <div class      =   "reading img-fluid"
+                     id         =   "topicContent"
                      ng-init    =   "postCtrl.editable='false'"
                      contenteditable="@{{ postCtrl.editable }}">
                     {!! nl2br($body) !!}

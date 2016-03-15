@@ -87,6 +87,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/getPostImages','TopicController@getPostImages');
     Route::post('/replyInReply','TopicController@postReplyInReply');
     Route::post('/replyInReplyList','TopicController@replyInReplyList');
+    Route::post('/removeTopic','TopicController@destroy');
 
     //Profile page
     Route::get('/{displayname}'             ,   'ProfileController@show');

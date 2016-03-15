@@ -13,7 +13,7 @@ function ipLogger()
 }
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
@@ -41,32 +41,8 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase']
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
 }])
-
-/*.directive('topicTally',function(){
-    return {
-
-
-        //controller: 'PostCtrl as postCtrl',
-        scope: {
-            author: '='
-        },
-        templateUrl: '/assets/templates/topic-tally.html'
-    }
-
-})*/
-.directive('topicTally', function () {
-    return {
-        //controller: 'TopicCtrl as topicCtrl',
-        restrict: 'EA',
-        transclude:   true,
-        templateUrl: '/assets/templates/topic-tally.html',
-        scope: {
-            data: '='
-        }
-    }
-})
 angular.module('App')
-    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics){
+    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics,toastr){
 
         var postCtrl = this;
 
@@ -122,13 +98,10 @@ angular.module('App')
 
                 $http.post('/getTagButton/', {data: snapshot.val()})
                     .then(function(response){
-                        console.log(response.data)
                         $('#userTagList').html(response.data)
                 })
-                console.log(snapshot.val());
-                var data = snapshot.val();
+
                 postCtrl.userTags = snapshot.val();
-                //$('#userTagList').html(data)
             })
         }
 
@@ -189,7 +162,7 @@ angular.module('App')
         postCtrl.followUser = function(user_uuid,uuid)
         {
             var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
-            followStatus.once("value", function(snapshot) {
+            followStatus.on("value", function(snapshot) {
                 if(snapshot.exists() == false)
                 {
                     postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
@@ -258,6 +231,7 @@ angular.module('App')
                 }
             });
         }
+        
 
 
         //Reply in the post
@@ -431,6 +405,30 @@ angular.module('App')
             });
         }
 
+        postCtrl.showConfirmDelete = function(ev,topic_uuid,user_uuid) {
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.confirm()
+                .title('Delete this?')
+                .textContent('If you remove this, you will not be able to get it back')
+                .ariaLabel('Delete')
+                .targetEvent(ev)
+                .ok('Please do it!')
+                .cancel('nah...');
+            $mdDialog.show(confirm).then(function() {
+                var data = {
+                    topic_uuid: topic_uuid,
+                    user_uuid:  user_uuid
+                }
+                $http.post('/removeTopic', {data: data })
+                    .then(function(response){
+                        window.location = '/';
+                    })
+                $scope.status = 'You decided to get rid of your debt.';
+
+            }, function() {
+                $scope.status = 'You decided to keep your debt.';
+            });
+        };
 
 
         //Post topic
@@ -470,16 +468,19 @@ angular.module('App')
 
         //Preview images
         postCtrl.imageStrings = [];
-        postCtrl.processFiles = function(files){
+        postCtrl.processFiles = function(files,container){
             angular.forEach(files, function(flowFile, i){
-                console.log(flowFile);
                 var fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     var uri = event.target.result;
+                    toastr.info('uploading...!');
                     postCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
-                            $('#contentBody').append('<img src=\"'+response+'\" class=\"img-fluid\">');
+                            toastr.success('Done!',{
+                                iconClass: 'toast-success'
+                            });
+                            $(container).append('<img src=\"'+response+'\" class=\"img-fluid\">');
                         })
                 };
                 fileReader.readAsDataURL(flowFile.file);
@@ -495,9 +496,10 @@ angular.module('App')
             }
             $http.post('/updateTopicContent', {data: data })
                 .then(function(response){
-
+                    toastr.success('Save!',{
+                        iconClass: 'toast-success'
+                    });
                 })
-
         }
 
         //Login for material
@@ -554,12 +556,7 @@ angular.module('App')
                     postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
                     var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
                     topicRef.transaction(function (current_value) {
-                        if(current_value < 0 || current_value == 0 )
-                        {
-                            return 0;
-                        }else {
-                            return (current_value || 0) - 1;
-                        }
+                        return negCurrentValueCheck(current_value);
                     });
                 }
             })
@@ -740,7 +737,7 @@ angular.module('App')
     })
 
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log){
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr){
 
         var profileCtrl = this;
 
@@ -754,37 +751,20 @@ angular.module('App')
             return $mdSidenav('alertSideNav').isOpen();
         };
 
-
-        var last = {
-            bottom: false,
-            top: true,
-            left: false,
-            right: true
-        };
-
-        profileCtrl.toastPosition = angular.extend({},last);
-        profileCtrl.getToastPosition = function() {
-            sanitizePosition();
-            return Object.keys(profileCtrl.toastPosition)
-                .filter(function(pos) { return profileCtrl.toastPosition[pos]; })
-                .join(' ');
-        };
-        function sanitizePosition() {
-            var current = profileCtrl.toastPosition;
-            if ( current.bottom && last.top ) current.top = false;
-            if ( current.top && last.bottom ) current.bottom = false;
-            if ( current.right && last.left ) current.left = false;
-            if ( current.left && last.right ) current.right = false;
-            last = angular.extend({},current);
-        }
-
-
         profileCtrl.getUserStat = function(uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+uuid+"/stat/");
             ref.on("value", function(snapshot) {
-                profileCtrl.userFollower = snapshot.val().follower;
-                profileCtrl.userUpvoted  = snapshot.val().upvote;
+
+                /*var key = 'bookmarks_'+topic_uuid;
+                postCtrl[key]  = snapshot.val();*/
+
+                var key = 'userFollower_'+uuid;
+                profileCtrl[key]  = snapshot.val().follower;
+
+                var key = 'userUpvote_'+uuid;
+                profileCtrl[key]  = snapshot.val().upvote;
+
             })
         }
 
@@ -792,22 +772,17 @@ angular.module('App')
         profileCtrl.profileImage = function(files)
         {
             angular.forEach(files, function(flowFile, i){
-                console.log(flowFile);
                 var fileReader = new FileReader();
                 fileReader.onload = function (event) {
                     var uri = event.target.result;
+                    toastr.info('Saving...!');
                     //profileCtrl.imageStrings[i] = uri;
                     $.post( "/api/previewImage/", { data: uri} )
                         .done(function( response ) {
                             $http.post( "/upload-profileImage", { img: response} )
                                 .then(function( response ) {
                                     $('#profilePhoto').attr( "src", response.data);
-                                    $mdToast.show(
-                                        $mdToast.simple()
-                                            .textContent('Save')
-                                            .position(profileCtrl.getToastPosition())
-                                            .hideDelay(3000)
-                                    );
+                                    toastr.success('Save!');
                                 });
                         });
                 };
@@ -820,7 +795,6 @@ angular.module('App')
         {
             $http.post('/list-notification')
                 .then(function(response){
-                    console.log(response);
                     profileCtrl.notificationList = response.data;
                 });
         }
@@ -848,13 +822,7 @@ angular.module('App')
             $http.post('/user/update-description',
                 {name: $('#profileDescription').html()})
                 .then(function(response){
-
-                    $mdToast.show(
-                        $mdToast.simple()
-                            .textContent('Save!')
-                            .position('top right')
-                            .hideDelay(3000)
-                    );
+                    toastr.success('Save!');
                 });
         }
 
@@ -900,5 +868,27 @@ angular.module('App')
     });
 
 
+
+angular.module('App')
+.directive('topicTally', function () {
+    return {
+        //controller: 'TopicCtrl as topicCtrl',
+        restrict: 'EA',
+        transclude:   true,
+        templateUrl: '/assets/templates/topic-tally.html',
+        scope: {
+            data: '='
+        }
+    }
+})
+
+.directive('profileBadge', function () {
+    return {
+        controller: 'ProfileCtrl as profileCtrl',
+        restrict: 'EA',
+        transclude:   true,
+        templateUrl: '/assets/templates/profile-badge.html'
+    }
+})
 
 //# sourceMappingURL=all.js.map

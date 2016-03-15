@@ -11,7 +11,7 @@
                 @include('html.post-create',compact('categories'))
             @endif
 
-            <md-tabs md-dynamic-height md-border-bottom>
+            <md-tabs md-dynamic-height md-border-bottom >
                 <md-tab label="Latest feed">
                     <md-content class="md-padding">
                         <div id="homeFeed">
@@ -51,8 +51,11 @@
 
         </div>
 
-        <div class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
+        <div class="col-md-5 col-xs-12">
 
+            >>templates
+            {{--<profile-badge></profile-badge>--}}
+            <<<
             @include('html.profile-badge')
             @include('html.category-nav',compact('categories'))
 
