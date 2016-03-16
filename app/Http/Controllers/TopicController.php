@@ -203,6 +203,7 @@ class TopicController extends Controller
 
                 $topic              = new Topic;
                 $topic->uuid        = $topicUUID;
+                $topic->type        = $json['type'];
                 $topic->uid         = Auth::user()->uuid;
                 $topic->topic       = clean($json['title']);
                 $topic->body        = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean($json['body']));
@@ -287,13 +288,19 @@ class TopicController extends Controller
             $topic_id   = $topic->id;
             $title      = $topic->topic;
             $body       = $topic->body;
+            $is_edited  = $topic->is_edited;
             $username   = $topic->displayname;
             $user_fname = $topic->firstname;
+            $cate_name  = $topic->cate_name;
             $slug       = $topic->topic_slug;
             $uuid       = $topic->topic_uuid;
             $topics_uid = $topic->topics_uid;
             $user_descs = $topic->description;
             $poster_img = $topic->profile_img;
+            $topic_created_at = $topic->topic_created_at;
+            $topic_updated_at = $topic->topic_updated_at;
+
+
             if(!empty($topic->tags))
                 $tags       = explode(',', $topic->tags);
             else
@@ -328,25 +335,18 @@ class TopicController extends Controller
                         'slug',
                         'uuid',
                         'is_user',
+                        'is_edited',
                         'topics_uid',
                         'user_descs',
                         'tags',
                         'poster_img',
                         'user_fname',
-                        'created_at','topic_replies'));
+                        'cate_name',
+                        'topic_updated_at',
+                        'topic_created_at','topic_replies'));
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -361,12 +361,12 @@ class TopicController extends Controller
 
         $topic = Topic::find($data['topic_id']);
 
-        $topic->body = $data['body'];
+        $topic->is_edited = true;
+        $topic->body = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean( trim($data['body']) ));;
         $topic->text = $data['text'];;
-
         $topic->save();
-
     }
+
 
     /**
      * Remove the specified resource from storage.

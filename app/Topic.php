@@ -24,15 +24,18 @@ class Topic extends Model
 
         $time = date("Ymd");
         $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
-            return $topic = $this->where('flg', 1)
+            return $topic = $this->where('topics.flg',1)
                 ->select(
                     'topics.topic',
+                    'topics.type as topic_type',
                     'topics.body',
                     'topics.text',
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
                     'topics.comments',
+                    'categories.name as cate_name',
+                    'categories.slug as cate_slug',
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
                     'users.firstname',
@@ -41,7 +44,7 @@ class Topic extends Model
                     'users.description'
                 )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
-                ->where('topics.flg',1)
+                ->join('categories', 'topics.category', '=', 'categories.id')
                 ->orderBy('topics.created_at', 'desc')
                 ->take(10)
                 ->get();
@@ -165,11 +168,10 @@ class Topic extends Model
                         'topics.uid as topics_uid',
                         'topics.slug as topic_slug',
                         'topics.tags',
-                        /*'topics.upvote',
-                        'topics.dwnvote',
-                        'topics.comments',*/
+                        'topics.is_edited',
                         'topics.uuid as topic_uuid',
                         'topics.created_at as topic_created_at',
+                        'topics.updated_at as topic_updated_at',
                         'users.firstname',
                         'users.profile_img',
                         'users.displayname',
@@ -223,9 +225,6 @@ class Topic extends Model
                 'topics.uid as topics_uid',
                 'topics.slug as topic_slug',
                 'topics.tags',
-                /*'topics.upvote',
-                'topics.dwnvote',
-                'topics.comments',*/
                 'topics.uuid as topic_uuid',
                 'topics.created_at as topic_created_at',
                 'users.firstname',

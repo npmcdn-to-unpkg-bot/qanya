@@ -110,11 +110,7 @@
 
 
         /*
-         * ---------------------------------------
-         *
          * SOCKETS
-         *
-         * --------------------------------------
          */
         var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3000');
         socket.on("test-channel:App\\Events\\EventName", function(message){
@@ -171,8 +167,9 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
 
-    <div class="pos-f-t">
+    <div class="pos-f-t purple">
         <md-toolbar>
+            <div class="purple">
             <div class="md-toolbar-tools container">
                 <h2>
                     <span>
@@ -222,7 +219,7 @@
                         </ul>
                     </li>--}}
                 @endif
-
+            </div>
             </div>
         </md-toolbar>
     </div>

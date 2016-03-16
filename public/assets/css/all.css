@@ -17,7 +17,12 @@ body {
     color: whitesmoke;
 }
 .purple{
-    background-color: #4D394B;
+    background-color: #684666;
+}
+
+.editBorder{
+    border-style: dotted;
+    border-color: #5DB09D;
 }
 
 .layoutSingleColumn {

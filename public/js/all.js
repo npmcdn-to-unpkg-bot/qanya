@@ -231,7 +231,7 @@ angular.module('App')
                 }
             });
         }
-        
+
 
 
         //Reply in the post
@@ -443,6 +443,7 @@ angular.module('App')
 
 
             var data = { title:         postCtrl.title,
+                         type:          postCtrl.postTypes,
                          categories:    postCtrl.categories,
                          tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),

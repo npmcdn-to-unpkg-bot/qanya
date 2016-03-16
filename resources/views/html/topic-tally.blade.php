@@ -43,20 +43,4 @@
                             {{ postCtrl.comments_<?= $uuid ?> }}
                         </span>
     </a>
-
-    <a  href="#"
-        class="card-link"
-        ng-init="postCtrl.bookMarkTally('{{$uuid}}')"
-        @if(Auth::guest())
-            ng-click="postCtrl.showMdLogin($event)"
-        @else
-            ng-click="postCtrl.bookMark('{{Auth::user()->uuid}}', '{{$uuid}}')"
-        @endif>
-        <i class="fa fa-bookmark-o"></i>
-                        <span id="coments_cnt_{{$uuid}}">
-                            {{ postCtrl.bookmarks_<?= $uuid ?> }}
-                        </span>
-    </a>
-
-
 </div>

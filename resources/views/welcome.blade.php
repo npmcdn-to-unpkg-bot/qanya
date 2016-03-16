@@ -52,10 +52,9 @@
         </div>
 
         <div class="col-md-5 col-xs-12">
-
-            >>templates
+            
             {{--<profile-badge></profile-badge>--}}
-            <<<
+
             @include('html.profile-badge')
             @include('html.category-nav',compact('categories'))
 

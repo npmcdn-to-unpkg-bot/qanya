@@ -27,9 +27,11 @@
 
 
                 <div class="container-fluid">
+
                     <div class="pull-left">
                         <span>
-                            <i class="fa fa-clock-o fa-x"></i>{{ $created_at }}
+                            <i class="fa fa-clock-o fa-x"></i>
+                            {!! Carbon\Carbon::parse($topic_created_at)->diffForHumans() !!}
                         </span>
                     </div>
 
@@ -39,16 +41,15 @@
                             <md-fab-trigger class="align-with-text">
                                 <md-button aria-label="edit" class="md-fab md-mini md-primary"
                                            ng-click="postCtrl.editable='true';"
-                                           onclick="$('#topicContent').css({'border-style': 'dotted',
-                                                                            'border-color': '#5DB09D'
-                                                              });">
+                                           onclick='$("#topicContent").addClass("editBorder");'>
                                     <md-icon md-svg-src="/assets/icons/ic_mode_edit_white_24px.svg">></md-icon>
                                 </md-button>
                             </md-fab-trigger>
                             <md-toolbar>
                                 <md-fab-actions class="md-toolbar-tools">
                                     <md-button aria-label="save" class="md-icon-button"
-                                               ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')">
+                                               ng-click="postCtrl.updateTopicContent('{{$uuid}}','{{$topic_id}}')"
+                                               onclick='$("#topicContent").removeClass("editBorder");'>
                                         <md-icon md-svg-src="/assets/icons/ic_save_white_24px.svg"></md-icon>
                                     </md-button>
 
@@ -84,6 +85,12 @@
                      contenteditable="@{{ postCtrl.editable }}">
                     {!! nl2br($body) !!}
                 </div>
+
+
+                @if($is_edited)
+                    Edited
+                    - {!! Carbon\Carbon::parse($topic_updated_at)->diffForHumans() !!}
+                @endif
 
                 {{-- Tag list --}}
                 <div>
