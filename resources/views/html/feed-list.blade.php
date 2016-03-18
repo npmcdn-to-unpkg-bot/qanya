@@ -5,8 +5,10 @@
   @foreach($topics as $topic)
     <md-card class="row">
         <md-card-header>
-            {{ $topic->topic_type }}
-            Question &bull;
+{{--            {{ $topic->topic_type }}--}}
+
+            Question
+            in
            <a href="/channel/{{ $topic->cate_slug }}">
                {{ $topic->cate_name }}
            </a>

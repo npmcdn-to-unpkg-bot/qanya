@@ -64,7 +64,7 @@
                         <md-tabs md-dynamic-height md-border-bottom>
                             <md-tab label="topics created">
                                 <md-content class="md-padding">
-{{--                                    @include('html.feed-list',compact('topics'));--}}
+                                    @include('html.feed-list',compact('topics'));
                                 </md-content>
                             </md-tab>
                             <md-tab label="replies">
@@ -106,8 +106,10 @@
                             {{--PHOTOS--}}
                             <md-tab label="photos">
                                 <md-content class="md-padding"
-                                            ng-init="profileCtrl.postedPhotos()">
-                                    <posted-photos data="profileCtrl.userPostedPhotos"></posted-photos>
+                                            ng-init="profileCtrl.postedPhotos('{{$user->uuid}}')">
+                                    <posted-photos data="profileCtrl.userPostedPhotos">
+                                        <i class="fa fa-spinner fa-spin"></i>
+                                    </posted-photos>
                                 </md-content>
                             </md-tab>
 

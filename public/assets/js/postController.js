@@ -449,6 +449,7 @@ angular.module('App')
         //Update topic content
         postCtrl.updateTopicContent = function(topic_uuid,topic_id)
         {
+            var imgIds = new Array();
             //Search for images in the content
             $("div#topicContent img").each(function(){
                 imgIds.push($(this).attr('src'));

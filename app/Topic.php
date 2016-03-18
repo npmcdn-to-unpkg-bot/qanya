@@ -234,14 +234,21 @@ class Topic extends Model
     {
         return $topic = DB::table('tags')
             ->select(
+                'topics.id',
                 'topics.topic',
+                'topics.type as topic_type',
                 'topics.body',
                 'topics.text',
+                'topics.is_edited',
                 'topics.uid as topics_uid',
                 'topics.slug as topic_slug',
                 'topics.tags',
+                'topics.comments',
+                'categories.name as cate_name',
+                'categories.slug as cate_slug',
                 'topics.uuid as topic_uuid',
                 'topics.created_at as topic_created_at',
+                'topics.updated_at as topic_updated_at',
                 'users.firstname',
                 'users.profile_img',
                 'users.displayname',
@@ -249,6 +256,7 @@ class Topic extends Model
             )
             ->join('topics', 'topics.uuid', '=', 'tags.topic_uuid')
             ->join('users', 'topics.uid', '=', 'users.uuid')
+            ->join('categories', 'topics.category', '=', 'categories.id')
             ->where('tags.title',clean($tag))
             ->where('topics.flg',1)
             ->get();

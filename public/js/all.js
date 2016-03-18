@@ -492,6 +492,7 @@ angular.module('App')
         //Update topic content
         postCtrl.updateTopicContent = function(topic_uuid,topic_id)
         {
+            var imgIds = new Array();
             //Search for images in the content
             $("div#topicContent img").each(function(){
                 imgIds.push($(this).attr('src'));
@@ -764,8 +765,8 @@ angular.module('App')
 
 
         //Get user posted photos
-        profileCtrl.postedPhotos = function(){
-            $http.post('/getPostedPhotos')
+        profileCtrl.postedPhotos = function(user_uuid){
+            $http.post('/getPostedPhotos', {data: user_uuid})
                 .then(function(response){
                     console.log(response.data);
                     profileCtrl.userPostedPhotos =  response.data;

@@ -23,12 +23,14 @@ class ProfileController extends Controller
     }
 
 
-    public function getPostedPhotos()
+    public function getPostedPhotos(Request $request)
     {
 
-        if(Auth::user())
+        if($request->data)
         {
-            return DB::table('topics_img')->where('user_uuid',Auth::user()->uuid)->limit(10)->get();
+            return DB::table('topics_img')
+                        ->where('user_uuid',$request->data)
+                        ->limit(10)->get();
         }
     }
 
