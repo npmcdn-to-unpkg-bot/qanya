@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <section layout="row" flex ng-controller="PostCtrl as postCtrl">
+    <div class="row" style="max-width: 640px">
+        <section layout="row" ng-controller="PostCtrl as postCtrl">
             <md-content flex layout-padding>
                 {{ $title }}
 

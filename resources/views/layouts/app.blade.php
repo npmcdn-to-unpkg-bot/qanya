@@ -182,10 +182,7 @@
                 <span flex></span>
                 @if (Auth::guest())
                     <md-button aria-label="Login" ng-href="{{ url('/login') }}">
-                        Login
-                    </md-button>
-                    <md-button aria-label="Join us" ng-href="{{ url('/register') }}">
-                        join us
+                        Login / Join us
                     </md-button>
                 @else
 
@@ -201,10 +198,10 @@
                                       profileCtrl.listNotification()
                                       ">
                         <i class="fa fa-bell-o fa-x"></i>
-                        <span id="notification_{{Auth::user()->uuid}}"
+                        {{--<span id="notification_{{Auth::user()->uuid}}"
                               ng-init="profileCtrl.userNotification()">
                             @{{ profileCtrl.unreadNotification }}
-                        </span>
+                        </span>--}}
                     </md-button>
 
                     <a href="/{!! Auth::user()->displayname !!}">

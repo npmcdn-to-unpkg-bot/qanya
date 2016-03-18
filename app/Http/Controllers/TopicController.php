@@ -189,6 +189,10 @@ class TopicController extends Controller
      */
     public function store(Request $request)
     {
+
+        //Default for number of images in the post
+        $num_img = 0;
+
         if (Auth::user()->uuid) {
             if ($request->data) {
                 $json = $request->data;
@@ -196,26 +200,14 @@ class TopicController extends Controller
                 $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
                 $topicSlug = str_slug($json['title'], "-") . '-' . $topicUUID;
 
+
+                //TAG
                 if(!empty($json['tags']))
                     $taglist = implode(",", $json['tags']);
                 else
                     $taglist = null;
 
-                $topic              = new Topic;
-                $topic->uuid        = $topicUUID;
-                $topic->type        = $json['type'];
-                $topic->uid         = Auth::user()->uuid;
-                $topic->topic       = clean($json['title']);
-                $topic->body        = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean($json['body']));
-                $topic->text        = clean($json['text']);
-                $topic->category    = $json['categories'];
-                $topic->slug        = $topicSlug;
-                $topic->tags        = $taglist;
-                $topic->save();
-
-                $tag_data = array();
-                $count=0;
-
+                //Images
                 if(!empty($json['images']))
                 {
                     //Insert images in another table
@@ -228,8 +220,27 @@ class TopicController extends Controller
                         );
                         $count++;
                     }
+                    $num_img = $count;
                     TopicImages::insert($img_data);
                 }
+
+                $topic              = new Topic;
+                $topic->uuid        = $topicUUID;
+                $topic->type        = $json['type'];
+                $topic->uid         = Auth::user()->uuid;
+                $topic->topic       = clean($json['title']);
+                $topic->body        = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean($json['body']));
+                $topic->text        = clean($json['text']);
+                $topic->category    = $json['categories'];
+                $topic->slug        = $topicSlug;
+                $topic->num_img     = $num_img;
+                $topic->tags        = $taglist;
+                $topic->save();
+
+                $tag_data = array();
+                $count=0;
+
+
 
                 if(!empty($json['tags']))
                 {

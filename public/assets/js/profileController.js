@@ -7,11 +7,25 @@ angular.module('App')
         profileCtrl.notificationList    =   '';
         profileCtrl.unreadNotification  =   0;
         profileCtrl.userBookmark        =   0;
+        profileCtrl.userPostedPhotos    =   '';
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
         profileCtrl.isOpenRight = function(){
             return $mdSidenav('alertSideNav').isOpen();
         };
+
+
+
+        //Get user posted photos
+        profileCtrl.postedPhotos = function(){
+            $http.post('/getPostedPhotos')
+                .then(function(response){
+                    console.log(response.data);
+                    profileCtrl.userPostedPhotos =  response.data;
+                })
+        }
+
+        
 
         profileCtrl.getUserStat = function(uuid)
         {

@@ -31,11 +31,11 @@ angular.module('App')
         }
 
 
+
         postCtrl.feedFollowStatus = function(slug)
         {
             $http.post('/feedFollowStatus/', {data: slug})
                 .then(function(response){
-                    console.log(response);
                     if(response.data == 0)
                     {
                         postCtrl.postFeedFollow = 'follow';
@@ -445,12 +445,20 @@ angular.module('App')
             });
         };
 
+
+        //Update topic content
         postCtrl.updateTopicContent = function(topic_uuid,topic_id)
         {
+            //Search for images in the content
+            $("div#topicContent img").each(function(){
+                imgIds.push($(this).attr('src'));
+            });
+
             var data = {
-                topic_id: topic_id,
-                body: $('#topicContent').html(),
-                text: $('#topicContent').text()
+                topic_id:   topic_id,
+                body:       $('#topicContent').html(),
+                text:       $('#topicContent').text(),
+                images:     imgIds
             }
             $http.post('/updateTopicContent', {data: data })
                 .then(function(response){

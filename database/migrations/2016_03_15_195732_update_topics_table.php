@@ -14,7 +14,7 @@ class UpdateTopicsTable extends Migration
     {
         Schema::table('topics', function ($table) {
             $table->integer('type');
-            $table->integer('num_img');
+            $table->integer('num_img')->default(0);
             $table->boolean('is_edited')->default(false);
         });
     }

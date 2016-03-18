@@ -74,11 +74,11 @@ angular.module('App')
         }
 
 
+
         postCtrl.feedFollowStatus = function(slug)
         {
             $http.post('/feedFollowStatus/', {data: slug})
                 .then(function(response){
-                    console.log(response);
                     if(response.data == 0)
                     {
                         postCtrl.postFeedFollow = 'follow';
@@ -488,12 +488,20 @@ angular.module('App')
             });
         };
 
+
+        //Update topic content
         postCtrl.updateTopicContent = function(topic_uuid,topic_id)
         {
+            //Search for images in the content
+            $("div#topicContent img").each(function(){
+                imgIds.push($(this).attr('src'));
+            });
+
             var data = {
-                topic_id: topic_id,
-                body: $('#topicContent').html(),
-                text: $('#topicContent').text()
+                topic_id:   topic_id,
+                body:       $('#topicContent').html(),
+                text:       $('#topicContent').text(),
+                images:     imgIds
             }
             $http.post('/updateTopicContent', {data: data })
                 .then(function(response){
@@ -746,11 +754,25 @@ angular.module('App')
         profileCtrl.notificationList    =   '';
         profileCtrl.unreadNotification  =   0;
         profileCtrl.userBookmark        =   0;
+        profileCtrl.userPostedPhotos    =   '';
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
         profileCtrl.isOpenRight = function(){
             return $mdSidenav('alertSideNav').isOpen();
         };
+
+
+
+        //Get user posted photos
+        profileCtrl.postedPhotos = function(){
+            $http.post('/getPostedPhotos')
+                .then(function(response){
+                    console.log(response.data);
+                    profileCtrl.userPostedPhotos =  response.data;
+                })
+        }
+
+        
 
         profileCtrl.getUserStat = function(uuid)
         {
@@ -891,5 +913,18 @@ angular.module('App')
         templateUrl: '/assets/templates/profile-badge.html'
     }
 })
+
+.directive('postedPhotos', function () {
+    return {
+        controller: 'ProfileCtrl as profileCtrl',
+        restrict: 'EA',
+        transclude:   true,
+        templateUrl: '/assets/templates/posted-photos.html',
+        scope: {
+            data: '='
+        }
+    }
+})
+
 
 //# sourceMappingURL=all.js.map

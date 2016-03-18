@@ -3,7 +3,7 @@
 @section('content')
 
     <div style="margin: 0 auto;max-width: 660px;">
-        <md-card class="row" style="">
+        <div class="row" style="">
             
             <md-card-title layout-align="start center" layout="column">
                 <md-card-title-text class="md-headline">
@@ -62,9 +62,14 @@
                         </div>
                     </div>
                 </form>
+
+                <md-button class="md-primary" aria-label="Join us" ng-href="{{ url('/register') }}">
+                    Need an account? join us
+                </md-button>
+
                 <a href="{{ url('/password/reset') }}">Forgot Your Password?</a>
             </div>
-        </md-card>
+        </div>
     </div>
             
 @endsection

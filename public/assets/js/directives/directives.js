@@ -19,3 +19,16 @@ angular.module('App')
         templateUrl: '/assets/templates/profile-badge.html'
     }
 })
+
+.directive('postedPhotos', function () {
+    return {
+        controller: 'ProfileCtrl as profileCtrl',
+        restrict: 'EA',
+        transclude:   true,
+        templateUrl: '/assets/templates/posted-photos.html',
+        scope: {
+            data: '='
+        }
+    }
+})
+

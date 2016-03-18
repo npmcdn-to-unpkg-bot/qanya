@@ -2,34 +2,6 @@
 
 /*
 |--------------------------------------------------------------------------
-| Routes File
-|--------------------------------------------------------------------------
-|
-| Here is where you will register all of the routes in an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-/*
-Route::get('/', function () {
-    $topic = new \App\Topic();
-    $topics = $topic->recentlyCreated();
-
-    $categories = new \App\Categories();
-    $categories = $categories->all();
-
-    return view('welcome',compact('topics','categories'));
-});
-*/
-
-
-Route::get('fire', function () {
-    event(new App\Events\EventName(10));
-    return "event fired";
-});
-
-/*
-|--------------------------------------------------------------------------
 | Application Routes
 |--------------------------------------------------------------------------
 |
@@ -89,12 +61,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/replyInReplyList','TopicController@replyInReplyList');
     Route::post('/removeTopic','TopicController@destroy');
 
+
     //Profile page
     Route::get('/{displayname}'             ,   'ProfileController@show');
     Route::post('/user/update-description'  ,   'ProfileController@updateDesc');
     Route::post('/user/getHistory'          ,   'ProfileController@getHistory');
     Route::post('/user/getBookmark'         ,   'ProfileController@getBookmark');
-
+    Route::post('/getPostedPhotos'          ,   'ProfileController@getPostedPhotos');
 
 });
 

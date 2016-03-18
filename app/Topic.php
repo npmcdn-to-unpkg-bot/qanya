@@ -64,12 +64,14 @@ class Topic extends Model
         return $topics;
     }
 
+
     // Get feed from slug
     public function getFeed($slug)
     {
         $topics =   DB::table('categories')
                         ->select(
                                 'topics.topic',
+                                'topics.type as topic_type',
                                 'topics.body',
                                 'topics.text',
                                 'topics.uid as topics_uid',
@@ -77,6 +79,8 @@ class Topic extends Model
                                 'topics.tags',
                                 'topics.uuid as topic_uuid',
                                 'topics.created_at as topic_created_at',
+                                'categories.name as cate_name',
+                                'categories.slug as cate_slug',
                                 'users.firstname',
                                 'users.profile_img',
                                 'users.displayname',
@@ -109,6 +113,7 @@ class Topic extends Model
             ->first();
     }
 
+
     //Get topic replies
     public function getReplies($topic_uuid)
     {
@@ -126,19 +131,23 @@ class Topic extends Model
             ->get();
     }
 
+
     //Get topic channel
     public function getTopicChannel($category)
     {
 //        $results = Cache::remember('topic_channel_cache_'.$category,1,function() use ($category){
             return $topic = DB::table('topics')
                 ->select(
-                    'topics.id',
                     'topics.topic',
+                    'topics.type as topic_type',
                     'topics.body',
                     'topics.text',
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
+                    'topics.comments',
+                    'categories.name as cate_name',
+                    'categories.slug as cate_slug',
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
                     'users.firstname',
@@ -161,23 +170,28 @@ class Topic extends Model
         $results = Cache::remember('topic_posts_cache_'.$slug,1,function() use ($slug){
             return $topic = DB::table('topics')
                 ->select(
-                        'topics.id',
-                        'topics.topic',
-                        'topics.body',
-                        'topics.text',
-                        'topics.uid as topics_uid',
-                        'topics.slug as topic_slug',
-                        'topics.tags',
-                        'topics.is_edited',
-                        'topics.uuid as topic_uuid',
-                        'topics.created_at as topic_created_at',
-                        'topics.updated_at as topic_updated_at',
-                        'users.firstname',
-                        'users.profile_img',
-                        'users.displayname',
-                        'users.description'
-                        )
+                    'topics.id',
+                    'topics.topic',
+                    'topics.type as topic_type',
+                    'topics.body',
+                    'topics.text',
+                    'topics.is_edited',
+                    'topics.uid as topics_uid',
+                    'topics.slug as topic_slug',
+                    'topics.tags',
+                    'topics.comments',
+                    'categories.name as cate_name',
+                    'categories.slug as cate_slug',
+                    'topics.uuid as topic_uuid',
+                    'topics.created_at as topic_created_at',
+                    'topics.updated_at as topic_updated_at',
+                    'users.firstname',
+                    'users.profile_img',
+                    'users.displayname',
+                    'users.description'
+                )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->join('categories', 'topics.category', '=', 'categories.id')
                 ->where('topics.slug',$slug)
                 ->where('topics.flg',1)
                 ->first();
@@ -215,6 +229,7 @@ class Topic extends Model
 
 
 
+    //Get topic listed by using tags
     public function getTagTopic($tag)
     {
         return $topic = DB::table('tags')

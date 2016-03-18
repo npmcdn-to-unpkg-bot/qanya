@@ -23,6 +23,16 @@ class ProfileController extends Controller
     }
 
 
+    public function getPostedPhotos()
+    {
+
+        if(Auth::user())
+        {
+            return DB::table('topics_img')->where('user_uuid',Auth::user()->uuid)->limit(10)->get();
+        }
+    }
+
+
     //Get user bookmarks
     public function getBookmark(Request $request)
     {
