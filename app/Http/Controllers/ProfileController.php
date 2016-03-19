@@ -139,26 +139,29 @@ class ProfileController extends Controller
         return $notification->countNotification(Auth::user()->uuid);
     }
 
-    /**
-     * Displayname section
-     *
+    /*
+     * View - Displayname section
      */
     public function createName()
     {
         return view('pages.createName');
     }
 
+
+    //Check username during the registration
     public function checkName(Request $request)
     {
-        $user = User::where('displayname',$request->name)->count();
+        $username = '@'.strtolower( str_replace(' ', '',$request->name));
+        $user = User::where('displayname',$username)->count();
         return $user;
     }
 
     public function registerName(Request $request)
     {
         //Not sure if this is smart putting @ here, but we will see
+        $username = '@'.strtolower( str_replace(' ', '',$request->displayname));
         User::where('uuid',Auth::user()->uuid)
-            ->update(['displayname'=> '@'.$request->displayname]);
+            ->update(['displayname'=> $username]);
         return redirect('/home');
     }
     /** end displayname section */
