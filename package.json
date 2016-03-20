@@ -1,7 +1,8 @@
 {
   "private": true,
   "devDependencies": {
-    "gulp": "^3.8.8",
+    "gulp": "^3.9.1",
+    "gulp-connect-php": "0.0.7",
     "laravel-elixir-livereload": "^1.1.4",
     "laravel-elixir-wiredep": "^2.0.0"
   },

@@ -538,6 +538,10 @@ angular.module('App')
             });
         }
 
+
+        /*
+        *  Upvote Downvote topics fropm here
+        * */
         postCtrl.upvoteTally    =   function(topic_uuid)
         {
             var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')

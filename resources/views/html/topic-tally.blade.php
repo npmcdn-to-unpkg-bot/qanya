@@ -7,7 +7,7 @@
        @if(Auth::guest())
            ng-click="postCtrl.showMdLogin($event)"
        @else
-            ng-click="postCtrl.upvote('{{ $uuid }}','{!! $topics_uid !!}')
+            ng-click="postCtrl.upvote('{{ $uuid }}','{!! Auth::user()->uuid !!}')
         @endif
         ">
         <i class="fa fa-chevron-up"></i>
@@ -23,7 +23,7 @@
         @if(Auth::guest())
             ng-click="postCtrl.showMdLogin($event)"
         @else
-            ng-click="postCtrl.dwnvote('{{ $uuid }}','{!! $topics_uid !!}')
+            ng-click="postCtrl.dwnvote('{{ $uuid }}','{!! Auth::user()->uuid !!}')
         @endif
         ">
         <i class="fa fa-chevron-down"></i>

@@ -1,10 +1,16 @@
 var elixir = require('laravel-elixir');
 
 //https://github.com/FabioAntunes/laravel-elixir-wiredep
-require('laravel-elixir-wiredep');
+//require('laravel-elixir-wiredep');
 
-https://www.npmjs.com/package/laravel-elixir-livereload
+//https://www.npmjs.com/package/laravel-elixir-livereload
 require('laravel-elixir-livereload');
+
+//https://scotch.io/tutorials/use-gulp-to-start-a-laravel-php-server
+var php = require('gulp-connect-php');
+
+//https://www.npmjs.com/package/gulp-exec
+var exec = require('gulp-exec');
 
 /*
  |--------------------------------------------------------------------------
@@ -18,6 +24,14 @@ require('laravel-elixir-livereload');
  */
 
 elixir(function(mix) {
+
+   //for running laravel
+    php.server({
+        base: './public',
+        port: 8888,
+        hostname: '0.0.0.0' //use this for outside connection
+    });
+    
     mix.livereload([ 'app/**/*', 'public/**/*',
                      'resources/views/**/*',
                      'resources/assets/**/*']);
@@ -27,5 +41,6 @@ elixir(function(mix) {
         //'normalize.css',
         'main.css'
     ], 'public/assets/css');
-    mix.wiredep({src: '/resources/views/layouts/app.blade.php'});
+    //mix.wiredep({src: '/resources/views/layouts/app.blade.php'});
+
 });

@@ -73,6 +73,8 @@ class ProfileController extends Controller
         }
     }
 
+
+    //Log ip acitivities
     public function ipLogger(Request $request)
     {
         $ipLogger = new IpLogger();
@@ -162,7 +164,7 @@ class ProfileController extends Controller
         $username = '@'.strtolower( str_replace(' ', '',$request->displayname));
         User::where('uuid',Auth::user()->uuid)
             ->update(['displayname'=> $username]);
-        return redirect('/home');
+        return redirect('/');
     }
     /** end displayname section */
 
