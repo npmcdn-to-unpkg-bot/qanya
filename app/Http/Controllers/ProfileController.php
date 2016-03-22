@@ -28,9 +28,25 @@ class ProfileController extends Controller
 
         if($request->data)
         {
-            return DB::table('topics_img')
+            return DB::table('topics')
+                        ->select(
+                            'topics.topic',
+                            'topics.type as topic_type',
+                            'topics.uid as topics_uid',
+                            'topics.slug as topic_slug',
+                            'topics.tags',
+                            'topics.uuid as topic_uuid',
+                            'topics.created_at as topic_created_at',
+                            'topics_img.filename',
+                            'users.firstname',
+                            'users.profile_img',
+                            'users.displayname'
+                        )
+                        ->join('users', 'topics.uid', '=', 'users.uuid')
+                        ->join('topics_img', 'topics_img.topic_uuid', '=', 'topics.uuid')
                         ->where('user_uuid',$request->data)
-                        ->limit(10)->get();
+                        ->limit(10)
+                        ->get();
         }
     }
 

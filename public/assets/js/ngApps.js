@@ -1,6 +1,6 @@
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr','angular.filter'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {

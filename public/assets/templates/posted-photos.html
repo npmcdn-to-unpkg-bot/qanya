@@ -1,7 +1,21 @@
-test
 
-<!--{{data}}-->
-<div ng-repeat="img in data">
-    <!--{{img}}-->
-    <img src="{{img.filename}}" class="img-fluid">
+<div ng-repeat="(key, value) in data | groupBy: 'topic_uuid'">
+    <div class="row card">
+        <div class="card-block">
+
+            <h4 class="card-title">
+                <a href="/{{value[0].displayname}}/{{value[0].topic_slug}}">
+                    {{ value[0].topic }}
+                </a>
+            </h4>
+        </div>
+
+        <div ng-repeat="img in value">
+            <div class="col-xs-6 col-sm-4">
+                <img src="{{img.filename}}" class="img-fluid">
+            </div>
+        </div>
+
+    </div>
+
 </div>

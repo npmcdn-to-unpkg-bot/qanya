@@ -68,6 +68,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.7.1/ng-flow.min.js"></script>
 
+    {{--https://github.com/a8m/angular-filter--}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.js"></script>
+
     {{--Socket.io--}}
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 

@@ -108,6 +108,7 @@
                                 <md-content class="md-padding"
                                             ng-init="profileCtrl.postedPhotos('{{$user->uuid}}')">
                                     <posted-photos data="profileCtrl.userPostedPhotos">
+                                        loading
                                         <i class="fa fa-spinner fa-spin"></i>
                                     </posted-photos>
                                 </md-content>

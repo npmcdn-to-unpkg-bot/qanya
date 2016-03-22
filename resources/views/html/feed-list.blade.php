@@ -79,11 +79,14 @@
         <div class="card-text">
           {!! clean(str_limit(nl2br($topic->text),250)) !!}
 
-
-            <div ng-init="postCtrl.getPostImage('{{$topic->topic_uuid}}')"
-                 id="previewImage_<?=$topic->topic_uuid?>">
-                @{{postCtrl.previewImage_<?=$topic->topic_uuid?> }}
+            {{-- Preview images --}}
+            <div ng-if="{{$topic->num_img}} > 0">
+                <div ng-init="postCtrl.getPostImage('{{$topic->topic_uuid}}')"
+                     id="previewImage_<?=$topic->topic_uuid?>">
+                    @{{postCtrl.previewImage_<?=$topic->topic_uuid?> }}
+                </div>
             </div>
+
             <?php
            $tags = explode(',',$topic->tags);?>
             @if($tags)
