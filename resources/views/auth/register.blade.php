@@ -75,8 +75,8 @@
                             </md-input-content>
                         </div>
 
-                        <div class="form-group">
-                            <md-button type="submit" class="md-raised md-primary">
+                        <div class="form-group md-block ">
+                            <md-button type="submit" class="md-primary md-raised btn-block">
                                 Register
                             </md-button>
                         </div>

@@ -29,6 +29,41 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 
+                <!-- topic type -->
+                <div class="btn-group" data-toggle="buttons">
+
+                    <!-- Questions-->
+                    <label class="btn btn-success-outline"
+                           ng-click="postCtrl.postTypes = 3;
+                           postCtrl.reviewCriteria = false;
+                           postCtrl.showReview=false" value="question">
+                        <input type="radio" autocomplete="off" checked>
+                        <i class="ion-help"></i>
+                        question
+                    </label>
+
+                    <!-- Translate -->
+                    <label class="btn btn-success-outline"
+                           ng-click="postCtrl.postTypes = 1;
+                           postCtrl.reviewCriteria = false;
+                           postCtrl.showReview=false" value="topic">
+                        <input type="radio" autocomplete="off" >
+                        <i class="ion-chatbubble-working"></i>
+                        topic
+                    </label>
+
+                    <!-- Review -->
+                    <label class="btn btn-success-outline"
+                           ng-click="postCtrl.postTypes = 2;
+                           postCtrl.reviewCriteria = [{id: 'choice1'}, {id: 'choice2'}];
+                           postCtrl.showReview=true" value="review">
+                        <input type="radio" autocomplete="off" >
+                        <i class="ion-checkmark-round"></i>
+                        review
+                    </label>
+                </div>
+
+
                 {{-- TITILE--}}
                 <md-input-container class="md-block" flex-gt-sm>
                     <label>Title</label>
@@ -37,17 +72,6 @@
                            name="postTitle" required autocomplete="off">
                 </md-input-container>
 
-
-                <md-input-container class="md-block" flex-gt-sm>
-                    <label>Types</label>
-                    <md-select ng-model="postCtrl.postTypes" name="postTypes">
-
-                        <md-option value="1">กระทู้</md-option>
-                        <md-option value="2">รีวิว</md-option>
-                        <md-option value="3">คำถาม</md-option>
-
-                    </md-select>
-                </md-input-container>
 
 
                 <div layout-gt-sm="row">
@@ -63,6 +87,8 @@
 
 
 
+
+                
                 {{-- BODY --}}
                 <div contenteditable="true"
                      placeholder="Write something"
@@ -74,6 +100,23 @@
                                     border-style: solid;
                                     border-width: 2px "
                      id="contentBody"></div>
+
+
+                @{{ postCtrl.reviewCriteria  }}
+                <div ng-show="postCtrl.showReview" ng-init="postCtrl.showReview=false">
+
+                    <fieldset  data-ng-repeat="criteria in postCtrl.reviewCriteria">
+                        <input type="text" ng-model="criteria.name" name=""
+                               placeholder="Criteria">
+                        <input type="number" max="10" min="1" ng-model="criteria.rating">
+
+                        <button class="btn btn-danger-outline" ng-show="$last"
+                                ng-click="postCtrl.removeChoice()">-</button>
+                    </fieldset>
+
+                    <button class="btn btn-primary-outline"
+                            ng-click="postCtrl.addNewChoice()">Add fields</button>
+                </div>
 
                 {{-- TAGS --}}
                 <md-chips ng-model="postCtrl.topicTags"

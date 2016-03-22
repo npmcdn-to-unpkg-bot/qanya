@@ -114,6 +114,16 @@ div[contenteditable=true] {
 
 /*4c9689*/
 
+
+.label-success {
+    background-color: #5DB09D;
+}
+
+.label-success:hover {
+    background-color: #684666;
+}
+
+
 .btn-success{
     color: #fff;
     background-color: #4c9689;

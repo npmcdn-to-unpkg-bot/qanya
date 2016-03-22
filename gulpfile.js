@@ -31,7 +31,7 @@ elixir(function(mix) {
         port: 8888,
         hostname: '0.0.0.0' //use this for outside connection
     });
-    
+
     mix.livereload([ 'app/**/*', 'public/**/*',
                      'resources/views/**/*',
                      'resources/assets/**/*']);

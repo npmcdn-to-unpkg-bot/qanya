@@ -11,6 +11,7 @@
                 @include('html.post-create',compact('categories'))
             @endif
 
+
             <md-tabs md-dynamic-height md-border-bottom >
                 <md-tab label="Latest feed">
                     <md-content class="md-padding">
@@ -52,7 +53,7 @@
         </div>
 
         <div class="col-md-5 col-xs-12">
-            
+
             {{--<profile-badge></profile-badge>--}}
 
             @include('html.profile-badge')

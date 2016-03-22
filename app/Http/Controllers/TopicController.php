@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\IpLogger;
 use App\Notification;
 use App\ReplyInReply;
+use App\Reviews;
 use App\Tags;
 use App\Topic_actions;
 use App\TopicImages;
@@ -200,6 +201,26 @@ class TopicController extends Controller
                 $topicUUID = rand(0, 10) . str_random(12) . rand(0, 10);
                 $topicSlug = str_slug($json['title'], "-") . '-' . $topicUUID;
 
+                //Reviews
+                if($json['reviews']!= 'false')
+                {
+                    $count=0;
+                    foreach($json['reviews'] as $review)
+                    {
+                        print_r($review);
+
+                        $review_data[$count] = array( 'topic_uuid'    =>$topicUUID,
+                                                        'user_uuid'     => Auth::user()->uuid,
+                                                        'criteria'      => $review['name'],
+                                                        'scores'        => $review['rating'],
+                                                        'is_template'   => TRUE,
+                                                        'created_at'    => date("Y-m-d H:i:s")
+                                                 );
+                        $count++;
+                    }
+                    Reviews::insert($review_data);
+                }
+
 
                 //TAG
                 if(!empty($json['tags']))
@@ -210,6 +231,7 @@ class TopicController extends Controller
                 //Images
                 if(!empty($json['images']))
                 {
+                    $count = 0;
                     //Insert images in another table
                     foreach($json['images'] as $image)
                     {
@@ -248,9 +270,9 @@ class TopicController extends Controller
                     foreach($json['tags'] as $tag)
                     {
                         $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
-                                                    'title'=>clean($tag),
-                                                    'created_at'=> date("Y-m-d H:i:s")
-                                                    );
+                            'title'=>clean($tag),
+                            'created_at'=> date("Y-m-d H:i:s")
+                        );
                         $count++;
                     }
                     Tags::insert($tag_data);
@@ -260,11 +282,15 @@ class TopicController extends Controller
 
                 event(new \App\Events\TopicPostEvent($topicEvents));
 
-                $data = array("slug"=>$topicSlug,
-                              "author"=>Auth::user()->displayname);
+                $data = array("slug"       => $topicSlug,
+                              "author"     => Auth::user()->displayname,
+                              "type"       => $json['type'],
+                              "topic_uuid" => $topicUUID);
 
                 return $data;
             }
+        }else{
+            return "not login";
         }
     }
 

@@ -39,26 +39,34 @@
 
                                 </div>
 
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" name="remember"> Remember Me
-                                            </label>
-                                        </div>
-                                    </div>
+                                <div>
+                                    <md-checkbox ng-model="true" aria-label="remember" name="remember">
+                                        Remember me
+                                    </md-checkbox>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="col-md-6">
-                                        <md-button type="submit" class="md-raised md-primary">
-                                            Login
-                                        </md-button>
-                                    </div>
+
+
+                                    {{--<div class="col-md-6">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="remember" checked> Remember Me
+                                            </label>
+                                        </div>
+                                    </div>--}}
+                                </div>
+
+                                <div class="form-group md-block ">
+
+                                    <md-button type="submit" class="md-primary md-raised btn-block">
+                                        Login
+                                    </md-button>
+
                                 </div>
                             </form>
 
-                            <md-button class="md-primary" aria-label="Join us" ng-href="{{ url('/register') }}">
+                            <md-button class="md-accent" aria-label="Join us" ng-href="{{ url('/register') }}">
                                 Need an account? join us
                             </md-button>
 

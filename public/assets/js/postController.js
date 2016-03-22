@@ -12,10 +12,17 @@ angular.module('App')
             'alert':    false
         }
 
-        postCtrl.topicTags      = [];
-        postCtrl.postFeedFollow = 'Follow';
-        postCtrl.postFollow     = 'Follow';
-        postCtrl.topicReply     = '';
+        postCtrl.topicTags      =   [];
+        postCtrl.postFeedFollow =   'Follow';
+        postCtrl.postFollow     =   'Follow';
+        postCtrl.topicReply     =   '';
+
+        //Review criteria
+        postCtrl.criteria       =   false;
+        postCtrl.criteriaReply  =   null;
+        postCtrl.reviewCriteria =   false;
+        postCtrl.critReplyData  =   null;
+
 
 
 
@@ -119,7 +126,7 @@ angular.module('App')
         postCtrl.followUser = function(user_uuid,uuid)
         {
             var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
-            followStatus.on("value", function(snapshot) {
+            followStatus.once("value", function(snapshot) {
                 if(snapshot.exists() == false)
                 {
                     postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
@@ -138,7 +145,7 @@ angular.module('App')
 
                     var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
                     followStatus.transaction(function (current_value) {
-                        return (current_value || 0) - 1;
+                        return negCurrentValueCheck(current_value);
                     })
                 }
             })
@@ -388,6 +395,21 @@ angular.module('App')
         };
 
 
+
+        //For Review
+        //Add new item
+        postCtrl.addNewChoice = function() {
+            var newItemNo = postCtrl.reviewCriteria.length+1;
+            postCtrl.reviewCriteria.push({'id':'criteria'+newItemNo});
+        };
+
+        //Remove added item
+        postCtrl.removeChoice = function() {
+            var lastItem = postCtrl.reviewCriteria.length-1;
+            postCtrl.reviewCriteria.splice(lastItem);
+        };
+
+
         //Post topic
         postCtrl.postTopic = function()
         {
@@ -405,10 +427,12 @@ angular.module('App')
                          tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),
                          text:          $('#contentBody').text(),
-                         images:        imgIds
+                         images:        imgIds,
+                         reviews:       postCtrl.reviewCriteria
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
+                    console.log(response.data);
                     $http.get("http://ipinfo.io")
                         .then(function(response){
                             var geo_data = response

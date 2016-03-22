@@ -1,31 +1,54 @@
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr){
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr,Topics) {
 
         var profileCtrl = this;
 
-        profileCtrl.profileDescription  =   '';
-        profileCtrl.notificationList    =   '';
-        profileCtrl.unreadNotification  =   0;
-        profileCtrl.userBookmark        =   0;
-        profileCtrl.userPostedPhotos    =   '';
+        profileCtrl.topic = Topics;
+        profileCtrl.profileDescription = '';
+        profileCtrl.notificationList = '';
+        profileCtrl.unreadNotification = 0;
+        profileCtrl.userBookmark = 0;
+        profileCtrl.userPostedPhotos = '';
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
-        profileCtrl.isOpenRight = function(){
+        profileCtrl.isOpenRight = function () {
             return $mdSidenav('alertSideNav').isOpen();
         };
 
 
-
         //Get user posted photos
-        profileCtrl.postedPhotos = function(user_uuid){
+        profileCtrl.postedPhotos = function (user_uuid) {
             $http.post('/getPostedPhotos', {data: user_uuid})
-                .then(function(response){
+                .then(function (response) {
                     console.log(response.data);
-                    profileCtrl.userPostedPhotos =  response.data;
+                    profileCtrl.userPostedPhotos = response.data;
                 })
         }
 
-        
+
+        profileCtrl.getUserUpvote = function (user_uuid)
+        {
+            var ref = profileCtrl.topic.userUrl(user_uuid).child('upvote');
+            ref.on("value",function(snapshot){
+
+                snapshot.forEach(function(data) {
+                    var key = 'user_upvoted_'+data.key();
+                    profileCtrl[key]  = true;
+                });
+            })
+        }
+
+        profileCtrl.getUserDwnvote = function (user_uuid)
+        {
+            var ref = profileCtrl.topic.userUrl(user_uuid).child('downvote');
+            ref.on("value",function(snapshot){
+
+                snapshot.forEach(function(data) {
+                    var key = 'user_dwnvoted_'+data.key();
+                    profileCtrl[key]  = true;
+                });
+            })
+        }
 
         profileCtrl.getUserStat = function(uuid)
         {

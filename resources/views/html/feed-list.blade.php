@@ -1,17 +1,35 @@
  {{-- Feed --}}
 
 
-<div ng-controller="PostCtrl as postCtrl" class="animated bounce">
+<div ng-controller="PostCtrl as postCtrl" class="animated bounce"
+     @if(Auth::check())
+         {{--if user is login then get their current upvote and downvote --}}
+         ng-init="profileCtrl.getUserUpvote('<?php echo Auth::user()->uuid?>');
+                  profileCtrl.getUserDwnvote('<?php echo Auth::user()->uuid?>')"
+    @endif
+    >
   @foreach($topics as $topic)
     <md-card class="row">
         <md-card-header>
-{{--            {{ $topic->topic_type }}--}}
+            {{-- Determine the header for the topic --}}
+            <span ng-if="{{ $topic->topic_type }} == 1">
+                Topic
+            </span>
+            <span ng-if="{{ $topic->topic_type }} == 2">
+                Review
+            </span>
+            <span ng-if="{{ $topic->topic_type }} == 3">
+                Question
+            </span>
 
-            Question
+            &nbsp;
             in
+            &nbsp;
+
            <a href="/channel/{{ $topic->cate_slug }}">
                {{ $topic->cate_name }}
            </a>
+
            <span flex=""></span>
             <a  href="#"
                 class="card-link"

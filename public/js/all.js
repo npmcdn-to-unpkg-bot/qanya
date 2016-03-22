@@ -11,6 +11,14 @@ function ipLogger()
         return data;
     })
 }
+
+$('a.card-link').click(function(e)
+{
+    // Special stuff to do when this link is clicked...
+
+    // Cancel the default action
+    e.preventDefault();
+});
 //Angular config and modules
 
 var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr'])
@@ -23,7 +31,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
         '200': 'ef9a9a',
         '300': 'e57373',
         '400': 'ef5350',
-        '500': '4D394B', // primary colour
+        '500': '684666', // primary colour
         '600': 'e53935',
         '700': 'd32f2f',
         '800': 'c62828',
@@ -55,10 +63,17 @@ angular.module('App')
             'alert':    false
         }
 
-        postCtrl.topicTags      = [];
-        postCtrl.postFeedFollow = 'Follow';
-        postCtrl.postFollow     = 'Follow';
-        postCtrl.topicReply     = '';
+        postCtrl.topicTags      =   [];
+        postCtrl.postFeedFollow =   'Follow';
+        postCtrl.postFollow     =   'Follow';
+        postCtrl.topicReply     =   '';
+
+        //Review criteria
+        postCtrl.criteria       =   false;
+        postCtrl.criteriaReply  =   null;
+        postCtrl.reviewCriteria =   false;
+        postCtrl.critReplyData  =   null;
+
 
 
 
@@ -162,7 +177,7 @@ angular.module('App')
         postCtrl.followUser = function(user_uuid,uuid)
         {
             var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
-            followStatus.on("value", function(snapshot) {
+            followStatus.once("value", function(snapshot) {
                 if(snapshot.exists() == false)
                 {
                     postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid).set(moment().format());
@@ -181,7 +196,7 @@ angular.module('App')
 
                     var followStatus = postCtrl.topics.userUrl(uuid).child('stat/follower/')
                     followStatus.transaction(function (current_value) {
-                        return (current_value || 0) - 1;
+                        return negCurrentValueCheck(current_value);
                     })
                 }
             })
@@ -431,6 +446,21 @@ angular.module('App')
         };
 
 
+
+        //For Review
+        //Add new item
+        postCtrl.addNewChoice = function() {
+            var newItemNo = postCtrl.reviewCriteria.length+1;
+            postCtrl.reviewCriteria.push({'id':'criteria'+newItemNo});
+        };
+
+        //Remove added item
+        postCtrl.removeChoice = function() {
+            var lastItem = postCtrl.reviewCriteria.length-1;
+            postCtrl.reviewCriteria.splice(lastItem);
+        };
+
+
         //Post topic
         postCtrl.postTopic = function()
         {
@@ -448,10 +478,12 @@ angular.module('App')
                          tags:          postCtrl.topicTags,
                          body:          $('#contentBody').html(),
                          text:          $('#contentBody').text(),
-                         images:        imgIds
+                         images:        imgIds,
+                         reviews:       postCtrl.reviewCriteria
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
+                    console.log(response.data);
                     $http.get("http://ipinfo.io")
                         .then(function(response){
                             var geo_data = response
@@ -751,33 +783,56 @@ angular.module('App')
     })
 
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr){
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr,Topics) {
 
         var profileCtrl = this;
 
-        profileCtrl.profileDescription  =   '';
-        profileCtrl.notificationList    =   '';
-        profileCtrl.unreadNotification  =   0;
-        profileCtrl.userBookmark        =   0;
-        profileCtrl.userPostedPhotos    =   '';
+        profileCtrl.topic = Topics;
+        profileCtrl.profileDescription = '';
+        profileCtrl.notificationList = '';
+        profileCtrl.unreadNotification = 0;
+        profileCtrl.userBookmark = 0;
+        profileCtrl.userPostedPhotos = '';
 
         profileCtrl.toggleRight = buildToggler('alertSideNav');
-        profileCtrl.isOpenRight = function(){
+        profileCtrl.isOpenRight = function () {
             return $mdSidenav('alertSideNav').isOpen();
         };
 
 
-
         //Get user posted photos
-        profileCtrl.postedPhotos = function(user_uuid){
+        profileCtrl.postedPhotos = function (user_uuid) {
             $http.post('/getPostedPhotos', {data: user_uuid})
-                .then(function(response){
+                .then(function (response) {
                     console.log(response.data);
-                    profileCtrl.userPostedPhotos =  response.data;
+                    profileCtrl.userPostedPhotos = response.data;
                 })
         }
 
-        
+
+        profileCtrl.getUserUpvote = function (user_uuid)
+        {
+            var ref = profileCtrl.topic.userUrl(user_uuid).child('upvote');
+            ref.on("value",function(snapshot){
+
+                snapshot.forEach(function(data) {
+                    var key = 'user_upvoted_'+data.key();
+                    profileCtrl[key]  = true;
+                });
+            })
+        }
+
+        profileCtrl.getUserDwnvote = function (user_uuid)
+        {
+            var ref = profileCtrl.topic.userUrl(user_uuid).child('downvote');
+            ref.on("value",function(snapshot){
+
+                snapshot.forEach(function(data) {
+                    var key = 'user_dwnvoted_'+data.key();
+                    profileCtrl[key]  = true;
+                });
+            })
+        }
 
         profileCtrl.getUserStat = function(uuid)
         {
@@ -930,6 +985,4 @@ angular.module('App')
         }
     }
 })
-
-
 //# sourceMappingURL=all.js.map
