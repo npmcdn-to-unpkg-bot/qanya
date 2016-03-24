@@ -1,0 +1,12 @@
+<!-- review form -->
+<div>
+    Your score
+    <h3 class="md-display-1" ng-init="userAvg=0">
+        {{ userAvg }}
+    </h3>
+</div>
+<div ng-repeat="review in data">
+    <fieldset>
+        {{review.criteria}} - <input type="number" max="10" min="1" ng-model="criteria.rating">
+    </fieldset>
+</div>

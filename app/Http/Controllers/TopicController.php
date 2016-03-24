@@ -41,6 +41,13 @@ class TopicController extends Controller
 {
 
 
+    public function getReview(Request $request)
+    {
+        return DB::table('reviews')->where('topic_uuid',$request->data)->get();
+    }
+
+
+
     public function postReplyInReply(Request $request)
     {
         $rir = new ReplyInReply();
@@ -60,6 +67,8 @@ class TopicController extends Controller
         $data= $rir->getReplyInReply($request->reply_id);
         return view('html.reply-in-reply',compact('data'));
     }
+
+
 
     public function getPostImages(Request $request)
     {
@@ -324,6 +333,7 @@ class TopicController extends Controller
             $dt = Carbon::parse($topic->topic_created_at);
             $topic_id   = $topic->id;
             $title      = $topic->topic;
+            $topic_type = $topic->topic_type;
             $body       = $topic->body;
             $is_edited  = $topic->is_edited;
             $username   = $topic->displayname;
@@ -368,18 +378,11 @@ class TopicController extends Controller
                 compact('topic_id',
                         'title',
                         'body',
+                        'topic_type',
                         'username',
                         'slug',
-                        'uuid',
-                        'is_user',
-                        'is_edited',
-                        'topics_uid',
-                        'user_descs',
-                        'tags',
-                        'poster_img',
-                        'user_fname',
-                        'cate_name',
-                        'topic_updated_at',
+                        'uuid','is_user','is_edited','topics_uid','user_descs',
+                        'tags','poster_img','user_fname','cate_name','topic_updated_at',
                         'topic_created_at','topic_replies'));
         }
     }

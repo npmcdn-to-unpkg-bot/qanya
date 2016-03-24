@@ -1,0 +1,12 @@
+<div>
+    <h3 class="md-display-1">
+        {{ postCtrl.avgScore(data) }}
+    </h3>
+</div>
+<div ng-repeat="review in data">
+
+    <h5>
+    {{review.criteria}} - {{review.scores}}
+        <progress class="progress progress-info" value="50" max="100">50%</progress>
+    </h5>
+</div>

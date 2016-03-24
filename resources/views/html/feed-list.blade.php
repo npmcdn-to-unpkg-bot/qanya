@@ -15,7 +15,8 @@
             <span ng-if="{{ $topic->topic_type }} == 1">
                 Topic
             </span>
-            <span ng-if="{{ $topic->topic_type }} == 2">
+            <span ng-if="{{ $topic->topic_type }} == 2;"
+                  ng-init="postCtrl.getReview('{{$topic->topic_uuid}}')">
                 Review
             </span>
             <span ng-if="{{ $topic->topic_type }} == 3">
@@ -31,8 +32,9 @@
            </a>
 
            <span flex=""></span>
+
             <a  href="#"
-                class="card-link"
+                ng-class="card-link"
                 ng-init="postCtrl.bookMarkTally('{{$topic->topic_uuid}}')"
                 @if(Auth::guest())
                     ng-click="postCtrl.showMdLogin($event)"
@@ -66,17 +68,22 @@
         </md-card-header>
 
     <div class="card-block">
-
+  <span ng-if="{{ $topic->topic_type }} == 2;" class="pull-right">
+            <review-topic data="postCtrl.responseReview<?=$topic->topic_uuid?>"></review-topic>
+        </span>
         <h4 class="card-title">
 
-        <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}" target="_blank">
-
-             {!! HTML::decode($topic->topic) !!}</a>
+            <a href="{{ url($topic->displayname.'/'.$topic->topic_slug) }}" target="_blank">
+             {!! HTML::decode($topic->topic) !!}
+            </a>
         </h4>
 
 
 
+
         <div class="card-text">
+
+
           {!! clean(str_limit(nl2br($topic->text),250)) !!}
 
             {{-- Preview images --}}

@@ -146,6 +146,7 @@ class Topic extends Model
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
+                    'topics.num_img',
                     'topics.comments',
                     'categories.name as cate_name',
                     'categories.slug as cate_slug',

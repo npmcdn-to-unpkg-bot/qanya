@@ -77,7 +77,11 @@
                     {!! HTML::decode($title) !!}
                 </h1>
 
-
+                <span ng-if="{{ $topic_type }} == 2;"
+                      ng-init="postCtrl.getReview('{{$uuid}}')"
+                      class="pull-right">
+                    <review-topic data="postCtrl.responseReview<?=$uuid?>"></review-topic>
+                </span>
 
                 <div class      =   "reading img-fluid"
                      id         =   "topicContent"
@@ -175,6 +179,7 @@
 
 <div class="layoutSingleColumn" ng-controller="PostCtrl as postCtrl"  ng-init="postCtrl.replyList = postCtrl.getReplies('{{$uuid}}')" >
 
+
     @if (Auth::user())
         <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}','{{Auth::user()->uuid }}')">
             <div class="media md-margin">
@@ -196,6 +201,11 @@
                          data-content="test"
                          id="topicReplyContainer">
                     </div>
+
+                    <div ng-if="{{ $topic_type }} == 2" ng-init="postCtrl.getReview ('{{$uuid}}')">
+                        <review-form data="postCtrl.responseReview{{$uuid}}"></review-form>
+                    </div>
+
                     <md-button type="submit"
                                class="md-raised md-primary">Submit</md-button>
                 </div>

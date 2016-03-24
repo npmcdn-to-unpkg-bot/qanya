@@ -31,3 +31,28 @@ angular.module('App')
         }
     }
 })
+
+.directive('reviewTopic', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/review-topic.html'
+    }
+})
+
+//Review score form
+.directive('reviewForm', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/review-form.html'
+    }
+})

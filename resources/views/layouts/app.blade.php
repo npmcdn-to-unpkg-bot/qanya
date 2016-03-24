@@ -183,8 +183,12 @@
                 </h2>
 
                 <span flex></span>
+                <md-button hide-gt-xs ng-click="profileCtrl.toggleMobile()" class="">
+                    <md-icon md-svg-src="/assets/icons/ic_view_headline_white_24px.svg"></md-icon>
+                </md-button>
+
                 @if (Auth::guest())
-                    <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                    <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
                         Login / Join us
                     </md-button>
                 @else
@@ -211,13 +215,7 @@
                         <img src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
                     </a>
 
-                    {{--<li class="dropdown">
 
-
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
-                        </ul>
-                    </li>--}}
                 @endif
             </div>
             </div>
@@ -231,6 +229,17 @@
                 @yield('content')
             </div>
         </md-content>
+
+        <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="mobile">
+            <md-toolbar class="md-theme-light">
+                <h1 class="md-toolbar-tools">Sidenav Right</h1>
+            </md-toolbar>
+            <md-content>
+                test
+
+            </md-content>
+        </md-sidenav>
+
         {{-- Sidebar notification --}}
         <md-sidenav class="md-sidenav-right md-whiteframe-z2"
                     md-component-id="alertSideNav">

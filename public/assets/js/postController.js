@@ -24,8 +24,45 @@ angular.module('App')
         postCtrl.critReplyData  =   null;
 
 
+        //--- REVIEW ---
+
+        //Get Review from the post
+        postCtrl.getReview = function(topic_uuid) {
+            $http.post('/retrieve-review/', {data: topic_uuid})
+                .then(function (response) {
+                    console.log(response);
+                    var key = 'responseReview' + topic_uuid;
+                    postCtrl[key] = response.data;
+                })
+        }
 
 
+        //Calculate the average score
+        postCtrl.avgScore = function(scores_arr)
+        {
+            var ttl_score   =   0;
+            var ttl_length  =   0;
+
+            angular.forEach(scores_arr, function(value, key){
+                ttl_score = ttl_score+parseInt(value.scores);
+                ttl_length++;
+            });
+            return ttl_score/ttl_length;
+        }
+
+
+        postCtrl.getReviewForm = function(topic_uuid){
+            $http.post('/reviewForm/', {data: topic_uuid})
+                .then(function (response) {
+                    var key = 'responseReview' + topic_uuid;
+                    postCtrl[key] = response.data;
+                })
+        }
+
+        //--- END REVIEW ---
+
+
+        //Display pop up login
         postCtrl.showLogin = function(ev) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
             $mdDialog.show({              

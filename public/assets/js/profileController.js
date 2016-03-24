@@ -10,7 +10,8 @@ angular.module('App')
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
 
-        profileCtrl.toggleRight = buildToggler('alertSideNav');
+        profileCtrl.toggleRight     = buildToggler('alertSideNav');
+        profileCtrl.toggleMobile    = buildToggler('mobile');
         profileCtrl.isOpenRight = function () {
             return $mdSidenav('alertSideNav').isOpen();
         };

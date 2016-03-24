@@ -60,6 +60,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/replyInReply','TopicController@postReplyInReply');
     Route::post('/replyInReplyList','TopicController@replyInReplyList');
     Route::post('/removeTopic','TopicController@destroy');
+    Route::post('/retrieve-review','TopicController@getReview');
+
 
 
     //Profile page
