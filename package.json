@@ -1,6 +1,7 @@
 {
   "private": true,
   "devDependencies": {
+    "angular-translate": "^2.11.0",
     "gulp": "^3.9.1",
     "gulp-connect-php": "0.0.7",
     "laravel-elixir-livereload": "^1.1.4",

@@ -3,7 +3,7 @@
     <?php
             echo $user_uuid = Auth::user()->uuid;
     ?>
-    <div ng-controller="ProfileCtrl as profileCtrl" class="animated bounce">
+    <div ng-controller="ProfileCtrl as profileCtrl">
         <div class="media panel md-padding" ng-init="profileCtrl.getUserStat('{{Auth::user()->uuid}}')">
             <div class="media-body">
                 <h4 class="media-heading">

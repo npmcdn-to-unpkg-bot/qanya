@@ -57,6 +57,13 @@
             {{--<profile-badge></profile-badge>--}}
 
             @include('html.profile-badge')
+
+            @if(Auth::user())
+            <div ng-controller="PostCtrl as postCtrl" ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')" id="userTagList">
+
+            </div>
+            @endif
+
             @include('html.category-nav',compact('categories'))
 
         </div>

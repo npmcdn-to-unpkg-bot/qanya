@@ -1,5 +1,6 @@
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr,Topics) {
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log, $cookies, $translate,
+                                       toastr,Topics) {
 
         var profileCtrl = this;
 
@@ -10,11 +11,40 @@ angular.module('App')
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
 
+
+        profileCtrl.profile = 'Eng';
+
         profileCtrl.toggleRight     = buildToggler('alertSideNav');
         profileCtrl.toggleMobile    = buildToggler('mobile');
         profileCtrl.isOpenRight = function () {
             return $mdSidenav('alertSideNav').isOpen();
         };
+
+
+
+        //Change language
+        profileCtrl.toggleLang = function (langKey) {
+            $translate.use(langKey);
+            // Setting a cookie
+            $cookies.put('userLang', langKey);
+            //If user registered - update this in their preference
+            /*if(Auth.ref.getAuth()){
+                profileCtrl.users.userArrRef(Auth.ref.getAuth().uid).update({"lang":langKey})
+            }*/
+        }
+
+        //Checkk user selected language
+        if(!profileCtrl.profile.lang){
+            if($cookies.get('userLang')){
+                profileCtrl.toggleLang($cookies.get('userLang'));
+            }else{
+                profileCtrl.toggleLang('Eng');
+            }
+        }
+        else{
+            profileCtrl.toggleLang(profileCtrl.profile.lang);
+        }
+
 
 
         //Get user posted photos

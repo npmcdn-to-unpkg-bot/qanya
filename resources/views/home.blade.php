@@ -48,6 +48,7 @@
                     </a>
                 </div>
             </div>
+
             <ul class="nav nav-pills">
                 @foreach ($categories as $cate)
                     <li class="nav-item btn-success-outline"

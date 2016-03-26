@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700" rel='stylesheet' type='text/css'>
 
     <!-- Angular Material CSS now available via Google CDN; version 0.9.4 used here -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.css">
+    <link rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css">
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" rel="stylesheet">
@@ -75,13 +75,16 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
     <!-- Angular Material Javascript now available via Google CDN; version 0.9.4 used here -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>
+    {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.0.5/angular-material.min.js"></script>--}}
 
 
     {{-- Toastr -> https://github.com/Foxandxss/angular-toastr --}}
     <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.10.0/angular-translate.min.js"></script>
+    <script src="/bower_components/angular-material/angular-material.min.js"></script>
+    <script src="/bower_components/angular-cookies/angular-cookies.min.js"></script>
 
     <script>
 
@@ -171,6 +174,26 @@
     }(document, 'script', 'facebook-jssdk'));</script>
 
     <div class="pos-f-t purple">
+        <div class="collapse" id="navbar-header">
+            <div class="container-fluid bg-inverse p-a-1">
+                @if (Auth::guest())
+                <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                    Login / Join us
+                </md-button>
+                @endif
+
+
+                @if(Auth::user())
+                    @include('html.profile-badge')
+
+                    <div ng-controller="PostCtrl as postCtrl" ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')" id="userTagList">
+
+                    </div>
+                @endif
+
+            </div>
+        </div>
+
         <md-toolbar>
             <div class="purple">
             <div class="md-toolbar-tools container">
@@ -183,13 +206,36 @@
                 </h2>
 
                 <span flex></span>
-                <md-button hide-gt-xs ng-click="profileCtrl.toggleMobile()" class="">
-                    <md-icon md-svg-src="/assets/icons/ic_view_headline_white_24px.svg"></md-icon>
-                </md-button>
+
+                <button hide-gt-xs class="navbar-toggler nav" type="button" data-toggle="collapse" data-target="#navbar-header">
+                    &#9776;
+                </button>
+
+
+                <ul class="nav navbar-nav pull-right">
+                    <li class="nav-item">
+                        <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-globe fa-1x white-font"></i>
+                            <span class="white-font">@{{ 'KEY_LANGUAGES' | translate }}</span>
+                            <span class="caret"></span>
+                        </a>
+
+                        <li class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <a class="dropdown-item purple-light-font hand"
+                               ng-click="profileCtrl.toggleLang('ไทย')">
+                                <span class="purple-light-font">ไทย</span>
+                            </a>
+                            <a class="dropdown-item purple-light-font hand"
+                               ng-click="profileCtrl.toggleLang('Eng')">
+                                <span class="purple-light-font">English</span>
+                            </a>
+                        </li>
+                    </li>
+                </ul>
 
                 @if (Auth::guest())
                     <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
-                        Login / Join us
+                        @{{ 'KEY_LOGIN_REGISTER' | translate }}
                     </md-button>
                 @else
 
@@ -235,7 +281,15 @@
                 <h1 class="md-toolbar-tools">Sidenav Right</h1>
             </md-toolbar>
             <md-content>
-                test
+                @include('html.profile-badge')
+
+                @if(Auth::user())
+                    <div ng-controller="PostCtrl as postCtrl" ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')" id="userTagList">
+
+                    </div>
+                @endif
+
+
 
             </md-content>
         </md-sidenav>
@@ -244,7 +298,7 @@
         <md-sidenav class="md-sidenav-right md-whiteframe-z2"
                     md-component-id="alertSideNav">
             <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">Notification</h1>
+                <h1 class="md-toolbar-tools">@{{ 'KEY_NOTIFICATION' | translate }}</h1>
             </md-toolbar>
             <md-content>
                 <md-list>
@@ -265,15 +319,6 @@
             </md-content>
         </md-sidenav>
     </section>
-
-
-
-
-
-
-
-
-
 
 
     <script type="text/javascript">

@@ -19,7 +19,11 @@ $('a.card-link').click(function(e)
 });
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase','toastr','angular.filter'])
+var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
+                                 'toastr',
+                                 'angular.filter',
+                                 'ngCookies',
+                                 'pascalprecht.translate'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
@@ -144,10 +148,11 @@ angular.module('App')
         postCtrl.userTagList = function(user_uuid)
         {
             var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
-            ref.on("value", function(snapshot) {
+            ref.once("value", function(snapshot) {
 
                 $http.post('/getTagButton/', {data: snapshot.val()})
                     .then(function(response){
+                        console.log(response.data)
                         $('#userTagList').html(response.data)
                 })
 
@@ -818,7 +823,8 @@ angular.module('App')
     })
 
 angular.module('App')
-    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log,toastr,Topics) {
+    .controller('ProfileCtrl',function($http,$mdToast,$timeout, $mdSidenav, $log, $cookies, $translate,
+                                       toastr,Topics) {
 
         var profileCtrl = this;
 
@@ -829,11 +835,40 @@ angular.module('App')
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
 
+
+        profileCtrl.profile = 'Eng';
+
         profileCtrl.toggleRight     = buildToggler('alertSideNav');
         profileCtrl.toggleMobile    = buildToggler('mobile');
         profileCtrl.isOpenRight = function () {
             return $mdSidenav('alertSideNav').isOpen();
         };
+
+
+
+        //Change language
+        profileCtrl.toggleLang = function (langKey) {
+            $translate.use(langKey);
+            // Setting a cookie
+            $cookies.put('userLang', langKey);
+            //If user registered - update this in their preference
+            /*if(Auth.ref.getAuth()){
+                profileCtrl.users.userArrRef(Auth.ref.getAuth().uid).update({"lang":langKey})
+            }*/
+        }
+
+        //Checkk user selected language
+        if(!profileCtrl.profile.lang){
+            if($cookies.get('userLang')){
+                profileCtrl.toggleLang($cookies.get('userLang'));
+            }else{
+                profileCtrl.toggleLang('Eng');
+            }
+        }
+        else{
+            profileCtrl.toggleLang(profileCtrl.profile.lang);
+        }
+
 
 
         //Get user posted photos
@@ -1046,4 +1081,108 @@ angular.module('App')
         templateUrl: '/assets/templates/review-form.html'
     }
 })
+angular.module('App')
+    .config(['$translateProvider', function ($translateProvider) {
+        $translateProvider.translations('Eng', {
+            'KEY_LOGIN_REGISTER':  'Login / Join us',
+            'KEY_NOTIFICATION':  'Notification',
+            'KEY_DASHBOARD':  'Dashboard',
+            'KEY_LANGUAGES':  'Languages',
+            'KEY_HOME':       'Home',
+            'KEY_REGISTER':   'Register',
+            'KEY_LOGIN':      'Log in',
+            'KEY_LOGOUT':     'Log out',
+            'KEY_FOLLOW':     'Follow',
+            'KEY_FOLLOWER':   'Follower',
+            'KEY_UNFOLLOW':   'Unfollow',
+            'KEY_FOLLOWING':  'Following',
+            'KEY_POST':       'Post',
+            'KEY_POSTED':     'Posted',
+            'KEY_UPVOTE':     'Upvote',
+            'KEY_UPVOTED':    'Upvoted',
+            'KEY_DWN_VOTE':   'Downvote',
+            'KEY_DWN_VOTED':  'Downvoted',
+            'KEY_VIEW':       'View',
+            'KEY_REMOVE':     'Remove',
+            'KEY_CANCEL':     'Cancel',
+            'KEY_QUESTION':   'Question',
+            'KEY_TOPIC':      'Topic',
+            'KEY_CHG_PWD':    'Change Password',
+            'KEY_PASSWORD':   'Password',
+            'KEY_OLD_PWD':    'Old Password',
+            'KEY_NEW_PWD':    'New Password',
+            'KEY_NEW_PWD_C':  'New password confirmation',
+            'KEY_SAVE':       'Save',
+            'KEY_SAVE_DRAFT': 'Save as draft',
+            'KEY_TAGS':       'Tags',
+            'KEY_EXPLORE':    'Explore',
+            'KEY_FEAT_CAT':    'Features categories',
+            'KEY_COMMENTS':   'Comments',
+            'KEY_REPLY':      'Reply',
+            'KEY_REVIEW':     'Review',
+            'KEY_EDIT':       'Edit',
+            'KEY_TREND':      'Trend',
+            'KEY_TRENDING':   'Trending',
+            'KEY_WRITE_REPLY':'Write a reply',
+            'KEY_LATEST_FEED':'Latest Feed',
+
+            //Remove topic
+            'KEY_CONF_REMOVE':'Are you sure you want to remove?',
+            'KEY_CONF_REM_C': 'Once remove, you will not be ableto to get this topic back',
+
+
+            //SENTENCE
+            'KEY_WHAT_ON_UR_MIND':  'What\'s on your mind?',
+            'KEY_YOU_WANT_FOLLOW':  'You may want to follow',
+            'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Register',
+            'KEY_CANT_CHNG_USER':   'Don\'t have account? Register',
+            'KEY_YOUR_ACCOUNT':     'Your account',
+            'KEY_NOTHING_HERE':     'Nothing here, yet',
+            'KEY_WHO_TO_FOLLOW':    'Who to follow',
+            'KEY_CAT_WILL_APPEAR':  'Follow some categories and it will appear here',
+            'KEY_WHT_UR_STORY':     'What\'s your story',
+            'KEY_WRT_COMMENT':      'Write a comment',
+
+
+            //USER RATING
+            'KEY_USER_RATING':  'User Rating',
+            'KEY_DETAILS':      'Details',
+
+            //USER INPUT
+            'KEY_FIRSTNAME':  'First name',
+            'KEY_LASTNAME':   'Last name',
+            'KEY_BIRTHDAY':   'Birthday',
+            'KEY_MONTH':      'Month',
+            'KEY_DAY':        'Day',
+            'KEY_EMAIL':      'Email',
+            'KEY_CONF_EMAIL': 'Confirm Email',
+            'KEY_GENDER':     'Gender',
+            'KEY_MALE':       'Male',
+            'KEY_FEMALE':     'Female',
+            'KEY_USERNAME':   'Username',
+            'KEY_LOCATION':   'Location',
+
+            //User Edit
+            'KEY_ED_PROFILE': 'Edit Profile',
+            'KEY_ED_CHG_PWD': 'Change Password',
+            'KEY_ED_PROFILE': 'Edit Profile',
+            'KEY_ED_SITE':    'Website',
+            'KEY_ED_PHONE':   'Phone',
+            'KEY_ED_BIO':     'Biography',
+
+        });
+
+        $translateProvider.translations('ไทย', {
+            'KEY_LOGIN_REGISTER':  'เข้าสู่ระบบ / สมัครใช้',
+            'KEY_DASHBOARD':  'ห้องทั้งหมด',
+            'KEY_LANGUAGES':  'ภาษา',
+            'KEY_HOME':       'หน้าแรก',
+            'KEY_REGISTER':   'สมัครใช้',
+            'KEY_LOGIN':      'เข้าสู่ระบบ',
+            'KEY_FOLLOW':     'ติดตาม',
+            'KEY_POST':       'โพสต์'
+        });
+
+        $translateProvider.preferredLanguage('Eng');
+    }])
 //# sourceMappingURL=all.js.map
