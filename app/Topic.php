@@ -55,13 +55,41 @@ class Topic extends Model
     }
 
 
-    //Get user topic
+    //Get topic created from this user
     public function getUserTopic($user_uuid)
     {
-        $topics = $this
+      /*  $topics = $this
                 ->where('topics.uid', $user_uuid)
                 ->join('users','users.uuid','=','topics.uid')
                 ->get();
+        return $topics;*/
+
+        $topics =   DB::table('categories')
+            ->select(
+                'topics.topic',
+                'topics.type as topic_type',
+                'topics.body',
+                'topics.text',
+                'topics.uid as topics_uid',
+                'topics.slug as topic_slug',
+                'topics.tags',
+                'topics.num_img',
+                'topics.comments',
+                'categories.name as cate_name',
+                'categories.slug as cate_slug',
+                'topics.uuid as topic_uuid',
+                'topics.created_at as topic_created_at',
+                'users.firstname',
+                'users.profile_img',
+                'users.displayname',
+                'users.description'
+            )
+            ->join('topics', 'topics.category', '=', 'categories.id')
+            ->join('users','users.uuid','=','topics.uid')
+            ->where('topics.uid', $user_uuid)
+            ->where('topics.flg',1)
+            ->orderBy('topics.created_at', 'desc')
+            ->get();
         return $topics;
     }
 
@@ -208,20 +236,29 @@ class Topic extends Model
 //        $results = Cache::remember('topic_posts_cache_'.$slug,1,function() use ($slug){
             return $topic = DB::table('topics')
                 ->select(
+                    'topics.id',
                     'topics.topic',
+                    'topics.type as topic_type',
                     'topics.body',
                     'topics.text',
+                    'topics.is_edited',
                     'topics.uid as topics_uid',
                     'topics.slug as topic_slug',
                     'topics.tags',
+                    'topics.num_img',
+                    'topics.comments',
+                    'categories.name as cate_name',
+                    'categories.slug as cate_slug',
                     'topics.uuid as topic_uuid',
                     'topics.created_at as topic_created_at',
+                    'topics.updated_at as topic_updated_at',
                     'users.firstname',
                     'users.profile_img',
                     'users.displayname',
                     'users.description'
                 )
                 ->join('users', 'topics.uid', '=', 'users.uuid')
+                ->join('categories', 'topics.category', '=', 'categories.id')
                 ->wherein('topics.uuid',$uuid_array)
                 ->where('topics.flg',1)
                 ->get();

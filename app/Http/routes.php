@@ -46,7 +46,7 @@ Route::group(['middleware' => 'web'], function () {
 
     //Topic Controller
     Route::post('/postTopic','TopicController@store');
-    Route::post('/updateTopicContent','TopicController@update');
+    Route::post('/api/updateTopicContent','TopicController@update');
     Route::get('/{displayname}/{category}','TopicController@show');
     Route::post('/feedFollowStatus','TopicController@userFollowStatus');
     Route::post('/follow-cate','TopicController@follow_cate');

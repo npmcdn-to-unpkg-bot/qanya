@@ -28,7 +28,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
-        '50': 'ffebee',
+        '50': '5DB09D',
         '100': 'ffcdd2',
         '200': 'ef9a9a',
         '300': 'e57373',
@@ -73,17 +73,17 @@ angular.module('App')
         //Review criteria
         postCtrl.criteria       =   false;
         postCtrl.criteriaReply  =   null;
+
         postCtrl.reviewCriteria =   false;
         postCtrl.critReplyData  =   null;
+        postCtrl.userRateReview =   null;
 
 
         //--- REVIEW ---
-
         //Get Review from the post
         postCtrl.getReview = function(topic_uuid) {
             $http.post('/retrieve-review/', {data: topic_uuid})
                 .then(function (response) {
-                    console.log(response);
                     var key = 'responseReview' + topic_uuid;
                     postCtrl[key] = response.data;
                 })
@@ -292,7 +292,9 @@ angular.module('App')
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-            $http.post('/replyTopic', {uuid: uuid,
+            console.log(postCtrl.responseReview+uuid);
+
+          /*  $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
                                        data: $('#topicReplyContainer').html() })
                 .then(function(response){
@@ -309,7 +311,7 @@ angular.module('App')
                     commentCounter.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     })
-                })
+                })*/
         }
 
 
@@ -571,12 +573,13 @@ angular.module('App')
             });
 
             var data = {
+                topic_uuid: topic_uuid,
                 topic_id:   topic_id,
                 body:       $('#topicContent').html(),
                 text:       $('#topicContent').text(),
                 images:     imgIds
             }
-            $http.post('/updateTopicContent', {data: data })
+            $http.post('/api/updateTopicContent', {data: data })
                 .then(function(response){
                     toastr.success('Save!',{
                         iconClass: 'toast-success'
@@ -597,15 +600,15 @@ angular.module('App')
             })
         }
 
-
+        //Get the post images
         postCtrl.getPostImage = function(uuid)
         {
             $http.post('/getPostImages', {uuid: uuid })
                 .then(function(response) {
-                    console.log(response);
-
-                    var key = '#previewImage_'+uuid;
-                    $(key).html(response.data);
+                    var key = 'previewImage_'+uuid;
+                    postCtrl[key] = response.data;
+                    /*$(key).html(response.data);
+                    postCtrl[key] = response.data;*/
                 })
         }
 
@@ -620,9 +623,26 @@ angular.module('App')
             });
         }
 
+
+        postCtrl.userBookMarked = function(user_uuid,topic_uuid)
+        {
+            var key = 'user_bookmarked_'+topic_uuid;
+            var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+
+            userBookmark.once("value", function(snapshot) {
+                if (snapshot.exists() == false) {
+                    postCtrl[key] = false;
+                }
+                else {
+                    postCtrl[key] = true;
+                }
+            })
+        }
+
         postCtrl.bookMark = function(user_uuid,topic_uuid)
         {
             var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+            var key = 'user_bookmarked_'+topic_uuid;
 
             userBookmark.once("value", function(snapshot) {
                 if(snapshot.exists() == false)
@@ -633,13 +653,16 @@ angular.module('App')
                     topicRef.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     });
+                    postCtrl[key]  = true;
                 }
                 else{
                     postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
+                    
                     var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
                     topicRef.transaction(function (current_value) {
                         return negCurrentValueCheck(current_value);
                     });
+                    postCtrl[key]  = false;
                 }
             })
         }
@@ -772,19 +795,6 @@ angular.module('App')
                     })
                 }
             })
-
-            /*$http.post('/upvote/', {    topics_uuid:    topic_uuid,
-                                        topic_uid:      topic_uid
-                                    })
-            .then(function(response){
-                console.log(response.data);
-                var btn = "#upvote_btn_status_"+topic_uuid;
-                if(response.data ==1) {
-                    $(btn).addClass("label label-pill label-success");
-                }else{
-                    $(btn).removeClass("label label-pill label-success");
-                }
-            });*/
         }
     })
 
@@ -834,9 +844,10 @@ angular.module('App')
         profileCtrl.unreadNotification = 0;
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
+        profileCtrl.user = null;
 
 
-        profileCtrl.profile = 'Eng';
+
 
         profileCtrl.toggleRight     = buildToggler('alertSideNav');
         profileCtrl.toggleMobile    = buildToggler('mobile');
@@ -845,6 +856,11 @@ angular.module('App')
         };
 
 
+
+        //User profile
+        profileCtrl.profile = function(authData){
+            profileCtrl.user = JSON.parse(authData);
+        }
 
         //Change language
         profileCtrl.toggleLang = function (langKey) {
@@ -875,7 +891,6 @@ angular.module('App')
         profileCtrl.postedPhotos = function (user_uuid) {
             $http.post('/getPostedPhotos', {data: user_uuid})
                 .then(function (response) {
-                    console.log(response.data);
                     profileCtrl.userPostedPhotos = response.data;
                 })
         }
@@ -885,7 +900,6 @@ angular.module('App')
         {
             var ref = profileCtrl.topic.userUrl(user_uuid).child('upvote');
             ref.on("value",function(snapshot){
-
                 snapshot.forEach(function(data) {
                     var key = 'user_upvoted_'+data.key();
                     profileCtrl[key]  = true;
@@ -905,20 +919,15 @@ angular.module('App')
             })
         }
 
+        //Getting user stat from firebase
         profileCtrl.getUserStat = function(uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+uuid+"/stat/");
             ref.on("value", function(snapshot) {
-
-                /*var key = 'bookmarks_'+topic_uuid;
-                postCtrl[key]  = snapshot.val();*/
-
-                var key = 'userFollower_'+uuid;
-                profileCtrl[key]  = snapshot.val().follower;
-
-                var key = 'userUpvote_'+uuid;
-                profileCtrl[key]  = snapshot.val().upvote;
-
+                //need to replace '-' since NG doesn't allow us (weird)
+                uuid = uuid.replace(/-/g,"");
+                var key = 'user_stat_'+uuid;
+                profileCtrl[key]  = snapshot.val();
             })
         }
 
@@ -989,7 +998,7 @@ angular.module('App')
                     {data: snapshot.val()})
                     .then(function(response){
                         console.log(response);
-                        $('#userBookmark').html(response.data);
+                        profileCtrl.userBookmark = response.data;
                     })
 
                 //profileCtrl.userBookmark = snapshot.val();
@@ -1039,8 +1048,11 @@ angular.module('App')
 .directive('profileBadge', function () {
     return {
         controller: 'ProfileCtrl as profileCtrl',
-        restrict: 'EA',
+        restrict: 'E',
         transclude:   true,
+        scope: {
+            data: '='
+        },
         templateUrl: '/assets/templates/profile-badge.html'
     }
 })
@@ -1054,6 +1066,20 @@ angular.module('App')
         scope: {
             data: '='
         }
+    }
+})
+
+
+//Preview images
+.directive('previewImages', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/preview-images.html'
     }
 })
 
@@ -1079,6 +1105,33 @@ angular.module('App')
             data: '='
         },
         templateUrl: '/assets/templates/review-form.html'
+    }
+})
+
+
+//Review score form
+.directive('minFeedList', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/min-feed-list.html'
+    }
+})
+
+//Review score form
+.directive('feedList', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/feed-list.html'
     }
 })
 angular.module('App')
@@ -1119,12 +1172,16 @@ angular.module('App')
             'KEY_FEAT_CAT':    'Features categories',
             'KEY_COMMENTS':   'Comments',
             'KEY_REPLY':      'Reply',
+            'KEY_PHOTO':      'Photo',
             'KEY_REVIEW':     'Review',
             'KEY_EDIT':       'Edit',
             'KEY_TREND':      'Trend',
             'KEY_TRENDING':   'Trending',
+            'KEY_BOOKMARK':   'Bookmark',
+            'KEY_HISTORY':    'History',
             'KEY_WRITE_REPLY':'Write a reply',
             'KEY_LATEST_FEED':'Latest Feed',
+            'KEY_IN':         'in',
 
             //Remove topic
             'KEY_CONF_REMOVE':'Are you sure you want to remove?',
@@ -1134,7 +1191,7 @@ angular.module('App')
             //SENTENCE
             'KEY_WHAT_ON_UR_MIND':  'What\'s on your mind?',
             'KEY_YOU_WANT_FOLLOW':  'You may want to follow',
-            'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Register',
+            'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Join us',
             'KEY_CANT_CHNG_USER':   'Don\'t have account? Register',
             'KEY_YOUR_ACCOUNT':     'Your account',
             'KEY_NOTHING_HERE':     'Nothing here, yet',
@@ -1142,6 +1199,8 @@ angular.module('App')
             'KEY_CAT_WILL_APPEAR':  'Follow some categories and it will appear here',
             'KEY_WHT_UR_STORY':     'What\'s your story',
             'KEY_WRT_COMMENT':      'Write a comment',
+            'KEY_FORGOT_PWD':       'Forgot Your Password?',
+            'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
 
 
             //USER RATING
@@ -1161,6 +1220,7 @@ angular.module('App')
             'KEY_FEMALE':     'Female',
             'KEY_USERNAME':   'Username',
             'KEY_LOCATION':   'Location',
+            'KEY_REMEMBER_ME':'Remember me',
 
             //User Edit
             'KEY_ED_PROFILE': 'Edit Profile',
@@ -1178,7 +1238,7 @@ angular.module('App')
             'KEY_LANGUAGES':  'ภาษา',
             'KEY_HOME':       'หน้าแรก',
             'KEY_REGISTER':   'สมัครใช้',
-            'KEY_LOGIN':      'เข้าสู่ระบบ',
+            'KEY_LOGIN':      'เข้าใช้',
             'KEY_FOLLOW':     'ติดตาม',
             'KEY_POST':       'โพสต์'
         });

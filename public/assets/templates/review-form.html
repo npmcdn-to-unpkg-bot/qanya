@@ -1,12 +1,16 @@
 <!-- review form -->
-<div>
-    Your score
-    <h3 class="md-display-1" ng-init="userAvg=0">
-        {{ userAvg }}
-    </h3>
-</div>
-<div ng-repeat="review in data">
-    <fieldset>
-        {{review.criteria}} - <input type="number" max="10" min="1" ng-model="criteria.rating">
-    </fieldset>
+<div class="container-fluid" ng-controller="PostCtrl as postCtrl">
+    <div class="pull-right">
+        Your score
+        <h3 class="md-display-1" ng-init="userAvg=0">
+            {{ userAvg }}
+        </h3>
+    </div>
+    <div class="pull-left" ng-repeat="review in data">
+        <fieldset>
+            {{review.criteria}} - <input type="number" max="10" min="1" ng-model="review.userRateReview">
+        </fieldset>
+    </div>
+    {{postCtrl.userRateReview}}
+
 </div>

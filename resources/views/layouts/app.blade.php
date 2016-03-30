@@ -83,6 +83,9 @@
     <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.10.0/angular-translate.min.js"></script>
+
+
+    {{-- BOWER --}}
     <script src="/bower_components/angular-material/angular-material.min.js"></script>
     <script src="/bower_components/angular-cookies/angular-cookies.min.js"></script>
 
@@ -177,20 +180,44 @@
         <div class="collapse" id="navbar-header">
             <div class="container-fluid bg-inverse p-a-1">
                 @if (Auth::guest())
-                <md-button aria-label="Login" ng-href="{{ url('/login') }}">
-                    Login / Join us
+                    <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                        @{{ 'KEY_LOGIN_REGISTER' | translate }}
                 </md-button>
                 @endif
 
 
                 @if(Auth::user())
+                    {{-- Profile badge--}}
                     @include('html.profile-badge')
 
                     <div ng-controller="PostCtrl as postCtrl" ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')" id="userTagList">
-
                     </div>
                 @endif
 
+                <ul class="nav navbar-nav pull-right">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-globe fa-1x white-font"></i>
+                            <span class="white-font">@{{ 'KEY_LANGUAGES' | translate }}</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <i class="fa fa-globe fa-1x white-font"></i>
+                                <span class="white-font">@{{ 'KEY_LANGUAGES' | translate }}</span>
+                                <span class="caret"></span>
+                            </a>
+                            <a class="dropdown-item purple-light-font hand"
+                               ng-click="profileCtrl.toggleLang('ไทย')">
+                                <span class="purple-light-font">ไทย</span>
+                            </a>
+                            <a class="dropdown-item purple-light-font hand"
+                               ng-click="profileCtrl.toggleLang('Eng')">
+                                <span class="purple-light-font">English</span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -212,15 +239,19 @@
                 </button>
 
 
-                <ul class="nav navbar-nav pull-right">
-                    <li class="nav-item">
-                        <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <ul class="nav navbar-nav pull-right" hide-xs>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             <i class="fa fa-globe fa-1x white-font"></i>
                             <span class="white-font">@{{ 'KEY_LANGUAGES' | translate }}</span>
-                            <span class="caret"></span>
                         </a>
-
-                        <li class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <div class="dropdown-menu">
+                            <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <i class="fa fa-globe fa-1x white-font"></i>
+                                <span class="white-font">@{{ 'KEY_LANGUAGES' | translate }}</span>
+                                <span class="caret"></span>
+                            </a>
                             <a class="dropdown-item purple-light-font hand"
                                ng-click="profileCtrl.toggleLang('ไทย')">
                                 <span class="purple-light-font">ไทย</span>
@@ -229,22 +260,19 @@
                                ng-click="profileCtrl.toggleLang('Eng')">
                                 <span class="purple-light-font">English</span>
                             </a>
-                        </li>
+                        </div>
                     </li>
                 </ul>
 
-                @if (Auth::guest())
+
+
+            @if (Auth::guest())
                     <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
                         @{{ 'KEY_LOGIN_REGISTER' | translate }}
                     </md-button>
                 @else
-
-                    <md-button ng-click="profileCtrl.toggleRight();
-                                        profileCtrl.listNotification()"
-                               class="md-primary">
-                        Toggle right
-                    </md-button>
                     <md-button
+                            hide-xs
                             aria-label="notification"
                             ng-click="profileCtrl.ackNotificataion();
                                       profileCtrl.toggleRight();
@@ -257,7 +285,7 @@
                         </span>--}}
                     </md-button>
 
-                    <a href="/{!! Auth::user()->displayname !!}">
+                    <a hide-xs href="/{!! Auth::user()->displayname !!}">
                         <img src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
                     </a>
 

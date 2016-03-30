@@ -14,11 +14,9 @@
                                    ng-click="postCtrl.showForm=true;
                                              postCtrl.spanUsername=true;
                                              postCtrl.spanWriteSomething=false">
-                            Write something
+                            @{{ 'KEY_WHAT_ON_UR_MIND' | translate }}
                         </md-button>
-
                     </h5>
-                    </md-card-header-text>
                 </span>
             </md-card-header>
 
@@ -128,6 +126,7 @@
 
                 <div flow-init
                      flow-name="uploader.flow"
+                     flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
                      flow-files-added="postCtrl.processFiles($files,'#contentBody')">
                     <md-button class="md-fab md-mini" flow-btn type="file" name="image">
                         <md-icon md-svg-src="/assets/icons/ic_insert_photo_white_24px.svg"></md-icon>

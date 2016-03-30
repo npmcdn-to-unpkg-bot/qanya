@@ -17,7 +17,7 @@
                                      flow-name="uploader.flow"
                                      flow-files-added="profileCtrl.profileImage($files)">
                                     <md-button flow-btn type="file" name="image">
-                                        Upload photo
+                                        @{{ 'KEY_UPLOAD_PHOTO' | translate }}
                                     </md-button>
                                 </div>
                             @endif
@@ -42,32 +42,37 @@
                              placeholder=   "write your status/description">
                             {{ $user->description }}
                         </div>
-                        <div class="row">
+
+
+                        {{-- User stat--}}
+                        <div class="row" ng-init="profileCtrl.getUserStat('{{$user->uuid}}')">
                             <h5 class="col-xs-4" id="post_{!! $user->uuid !!}">
-                                {!! $user->posts !!}
-                                <small class="text-muted">posts</small>
+                                {{ profileCtrl.user_stat_<?=str_replace('-','',$user->uuid)?>.upvote }}
+                                <small class="text-muted">@{{ 'KEY_UPVOTE' | translate }}</small>
                             </h5>
                             <h5 class="col-xs-4" id="follower_{!! $user->uuid !!}">
-                                {!! $user->followers !!}
-                                <small class="text-muted">follower</small>
+                                {!! $user->posts !!}
+                                <small class="text-muted">@{{ 'KEY_POST' | translate }}</small>
                             </h5>
                             <h5 class="col-xs-4" id="following_{!! $user->uuid !!}">
                                 {!! $user->following !!}
-                                <small class="text-muted">following</small>
+                                <small class="text-muted">@{{ 'KEY_FOLLOWER' | translate }}</small>
                             </h5>
                         </div>
+
+
                     </div>
                 </div>
 
                 <div ng-cloak>
                     <md-content>
                         <md-tabs md-dynamic-height md-border-bottom>
-                            <md-tab label="topics created">
+                            <md-tab label="@{{ 'KEY_POST' | translate }}">
                                 <md-content class="md-padding">
                                     @include('html.feed-list',compact('topics'));
                                 </md-content>
                             </md-tab>
-                            <md-tab label="replies">
+                            <md-tab label="@{{ 'KEY_REPLY' | translate }}">
                                 <md-content class="md-padding">
 
                                     @foreach($userReplies as $reply)
@@ -104,11 +109,10 @@
                             </md-tab>
 
                             {{--PHOTOS--}}
-                            <md-tab label="photos">
+                            <md-tab label="@{{ 'KEY_PHOTO' | translate }}">
                                 <md-content class="md-padding"
                                             ng-init="profileCtrl.postedPhotos('{{$user->uuid}}')">
                                     <posted-photos data="profileCtrl.userPostedPhotos">
-                                        loading
                                         <i class="fa fa-spinner fa-spin"></i>
                                     </posted-photos>
                                 </md-content>

@@ -1,0 +1,42 @@
+Feed list
+<div ng-controller="ProfileCtrl as profileCtrl">
+    {{    profileCtrl.userBookmark }}
+    {{    profileCtrl.user }}
+</div>
+<!--{{data}}-->
+
+
+<div ng-controller="PostCtrl as postCtrl" class="animated bounce" ng-repeat="feed in data">
+    {{feed.topic}}
+    <md-card class="row">
+        <md-card-header>
+
+            <span ng-if="feed.topic_type == 1">
+                Topic
+            </span>
+            <span ng-if="feed.topic_type == 2;"
+                  ng-init="postCtrl.getReview('{{feed.topic_uuid}}')">
+                Review
+            </span>
+            <span ng-if="feed.topic_type == 3">
+                Question
+            </span>
+
+            &nbsp;
+            in
+            &nbsp;
+
+            <a ng-href="/channel/{{feed.cate_slug }}">
+                {{ feed.cate_name }}
+            </a>
+
+            <span flex=""></span>
+
+
+        </md-card-header>
+
+        <span ng-if="feed.topic_type == 2;" class="pull-right">
+            <review-topic data="postCtrl.responseReview[feed.topic_uuid]"></review-topic>
+        </span>
+    </md-card>
+</div>

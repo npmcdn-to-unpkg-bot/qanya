@@ -1,5 +1,25 @@
-<div>
-@{{ profileCtrl.userFollower }}
-{{ profileCtrl.userFollower }}
-<b> {{ profileCtrl.userFollower_d799fe5c-c5f4 }}</b> followers
+<!-- Profile badge -->
+<div ng-controller="ProfileCtrl as profileCtrl" ng-init="profileCtrl.getUserStat(data.uuid)">
+    <div class="media panel md-padding">
+        <div class="media-body">
+            <h4 class="media-heading">
+                <a ng-href="{{data.displayname}}">
+                    {{ data.firstname }}
+                </a>
+            </h4>
+            <div>
+                <b> {{ data.posts }}</b> posts
+                <b>  {{ data.followers }}</b> followers
+                <b> {{ profileCtrl.userStat_{{data.uuid}} }}</b> upvote
+            </div>
+        </div>
+        <div class="media-right">
+            <a href="#">
+                <img class="media-object"
+                     width="80px"
+                     src="{{ data.profile_img }}"
+                     alt="...">
+            </a>
+        </div>
+    </div>
 </div>

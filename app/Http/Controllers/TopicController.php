@@ -74,18 +74,7 @@ class TopicController extends Controller
     {
         $html = null;
         $topic = new Topic();
-        $images= $topic->postImages($request->uuid);
-
-        if(!empty($images)) {
-            $html = "<div class='row'>";
-            foreach ($images as $image) {
-
-                $html .= "<div><img src=\"$image->filename\" class=\"img-rounded img-fluid col-xs-12 col-sm-4\" style='max-width: 470px'></div>";
-            }
-            $html .= "</div>";
-            return $html;
-        }
-
+        return $images= $topic->postImages($request->uuid);
     }
 
 
@@ -307,7 +296,6 @@ class TopicController extends Controller
      * Display the specified resource.
      *
      * @param  char  $slug
-     * @return \Illuminate\Http\Response
      */
     public function show($displayname,$slug)
     {
@@ -389,11 +377,9 @@ class TopicController extends Controller
 
 
     /**
-     * Update the specified resource in storage.
+     * Update content
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
@@ -401,9 +387,32 @@ class TopicController extends Controller
 
         $topic = Topic::find($data['topic_id']);
 
+        //Images
+        if(!empty($data['images']))
+        {
+            $topicImages = new TopicImages();
+            //Clean all the existing images
+            $topicImages->purgeImages($data['topic_uuid']);
+
+            $num_img = 0;
+            //Insert images in another table
+            foreach($data['images'] as $image)
+            {
+                $img_data[$num_img] = array(  'topic_uuid'=>$data['topic_uuid'],
+                                            'user_uuid'=>Auth::user()->uuid,
+                                            'filename'=>$image,
+                                            'created_at'=> date("Y-m-d H:i:s")
+                                        );
+                $num_img++;
+            }
+            TopicImages::insert($img_data);
+
+        }
+
         $topic->is_edited = true;
-        $topic->body = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean( trim($data['body']) ));;
-        $topic->text = $data['text'];;
+        $topic->body = preg_replace('/(<[^>]+) style=".*?"/i', '$1', clean( trim($data['body']) ));
+        $topic->text = $data['text'];
+        $topic->num_img = $num_img;
         $topic->save();
     }
 

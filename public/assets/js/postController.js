@@ -20,17 +20,17 @@ angular.module('App')
         //Review criteria
         postCtrl.criteria       =   false;
         postCtrl.criteriaReply  =   null;
+
         postCtrl.reviewCriteria =   false;
         postCtrl.critReplyData  =   null;
+        postCtrl.userRateReview =   null;
 
 
         //--- REVIEW ---
-
         //Get Review from the post
         postCtrl.getReview = function(topic_uuid) {
             $http.post('/retrieve-review/', {data: topic_uuid})
                 .then(function (response) {
-                    console.log(response);
                     var key = 'responseReview' + topic_uuid;
                     postCtrl[key] = response.data;
                 })
@@ -239,7 +239,9 @@ angular.module('App')
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-            $http.post('/replyTopic', {uuid: uuid,
+            console.log(postCtrl.responseReview+uuid);
+
+          /*  $http.post('/replyTopic', {uuid: uuid,
                                        topics_uid: topics_uid,
                                        data: $('#topicReplyContainer').html() })
                 .then(function(response){
@@ -256,7 +258,7 @@ angular.module('App')
                     commentCounter.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     })
-                })
+                })*/
         }
 
 
@@ -518,12 +520,13 @@ angular.module('App')
             });
 
             var data = {
+                topic_uuid: topic_uuid,
                 topic_id:   topic_id,
                 body:       $('#topicContent').html(),
                 text:       $('#topicContent').text(),
                 images:     imgIds
             }
-            $http.post('/updateTopicContent', {data: data })
+            $http.post('/api/updateTopicContent', {data: data })
                 .then(function(response){
                     toastr.success('Save!',{
                         iconClass: 'toast-success'
@@ -544,15 +547,15 @@ angular.module('App')
             })
         }
 
-
+        //Get the post images
         postCtrl.getPostImage = function(uuid)
         {
             $http.post('/getPostImages', {uuid: uuid })
                 .then(function(response) {
-                    console.log(response);
-
-                    var key = '#previewImage_'+uuid;
-                    $(key).html(response.data);
+                    var key = 'previewImage_'+uuid;
+                    postCtrl[key] = response.data;
+                    /*$(key).html(response.data);
+                    postCtrl[key] = response.data;*/
                 })
         }
 
@@ -567,9 +570,26 @@ angular.module('App')
             });
         }
 
+
+        postCtrl.userBookMarked = function(user_uuid,topic_uuid)
+        {
+            var key = 'user_bookmarked_'+topic_uuid;
+            var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+
+            userBookmark.once("value", function(snapshot) {
+                if (snapshot.exists() == false) {
+                    postCtrl[key] = false;
+                }
+                else {
+                    postCtrl[key] = true;
+                }
+            })
+        }
+
         postCtrl.bookMark = function(user_uuid,topic_uuid)
         {
             var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
+            var key = 'user_bookmarked_'+topic_uuid;
 
             userBookmark.once("value", function(snapshot) {
                 if(snapshot.exists() == false)
@@ -580,13 +600,16 @@ angular.module('App')
                     topicRef.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     });
+                    postCtrl[key]  = true;
                 }
                 else{
                     postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid).remove();
+                    
                     var topicRef = postCtrl.topics.ref.child('topic/' + topic_uuid + '/bookmark')
                     topicRef.transaction(function (current_value) {
                         return negCurrentValueCheck(current_value);
                     });
+                    postCtrl[key]  = false;
                 }
             })
         }
@@ -719,19 +742,6 @@ angular.module('App')
                     })
                 }
             })
-
-            /*$http.post('/upvote/', {    topics_uuid:    topic_uuid,
-                                        topic_uid:      topic_uid
-                                    })
-            .then(function(response){
-                console.log(response.data);
-                var btn = "#upvote_btn_status_"+topic_uuid;
-                if(response.data ==1) {
-                    $(btn).addClass("label label-pill label-success");
-                }else{
-                    $(btn).removeClass("label label-pill label-success");
-                }
-            });*/
         }
     })
 

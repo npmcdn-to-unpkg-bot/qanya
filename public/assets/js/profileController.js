@@ -10,9 +10,10 @@ angular.module('App')
         profileCtrl.unreadNotification = 0;
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
+        profileCtrl.user = null;
 
 
-        profileCtrl.profile = 'Eng';
+
 
         profileCtrl.toggleRight     = buildToggler('alertSideNav');
         profileCtrl.toggleMobile    = buildToggler('mobile');
@@ -21,6 +22,11 @@ angular.module('App')
         };
 
 
+
+        //User profile
+        profileCtrl.profile = function(authData){
+            profileCtrl.user = JSON.parse(authData);
+        }
 
         //Change language
         profileCtrl.toggleLang = function (langKey) {
@@ -51,7 +57,6 @@ angular.module('App')
         profileCtrl.postedPhotos = function (user_uuid) {
             $http.post('/getPostedPhotos', {data: user_uuid})
                 .then(function (response) {
-                    console.log(response.data);
                     profileCtrl.userPostedPhotos = response.data;
                 })
         }
@@ -61,7 +66,6 @@ angular.module('App')
         {
             var ref = profileCtrl.topic.userUrl(user_uuid).child('upvote');
             ref.on("value",function(snapshot){
-
                 snapshot.forEach(function(data) {
                     var key = 'user_upvoted_'+data.key();
                     profileCtrl[key]  = true;
@@ -81,20 +85,15 @@ angular.module('App')
             })
         }
 
+        //Getting user stat from firebase
         profileCtrl.getUserStat = function(uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+uuid+"/stat/");
             ref.on("value", function(snapshot) {
-
-                /*var key = 'bookmarks_'+topic_uuid;
-                postCtrl[key]  = snapshot.val();*/
-
-                var key = 'userFollower_'+uuid;
-                profileCtrl[key]  = snapshot.val().follower;
-
-                var key = 'userUpvote_'+uuid;
-                profileCtrl[key]  = snapshot.val().upvote;
-
+                //need to replace '-' since NG doesn't allow us (weird)
+                uuid = uuid.replace(/-/g,"");
+                var key = 'user_stat_'+uuid;
+                profileCtrl[key]  = snapshot.val();
             })
         }
 
@@ -165,7 +164,7 @@ angular.module('App')
                     {data: snapshot.val()})
                     .then(function(response){
                         console.log(response);
-                        $('#userBookmark').html(response.data);
+                        profileCtrl.userBookmark = response.data;
                     })
 
                 //profileCtrl.userBookmark = snapshot.val();

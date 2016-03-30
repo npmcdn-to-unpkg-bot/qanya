@@ -36,12 +36,16 @@ angular.module('App')
             'KEY_FEAT_CAT':    'Features categories',
             'KEY_COMMENTS':   'Comments',
             'KEY_REPLY':      'Reply',
+            'KEY_PHOTO':      'Photo',
             'KEY_REVIEW':     'Review',
             'KEY_EDIT':       'Edit',
             'KEY_TREND':      'Trend',
             'KEY_TRENDING':   'Trending',
+            'KEY_BOOKMARK':   'Bookmark',
+            'KEY_HISTORY':    'History',
             'KEY_WRITE_REPLY':'Write a reply',
             'KEY_LATEST_FEED':'Latest Feed',
+            'KEY_IN':         'in',
 
             //Remove topic
             'KEY_CONF_REMOVE':'Are you sure you want to remove?',
@@ -51,7 +55,7 @@ angular.module('App')
             //SENTENCE
             'KEY_WHAT_ON_UR_MIND':  'What\'s on your mind?',
             'KEY_YOU_WANT_FOLLOW':  'You may want to follow',
-            'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Register',
+            'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Join us',
             'KEY_CANT_CHNG_USER':   'Don\'t have account? Register',
             'KEY_YOUR_ACCOUNT':     'Your account',
             'KEY_NOTHING_HERE':     'Nothing here, yet',
@@ -59,6 +63,8 @@ angular.module('App')
             'KEY_CAT_WILL_APPEAR':  'Follow some categories and it will appear here',
             'KEY_WHT_UR_STORY':     'What\'s your story',
             'KEY_WRT_COMMENT':      'Write a comment',
+            'KEY_FORGOT_PWD':       'Forgot Your Password?',
+            'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
 
 
             //USER RATING
@@ -78,6 +84,7 @@ angular.module('App')
             'KEY_FEMALE':     'Female',
             'KEY_USERNAME':   'Username',
             'KEY_LOCATION':   'Location',
+            'KEY_REMEMBER_ME':'Remember me',
 
             //User Edit
             'KEY_ED_PROFILE': 'Edit Profile',
@@ -95,7 +102,7 @@ angular.module('App')
             'KEY_LANGUAGES':  'ภาษา',
             'KEY_HOME':       'หน้าแรก',
             'KEY_REGISTER':   'สมัครใช้',
-            'KEY_LOGIN':      'เข้าสู่ระบบ',
+            'KEY_LOGIN':      'เข้าใช้',
             'KEY_FOLLOW':     'ติดตาม',
             'KEY_POST':       'โพสต์'
         });

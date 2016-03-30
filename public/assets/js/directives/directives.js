@@ -14,8 +14,11 @@ angular.module('App')
 .directive('profileBadge', function () {
     return {
         controller: 'ProfileCtrl as profileCtrl',
-        restrict: 'EA',
+        restrict: 'E',
         transclude:   true,
+        scope: {
+            data: '='
+        },
         templateUrl: '/assets/templates/profile-badge.html'
     }
 })
@@ -29,6 +32,20 @@ angular.module('App')
         scope: {
             data: '='
         }
+    }
+})
+
+
+//Preview images
+.directive('previewImages', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/preview-images.html'
     }
 })
 
@@ -54,5 +71,32 @@ angular.module('App')
             data: '='
         },
         templateUrl: '/assets/templates/review-form.html'
+    }
+})
+
+
+//Review score form
+.directive('minFeedList', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/min-feed-list.html'
+    }
+})
+
+//Review score form
+.directive('feedList', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/feed-list.html'
     }
 })

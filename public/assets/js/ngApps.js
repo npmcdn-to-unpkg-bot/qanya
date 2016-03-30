@@ -9,7 +9,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
-        '50': 'ffebee',
+        '50': '5DB09D',
         '100': 'ffcdd2',
         '200': 'ef9a9a',
         '300': 'e57373',

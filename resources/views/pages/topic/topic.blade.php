@@ -73,6 +73,9 @@
                     </div>
                 </div>
 
+
+
+
                 <h1 class="md-display-1">
                     {!! HTML::decode($title) !!}
                 </h1>
@@ -202,8 +205,10 @@
                          id="topicReplyContainer">
                     </div>
 
+                    {{-- If there is review then allow user to rate here--}}
                     <div ng-if="{{ $topic_type }} == 2" ng-init="postCtrl.getReview ('{{$uuid}}')">
-                        <review-form data="postCtrl.responseReview{{$uuid}}"></review-form>
+                        <review-form ng-model="postCtrl.reviewForm"
+                                     data="postCtrl.responseReview{{$uuid}}"></review-form>
                     </div>
 
                     <md-button type="submit"
