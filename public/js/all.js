@@ -26,6 +26,15 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
                                  'pascalprecht.translate'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
+
+
+
+.config(['$translateProvider', function ($translateProvider) {
+    // Enable escaping of HTML
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+}])
+
+
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
         '50': '5DB09D',
@@ -184,12 +193,6 @@ angular.module('App')
             var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
             ref.once("value", function(snapshot) {
                 postCtrl.userTags = snapshot.val();
-                /*$http.post('/getTagButton/', {data: snapshot.val()})
-                    .then(function(response){
-                        postCtrl.userTags = response.data;
-                })*/
-
-                //postCtrl.userTags = snapshot.val();
             })
         }
 
@@ -878,6 +881,7 @@ angular.module('App')
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
         profileCtrl.user = null;
+        profileCtrl.userLang = 'Eng';
 
 
 
@@ -900,6 +904,7 @@ angular.module('App')
             $translate.use(langKey);
             // Setting a cookie
             $cookies.put('userLang', langKey);
+            profileCtrl.userLang = langKey;
             //If user registered - update this in their preference
             /*if(Auth.ref.getAuth()){
                 profileCtrl.users.userArrRef(Auth.ref.getAuth().uid).update({"lang":langKey})
@@ -1030,7 +1035,6 @@ angular.module('App')
                 $http.post('/user/getBookmark',
                     {data: snapshot.val()})
                     .then(function(response){
-                        console.log(response);
                         profileCtrl.userBookmark = response.data;
                     })
 
@@ -1041,7 +1045,7 @@ angular.module('App')
         profileCtrl.getUserHistory = function(user_uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
-            ref.orderByValue().on("value",function (snapshot) {
+            ref.orderByKey().on("value",function (snapshot) {
 
                 console.log(snapshot.val());
                 $http.post('/user/getHistory',
@@ -1217,7 +1221,8 @@ angular.module('App')
             'KEY_SAVE_DRAFT': 'Save as draft',
             'KEY_TAGS':       'Tags',
             'KEY_EXPLORE':    'Explore',
-            'KEY_FEAT_CAT':    'Features categories',
+            'KEY_CHECK':      'Check',
+            'KEY_FEAT_CAT':   'Features categories',
             'KEY_COMMENTS':   'Comments',
             'KEY_REPLY':      'Reply',
             'KEY_PHOTO':      'Photo',
@@ -1241,6 +1246,7 @@ angular.module('App')
             'KEY_WHAT_ON_UR_MIND':  'What\'s on your mind?',
             'KEY_YOU_WANT_FOLLOW':  'You may want to follow',
             'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Join us',
+            'KEY_CREATE_ACCT':      'Create account',
             'KEY_CANT_CHNG_USER':   'Don\'t have account? Register',
             'KEY_YOUR_ACCOUNT':     'Your account',
             'KEY_NOTHING_HERE':     'Nothing here, yet',
@@ -1251,6 +1257,8 @@ angular.module('App')
             'KEY_FORGOT_PWD':       'Forgot Your Password?',
             'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
             'KEY_TAGS_FOLLOW':      'Tags you are following',
+            'KEY_NAME_CHG_ONCE':    'Warning! You can only change displayname once',
+            'KEY_SEL_CHN':          'Select channel',
 
 
             //USER RATING

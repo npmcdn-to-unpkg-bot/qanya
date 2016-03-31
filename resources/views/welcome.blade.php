@@ -54,7 +54,7 @@
 
         </div>
 
-        <div class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
+        <div hide-xs="" class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
             
             @include('html.profile-badge')
 

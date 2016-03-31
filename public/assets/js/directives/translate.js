@@ -33,7 +33,8 @@ angular.module('App')
             'KEY_SAVE_DRAFT': 'Save as draft',
             'KEY_TAGS':       'Tags',
             'KEY_EXPLORE':    'Explore',
-            'KEY_FEAT_CAT':    'Features categories',
+            'KEY_CHECK':      'Check',
+            'KEY_FEAT_CAT':   'Features categories',
             'KEY_COMMENTS':   'Comments',
             'KEY_REPLY':      'Reply',
             'KEY_PHOTO':      'Photo',
@@ -57,6 +58,7 @@ angular.module('App')
             'KEY_WHAT_ON_UR_MIND':  'What\'s on your mind?',
             'KEY_YOU_WANT_FOLLOW':  'You may want to follow',
             'KEY_NO_ACCT_REGISTER': 'Don\'t have account? Join us',
+            'KEY_CREATE_ACCT':      'Create account',
             'KEY_CANT_CHNG_USER':   'Don\'t have account? Register',
             'KEY_YOUR_ACCOUNT':     'Your account',
             'KEY_NOTHING_HERE':     'Nothing here, yet',
@@ -67,6 +69,8 @@ angular.module('App')
             'KEY_FORGOT_PWD':       'Forgot Your Password?',
             'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
             'KEY_TAGS_FOLLOW':      'Tags you are following',
+            'KEY_NAME_CHG_ONCE':    'Warning! You can only change displayname once',
+            'KEY_SEL_CHN':          'Select channel',
 
 
             //USER RATING

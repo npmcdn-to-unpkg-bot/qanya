@@ -7,6 +7,15 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
                                  'pascalprecht.translate'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
+
+
+
+.config(['$translateProvider', function ($translateProvider) {
+    // Enable escaping of HTML
+    $translateProvider.useSanitizeValueStrategy('sanitize');
+}])
+
+
 .config(["$mdThemingProvider", function ($mdThemingProvider) {
     $mdThemingProvider.definePalette('slack', {
         '50': '5DB09D',

@@ -23,6 +23,7 @@
     "moment": "^2.11.2"
   },
   "devDependencies": {
-    "livereload-js": "^2.2.1"
+    "livereload-js": "^2.2.1",
+    "angular-translate": "^2.11.0"
   }
 }

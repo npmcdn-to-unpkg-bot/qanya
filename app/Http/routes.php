@@ -34,6 +34,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/create-name','ProfileController@createName');
     Route::post('/check-name','ProfileController@checkName');
     Route::post('/register-name','ProfileController@registerName');
+    Route::post('/suggest-explore','ProfileController@suggestExplore');
     Route::post('/getNotification','ProfileController@getNotification');
     Route::post('/ackNotification','ProfileController@ackNotification');
     Route::post('/list-notification','ProfileController@listNotification');

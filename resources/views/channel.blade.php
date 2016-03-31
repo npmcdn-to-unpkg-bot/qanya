@@ -1,20 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <section layout="row" ng-controller="PostCtrl as postCtrl">
-            <md-content flex layout-padding>
-                {{ $title }}
 
-                <div layout="column">
+    <div class="row" ng-controller="PostCtrl as postCtrl">
 
-                    @if(Auth::check())
-                        @include('html.post-create',compact('categories'))
-                    @endif
+        <md-content class="md-padding">
+        <div class="col-md-7">
 
-                    <span class="md-title">
-                        @{{ postCtrl.feedName }}
-                    </span>
+            <div class="row">
 
                 @if(Auth::user())
                     <a class="btn btn-success-outline pull-right"
@@ -23,19 +16,36 @@
                         @{{ postCtrl.tagFollowStatus }}
                     </a>
                 @endif
+                <h1 class="md-display-1 pull-left">
+                    {{ $title }}
+                </h1>
 
-                    <div id="homeFeed">
-                        @include('html.feed-list',compact('feeds'))
-                    </div>
+            </div>
+
+            @if(Auth::check())
+                <md-content class="md-padding">
+                @include('html.post-create',compact('categories'))
+                </md-content>
+            @endif
+
+            <span class="md-title">
+                @{{ postCtrl.feedName }}
+            </span>
+
+
+            <md-content class="md-padding">
+                <div id="homeFeed">
+                    @include('html.feed-list',compact('feeds'))
                 </div>
             </md-content>
+        </div>
+        <div class="col-md-5 col-xs-12">
 
-            <md-sidenav class="md-sidenav-right md-component-id="right" md-is-locked-open="$mdMedia('gt-sm')">
-
-                @include('html.profile-badge')
-                @include('html.category-nav',compact('categories'))
-
-            </md-sidenav>
-        </section>
+            @include('html.profile-badge')
+            @include('html.category-nav',compact('categories'))
+        </div>
+        </md-content>
     </div>
+
+
 @endsection

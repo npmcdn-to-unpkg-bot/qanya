@@ -102,12 +102,6 @@ angular.module('App')
             var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
             ref.once("value", function(snapshot) {
                 postCtrl.userTags = snapshot.val();
-                /*$http.post('/getTagButton/', {data: snapshot.val()})
-                    .then(function(response){
-                        postCtrl.userTags = response.data;
-                })*/
-
-                //postCtrl.userTags = snapshot.val();
             })
         }
 

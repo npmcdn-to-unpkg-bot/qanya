@@ -4,15 +4,15 @@
         <div class="card-block">
 
             <h4 class="card-title">
-                <a href="/{{value[0].displayname}}/{{value[0].topic_slug}}">
-                    {{ value[0].topic }}
+                <a href="/{{value[0].displayname}}/{{value[0].topic_slug}}" class="md-title">
+                    {{ value[0].topic | htmlToPlaintext }}
                 </a>
             </h4>
         </div>
 
         <div ng-repeat="img in value">
             <div class="col-xs-6 col-sm-4">
-                <img src="{{img.filename}}" class="img-fluid">
+                <img ng-src="{{img.filename}}" class="img-fluid">
             </div>
         </div>
 

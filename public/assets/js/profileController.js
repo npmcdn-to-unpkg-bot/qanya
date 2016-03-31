@@ -11,6 +11,7 @@ angular.module('App')
         profileCtrl.userBookmark = 0;
         profileCtrl.userPostedPhotos = '';
         profileCtrl.user = null;
+        profileCtrl.userLang = 'Eng';
 
 
 
@@ -33,6 +34,7 @@ angular.module('App')
             $translate.use(langKey);
             // Setting a cookie
             $cookies.put('userLang', langKey);
+            profileCtrl.userLang = langKey;
             //If user registered - update this in their preference
             /*if(Auth.ref.getAuth()){
                 profileCtrl.users.userArrRef(Auth.ref.getAuth().uid).update({"lang":langKey})
@@ -163,7 +165,6 @@ angular.module('App')
                 $http.post('/user/getBookmark',
                     {data: snapshot.val()})
                     .then(function(response){
-                        console.log(response);
                         profileCtrl.userBookmark = response.data;
                     })
 
@@ -174,7 +175,7 @@ angular.module('App')
         profileCtrl.getUserHistory = function(user_uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
-            ref.orderByValue().on("value",function (snapshot) {
+            ref.orderByKey().on("value",function (snapshot) {
 
                 console.log(snapshot.val());
                 $http.post('/user/getHistory',

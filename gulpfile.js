@@ -1,3 +1,4 @@
+var gulp  = require('gulp');
 var elixir = require('laravel-elixir');
 
 //https://github.com/FabioAntunes/laravel-elixir-wiredep
@@ -31,6 +32,10 @@ elixir(function(mix) {
         port: 8888,
         hostname: '0.0.0.0' //use this for outside connection
     });
+
+    gulp.src('./**/**')
+        .pipe(exec('node socket.js'))
+
 
     mix.livereload([ 'app/**/*', 'public/**/*',
                      'resources/views/**/*',

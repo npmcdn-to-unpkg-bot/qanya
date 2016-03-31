@@ -15,7 +15,7 @@
                      @{{ 'KEY_UPVOTE' | translate }}
 
                      <b> {{ Auth::user()->posts }}</b>
-                     @{{ 'KEY_POST' | translate }}
+                     @{{ 'KEY_POSTED' | translate }}
 
                      <b> {{ Auth::user()->following }}</b>
                      @{{ 'KEY_FOLLOWER' | translate }}

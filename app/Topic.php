@@ -47,7 +47,6 @@ class Topic extends Model
                 ->join('users', 'topics.uid', '=', 'users.uuid')
                 ->join('categories', 'topics.category', '=', 'categories.id')
                 ->orderBy('topics.created_at', 'desc')
-                ->take(10)
                 ->get();
         });
 

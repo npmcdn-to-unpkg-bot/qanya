@@ -177,7 +177,14 @@ class ProfileController extends Controller
         $username = '@'.strtolower( str_replace(' ', '',$request->displayname));
         User::where('uuid',Auth::user()->uuid)
             ->update(['displayname'=> $username]);
-        return redirect('/');
+
+        return redirect('/suggest-explore');
+    }
+
+
+    public function suggestExplore(Request $request)
+    {
+        echo "test";
     }
     /** end displayname section */
 
