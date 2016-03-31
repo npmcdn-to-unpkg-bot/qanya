@@ -64,10 +64,7 @@ class ProfileController extends Controller
             }
 
             $topics = new Topic();
-            $topics = $topics->getTopicList($topicList);
-
-            return $topics;
-//            return view('html.feed-list', compact('topics'));
+            return $topics = $topics->getTopicList($topicList);
         }
     }
 
@@ -85,9 +82,7 @@ class ProfileController extends Controller
             }
 
             $topics = new Topic();
-            $topics = $topics->getTopicList($topicList);
-
-            return view('html.feed-list', compact('topics'));
+            return $topics = $topics->getTopicList($topicList);
         }
     }
 

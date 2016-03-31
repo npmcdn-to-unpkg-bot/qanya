@@ -3,7 +3,7 @@ body {
     font-family: 'Lato';
     /*min-height:         75rem;*/
     /*padding-top:        6rem;*/
-    margin-top:65px;
+    /*margin-top:65px;*/
     background-color:   #FAFAFA;
     height:100%;
 }
@@ -19,7 +19,9 @@ body {
 .purple{
     background-color: #684666;
 }
-
+.green-font{
+    color:#5DB09D;
+}
 .editBorder{
     border-style: dotted;
     border-color: #5DB09D;
@@ -46,7 +48,8 @@ a {
     text-decoration: none;
 }
 a:hover{
-    text-decoration: none;
+    color:#5DB09D;
+    text-decoration: underline;
 }
 
 @-webkit-keyframes yellow-fade {

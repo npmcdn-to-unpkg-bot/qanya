@@ -36,7 +36,7 @@
                             </p>
                         </h2>
                         <div contenteditable="{{ $is_user }}"
-                             class="md-subhead"
+                             class="md-title"
                              id= "profileDescription"
                              ng-blur    =   "profileCtrl.updateDescription()"
                              placeholder=   "write your status/description">

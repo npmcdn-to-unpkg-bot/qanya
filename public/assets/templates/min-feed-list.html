@@ -1,19 +1,25 @@
-<div class="row">
-    <div ng-repeat="feed in data">
-        {{feed}}
-        <md-card class="row">
-            <md-card-header>
-
-            </md-card-header>
-
-            <div class="card-block">
-
-                <h4 class="card-title">
-                    <a href="/{{topic.displayname}}">
-                        {{ feed.topic }}
+<!-- minimal feed list -->
+<md-content>
+    <md-list flex>
+        <md-list-item class="md-3-line" ng-repeat="feed in data">
+            <div class="md-list-item-text" layout="column">
+                <h3>
+                    <a href="/{{feed.displayname}}/{{feed.topic_slug}}" >
+                        {{ feed.topic | htmlToPlaintext}}
                     </a>
-                </h4>
+                </h3>
+
+                <p>
+                    {{ feed.body | truncate: 250 | htmlToPlaintext }}
+
+                    {{ 'KEY_BY' | translate }}
+
+                    <a href="/{{ feed.displayname }}">{{ feed.firstname }}</a>
+                </p>
+
             </div>
-        </md-card>
-    </div>
-</div>
+            <md-divider ></md-divider>
+        </md-list-item>
+
+    </md-list>
+</md-content>

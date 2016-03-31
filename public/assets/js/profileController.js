@@ -174,12 +174,13 @@ angular.module('App')
         profileCtrl.getUserHistory = function(user_uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
-            ref.on("value",function (snapshot) {
+            ref.orderByValue().on("value",function (snapshot) {
 
+                console.log(snapshot.val());
                 $http.post('/user/getHistory',
                     {data: snapshot.val()})
                     .then(function(response){
-                        $('#userViewHistory').html(response.data);
+                        profileCtrl.userHistory = response.data;
                     })
             });
         }

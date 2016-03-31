@@ -25,6 +25,11 @@ angular.module('App')
         postCtrl.critReplyData  =   null;
         postCtrl.userRateReview =   null;
 
+        //Material Open Menu
+        postCtrl.openMenu = function($mdOpenMenu, ev) {
+            originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
 
         //--- REVIEW ---
         //Get Review from the post
@@ -96,14 +101,13 @@ angular.module('App')
         {
             var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
             ref.once("value", function(snapshot) {
-
-                $http.post('/getTagButton/', {data: snapshot.val()})
-                    .then(function(response){
-                        console.log(response.data)
-                        $('#userTagList').html(response.data)
-                })
-
                 postCtrl.userTags = snapshot.val();
+                /*$http.post('/getTagButton/', {data: snapshot.val()})
+                    .then(function(response){
+                        postCtrl.userTags = response.data;
+                })*/
+
+                //postCtrl.userTags = snapshot.val();
             })
         }
 

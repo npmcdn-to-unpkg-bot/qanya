@@ -3,7 +3,7 @@
 var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
                                  'toastr',
                                  'angular.filter',
-                                 'ngCookies',
+                                 'ngCookies','ngSanitize',
                                  'pascalprecht.translate'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
@@ -13,7 +13,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
         '100': 'ffcdd2',
         '200': 'ef9a9a',
         '300': 'e57373',
-        '400': 'ef5350',
+        '400': '5DB09D',
         '500': '684666', // primary colour
         '600': 'e53935',
         '700': 'd32f2f',
@@ -32,3 +32,32 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
 }])
+
+
+//For removing that <p> from topic header
+.filter('htmlToPlaintext', function() {
+        return function(text) {
+            return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
+        };
+    }
+)
+
+//Limit the number of length
+//http://jsfiddle.net/tuyyx/
+.filter('truncate', function () {
+    return function (text, length, end) {
+        if (isNaN(length))
+            length = 10;
+
+        if (end === undefined)
+            end = "...";
+
+        if (text.length <= length || text.length - end.length <= length) {
+            return text;
+        }
+        else {
+            return String(text).substring(0, length-end.length) + end;
+        }
+
+    };
+});

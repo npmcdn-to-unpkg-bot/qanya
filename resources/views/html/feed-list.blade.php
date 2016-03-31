@@ -40,17 +40,17 @@
 
             <md-button
                     aria-label="bookmark"
-                    class="md-primary"
-                ng-init="postCtrl.bookMarkTally('{{$topic->topic_uuid}}');
-                        @if(Auth::user())
-                            postCtrl.userBookMarked('{{Auth::user()->uuid}}', '{{$topic->topic_uuid}}')
-                        @endif
-                        "
-                @if(Auth::guest())
-                    ng-click="postCtrl.showMdLogin($event)"
-                @else
-                    ng-click="postCtrl.bookMark('{{Auth::user()->uuid}}', '{{$topic->topic_uuid}}')"
-                @endif>
+                    class="md-icon-button green-font"
+                    ng-init="postCtrl.bookMarkTally('{{$topic->topic_uuid}}');
+                            @if(Auth::user())
+                                postCtrl.userBookMarked('{{Auth::user()->uuid}}', '{{$topic->topic_uuid}}')
+                            @endif
+                            "
+                    @if(Auth::guest())
+                        ng-click="postCtrl.showMdLogin($event)"
+                    @else
+                        ng-click="postCtrl.bookMark('{{Auth::user()->uuid}}', '{{$topic->topic_uuid}}')"
+                    @endif>
                 <h5 id="coments_cnt_{{$topic->topic_uuid}}">
                     <i ng-class="postCtrl.user_bookmarked_<?= $topic->topic_uuid?>? 'fa fa-bookmark fa-1x' : 'fa fa-bookmark-o fa-1x'"></i>
                 </h5>

@@ -22,7 +22,7 @@ $('a.card-link').click(function(e)
 var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
                                  'toastr',
                                  'angular.filter',
-                                 'ngCookies',
+                                 'ngCookies','ngSanitize',
                                  'pascalprecht.translate'])
 
 .constant('FirebaseUrl', 'https://qanya.firebaseio.com/')
@@ -32,7 +32,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
         '100': 'ffcdd2',
         '200': 'ef9a9a',
         '300': 'e57373',
-        '400': 'ef5350',
+        '400': '5DB09D',
         '500': '684666', // primary colour
         '600': 'e53935',
         '700': 'd32f2f',
@@ -51,6 +51,35 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
 }])
+
+
+//For removing that <p> from topic header
+.filter('htmlToPlaintext', function() {
+        return function(text) {
+            return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
+        };
+    }
+)
+
+//Limit the number of length
+//http://jsfiddle.net/tuyyx/
+.filter('truncate', function () {
+    return function (text, length, end) {
+        if (isNaN(length))
+            length = 10;
+
+        if (end === undefined)
+            end = "...";
+
+        if (text.length <= length || text.length - end.length <= length) {
+            return text;
+        }
+        else {
+            return String(text).substring(0, length-end.length) + end;
+        }
+
+    };
+});
 angular.module('App')
     .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics,toastr){
 
@@ -78,6 +107,11 @@ angular.module('App')
         postCtrl.critReplyData  =   null;
         postCtrl.userRateReview =   null;
 
+        //Material Open Menu
+        postCtrl.openMenu = function($mdOpenMenu, ev) {
+            originatorEv = ev;
+            $mdOpenMenu(ev);
+        };
 
         //--- REVIEW ---
         //Get Review from the post
@@ -149,14 +183,13 @@ angular.module('App')
         {
             var ref = postCtrl.topics.userUrl(user_uuid).child('follow_tag');
             ref.once("value", function(snapshot) {
-
-                $http.post('/getTagButton/', {data: snapshot.val()})
-                    .then(function(response){
-                        console.log(response.data)
-                        $('#userTagList').html(response.data)
-                })
-
                 postCtrl.userTags = snapshot.val();
+                /*$http.post('/getTagButton/', {data: snapshot.val()})
+                    .then(function(response){
+                        postCtrl.userTags = response.data;
+                })*/
+
+                //postCtrl.userTags = snapshot.val();
             })
         }
 
@@ -1008,12 +1041,13 @@ angular.module('App')
         profileCtrl.getUserHistory = function(user_uuid)
         {
             var ref = new Firebase("https://qanya.firebaseio.com/user/"+user_uuid+"/history");
-            ref.on("value",function (snapshot) {
+            ref.orderByValue().on("value",function (snapshot) {
 
+                console.log(snapshot.val());
                 $http.post('/user/getHistory',
                     {data: snapshot.val()})
                     .then(function(response){
-                        $('#userViewHistory').html(response.data);
+                        profileCtrl.userHistory = response.data;
                     })
             });
         }
@@ -1134,6 +1168,20 @@ angular.module('App')
         templateUrl: '/assets/templates/feed-list.html'
     }
 })
+
+
+//User Tag list
+.directive('userTags', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/tag-list.html'
+    }
+})
 angular.module('App')
     .config(['$translateProvider', function ($translateProvider) {
         $translateProvider.translations('Eng', {
@@ -1182,6 +1230,7 @@ angular.module('App')
             'KEY_WRITE_REPLY':'Write a reply',
             'KEY_LATEST_FEED':'Latest Feed',
             'KEY_IN':         'in',
+            'KEY_BY':         'by',
 
             //Remove topic
             'KEY_CONF_REMOVE':'Are you sure you want to remove?',
@@ -1201,6 +1250,7 @@ angular.module('App')
             'KEY_WRT_COMMENT':      'Write a comment',
             'KEY_FORGOT_PWD':       'Forgot Your Password?',
             'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
+            'KEY_TAGS_FOLLOW':      'Tags you are following',
 
 
             //USER RATING

@@ -189,6 +189,7 @@ class Topic extends Model
                 ->join('categories', 'topics.category', '=', 'categories.id')
                 ->where('categories.slug',$category)
                 ->where('topics.flg',1)
+                ->orderBy('topics.created_at', 'desc')
                 ->get();
 //        });
 //        return $results;

@@ -100,3 +100,17 @@ angular.module('App')
         templateUrl: '/assets/templates/feed-list.html'
     }
 })
+
+
+//User Tag list
+.directive('userTags', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/tag-list.html'
+    }
+})

@@ -1,0 +1,6 @@
+<div ng-if="data" class="md-title">
+    {{ 'KEY_TAGS_FOLLOW' | translate }}
+</div>
+<div ng-repeat="(key,value) in data">
+    <a class="card-link" href="/tag/{{key}}">#{{key}}</a>
+</div>

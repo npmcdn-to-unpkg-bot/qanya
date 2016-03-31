@@ -46,6 +46,7 @@ angular.module('App')
             'KEY_WRITE_REPLY':'Write a reply',
             'KEY_LATEST_FEED':'Latest Feed',
             'KEY_IN':         'in',
+            'KEY_BY':         'by',
 
             //Remove topic
             'KEY_CONF_REMOVE':'Are you sure you want to remove?',
@@ -65,6 +66,7 @@ angular.module('App')
             'KEY_WRT_COMMENT':      'Write a comment',
             'KEY_FORGOT_PWD':       'Forgot Your Password?',
             'KEY_UPLOAD_PHOTO':     'Forgot Your Password?',
+            'KEY_TAGS_FOLLOW':      'Tags you are following',
 
 
             //USER RATING

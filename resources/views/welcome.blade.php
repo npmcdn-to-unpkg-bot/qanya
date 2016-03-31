@@ -33,20 +33,18 @@
                     <md-tab label="@{{ 'KEY_BOOKMARK' | translate }}"
                             ng-click="profileCtrl.getUserBookmark('{{Auth::user()->uuid}}')">
                         <md-content class="md-padding">
-                            <div id="userBookmark">
 
-                                <min-feed-list data="profileCtrl.userBookmark"></min-feed-list>
-                                
-                            </div>
+                            <min-feed-list data="profileCtrl.userBookmark"></min-feed-list>
+
                         </md-content>
                     </md-tab>
 
                     <md-tab label="@{{ 'KEY_HISTORY' | translate }}"
                             ng-click="profileCtrl.getUserHistory('{{Auth::user()->uuid}}')">
                         <md-content class="md-padding">
-                            <div id="userViewHistory">
-                                @{{ profileCtrl.userHistory }}
-                            </div>
+
+                            <min-feed-list data="profileCtrl.userHistory"></min-feed-list>
+
                         </md-content>
                     </md-tab>
 
@@ -61,18 +59,7 @@
             @include('html.profile-badge')
 
             @if(Auth::user())
-                <div class="media panel md-padding">
-                    <div ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
-                         id="userTagList">
-                    </div>
-                </div>
-
-                <div ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')" id="userTagList">
-                </div>
-                <div ng-controller="PostCtrl as postCtrl"
-                     ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
-                     id="userTagList"></div>
-
+                <user-tags data="postCtrl.userTags"></user-tags>
             @endif
 
             @include('html.category-nav',compact('categories'))
