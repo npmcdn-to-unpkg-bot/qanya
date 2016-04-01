@@ -20,7 +20,9 @@
   "dependencies": {
     "bootstrap": "v4.0.0-alpha.2",
     "angular-material": "^1.0.5",
-    "moment": "^2.11.2"
+    "moment": "^2.11.2",
+    "angular-cookies": "^1.5.3",
+    "angular-sanitize": "^1.5.3"
   },
   "devDependencies": {
     "livereload-js": "^2.2.1",

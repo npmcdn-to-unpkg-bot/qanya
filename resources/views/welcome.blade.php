@@ -20,7 +20,7 @@
                         </div>
                     </md-content>
                 </md-tab>
-                <md-tab label="Most recomended">
+                <md-tab label="@{{ 'KEY_MST_REC' | translate }}">
                     <md-content class="md-padding">
                         <div id="homeFeed">
                             @include('html.feed-list',compact('topics'))

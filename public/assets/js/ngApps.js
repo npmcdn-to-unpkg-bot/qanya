@@ -12,7 +12,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
 
 .config(['$translateProvider', function ($translateProvider) {
     // Enable escaping of HTML
-    $translateProvider.useSanitizeValueStrategy('sanitize');
+    //$translateProvider.useSanitizeValueStrategy('sanitize');
 }])
 
 

@@ -4,6 +4,14 @@
     </script>
 @endif
 
+<!--
+
+QANYA
+
+ถ้าคุณอ่านตรงนี้อยู่ เราเชื่อว่าคุณคงชอบอ่าน โคดเหมือนกัน มาคุยกันก่อนได้นะครับ
+สนใจมาทำงานร่วนกันติดต่อ kantatorn.tardthong@gmail.com นะครับ :)
+
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -299,11 +307,12 @@
         <md-sidenav class="md-sidenav-right md-whiteframe-z2"
                     md-component-id="alertSideNav">
             <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">@{{ 'KEY_NOTIFICATION' | translate }}</h1>
+                <h1 class="md-toolbar-tools">
+                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+                    @{{ 'KEY_NOTIFICATION' | translate }}</h1>
             </md-toolbar>
             <md-content>
                 <md-list>
-                    <md-subheader class="md-no-sticky">Notification</md-subheader>
                     <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
                         <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
                         <div class="md-list-item-text" layout="column">

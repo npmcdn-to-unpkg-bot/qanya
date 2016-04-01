@@ -235,6 +235,10 @@ class ProfileController extends Controller
      */
     public function show($displayname)
     {
+
+        $categories = new \App\Categories();
+        $categories = $categories->all();
+        
         //Show displayname
         $user = User::where('displayname',$displayname)->first();
         $is_user = 'false';
@@ -256,7 +260,7 @@ class ProfileController extends Controller
             $is_user = 'FALSE';
         }
         return view('profile.index',
-                compact('user','is_user','topics','userReplies'));
+                compact('user','is_user','topics','userReplies','categories'));
     }
 
     /**

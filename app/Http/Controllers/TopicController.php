@@ -157,6 +157,9 @@ class TopicController extends Controller
     public function tag($tag)
     {
 
+        $categories = new \App\Categories();
+        $categories = $categories->all();
+
         SEOMeta::setTitle($tag);
 //        SEOMeta::setDescription(str_limit($body,152));
 
@@ -167,7 +170,7 @@ class TopicController extends Controller
         $topic = new Topic();
         $topics = $topic->getTagTopic($tag);
 
-        return view('tag',compact('topics','tag'));
+        return view('tag',compact('topics','tag','categories'));
     }
 
 
@@ -300,6 +303,9 @@ class TopicController extends Controller
     public function show($displayname,$slug)
     {
 
+        $categories = new \App\Categories();
+        $categories = $categories->all();
+
         DB::connection()->enableQueryLog();
 
         $topic = new Topic();
@@ -371,7 +377,7 @@ class TopicController extends Controller
                         'slug',
                         'uuid','is_user','is_edited','topics_uid','user_descs',
                         'tags','poster_img','user_fname','cate_name','topic_updated_at',
-                        'topic_created_at','topic_replies'));
+                        'topic_created_at','topic_replies','categories'));
         }
     }
 
