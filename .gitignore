@@ -9,3 +9,6 @@ Homestead.json
 .env
 .idea/workspace.xml
 /.idea
+public/js/all.js
+public/js/all.js.map
+public/assets/css/all.css.map

@@ -1292,6 +1292,8 @@ angular.module('App')
 
         });
 
+
+        //THAI TRANSLATIOn
         $translateProvider.translations('ไทย', {
             'KEY_LOGIN_REGISTER':  'เข้าใช้ / สมัครใช้',
             'KEY_NOTIFICATION':  'Notification',

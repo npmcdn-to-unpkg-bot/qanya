@@ -202,7 +202,7 @@ QANYA
                     {{-- User tags--}}
                     <user-tags data="postCtrl.userTags"></user-tags>
                 @endif
-                @include('html.category-nav',compact('categories'))
+                
             </div>
         </div>
 
@@ -303,31 +303,37 @@ QANYA
             </md-content>
         </md-sidenav>
 
+
         {{-- Sidebar notification --}}
-        <md-sidenav class="md-sidenav-right md-whiteframe-z2"
-                    md-component-id="alertSideNav">
-            <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">
-                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
-                    @{{ 'KEY_NOTIFICATION' | translate }}</h1>
-            </md-toolbar>
-            <md-content>
-                <md-list>
-                    <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
-                        <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
-                        <div class="md-list-item-text" layout="column">
-                            <p>
-                                @{{ notification.firstname }}
-                                @{{ notification.body }}
-                                to post
-                                @{{ notification.topic }}
-                            </p>
-                            <span am-time-ago="@{{ notification.created_at }} | amParse:'YYYY-MM-DD HH:mm:ss"></span>
-                        </div>
-                    </md-list-item>
-                </md-list>
-            </md-content>
-        </md-sidenav>
+        @if(Auth::user())
+            <md-sidenav class="md-sidenav-right md-whiteframe-z2"
+                        md-component-id="alertSideNav">
+                <md-toolbar class="md-theme-light">
+                    <h1 class="md-toolbar-tools">
+                        <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+                        @{{ 'KEY_NOTIFICATION' | translate }}</h1>
+                </md-toolbar>
+                <md-content>
+                    <md-list>
+                        <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
+                            <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
+                            <div class="md-list-item-text" layout="column">
+                                <p>
+                                    <a href="/@{{ notification.displayname }}">
+                                        @{{ notification.firstname }}
+                                    </a>
+                                    @{{ notification.body }}
+                                    {{Auth::user()->displayName}}
+                                    <a href="/{{Auth::user()->displayName}}/@{{ notification.slug }}"
+                                    @{{ notification.topic | htmlToPlaintext }}
+                                </p>
+                                {{--<span am-time-ago="{{ notification.created_at  | amParse:'YYYY-MM-DD HH:mm:ss}}"></span>--}}
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+            </md-sidenav>
+        @endif
     </section>
 
 
@@ -359,23 +365,10 @@ QANYA
                 var t = $(this);
                 var src = t.attr('src');
                 t.attr('class','img-fluid');
-                console.log(src);
-                /*if(!src || typeof(src)!=='string') return;
-                 t.attr('src',src.replace('/thumbs/','/large/'));*/
             });
-
 
         });
     </script>
-
-    {{--
-    <!-- JavaScripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>--}}
-    {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
-
-
-
 
 </body>
 </html>
