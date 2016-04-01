@@ -29,8 +29,8 @@ return [
          */
         'defaults' => [
             'title'       => 'Qanya!', // set false to total remove
-            'description' => 'For those who helped create the Genki Dama', // set false to total remove
-            'url'         => false,
+            'description' => 'Show your expertise', // set false to total remove
+            'url'         => true,
             'type'        => false,
             'site_name'   => false,
             'images'      => [],

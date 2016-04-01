@@ -1,5 +1,5 @@
 {{-- Channel list --}}
-@if(!empty($categories)
+
     <ul class="nav nav-pills">
         @foreach ($categories as $cate)
 
@@ -10,4 +10,3 @@
 
         @endforeach
     </ul>
-@endif

@@ -202,7 +202,7 @@ QANYA
                     {{-- User tags--}}
                     <user-tags data="postCtrl.userTags"></user-tags>
                 @endif
-                
+
             </div>
         </div>
 

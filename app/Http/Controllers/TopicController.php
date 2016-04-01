@@ -351,11 +351,16 @@ class TopicController extends Controller
             SEOMeta::setTitle($title);
             SEOMeta::setDescription(str_limit($body,152));
 
+            $req = new Request();
 
+            $url = $req->url();
             OpenGraph::setTitle($title);
             OpenGraph::setDescription($body);
-            /*OpenGraph::setUrl('http://current.url.com');
-            OpenGraph::addProperty('type', 'articles');*/
+
+            OpenGraph::setUrl($url);
+            OpenGraph::addProperty('type', 'articles');
+            OpenGraph::addProperty('locale:alternate', ['th-th', 'en-us']);
+
 
             $topic = new Topic();
             $topic_replies = $topic->getReplies($uuid);

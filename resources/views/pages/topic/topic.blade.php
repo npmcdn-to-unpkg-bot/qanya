@@ -108,6 +108,8 @@
                     @endif
                 </div>
 
+
+
                 {{-- Tally and share --}}
                 <div class="container-fluid">
                     <div class="pull-left">
@@ -119,7 +121,7 @@
                     <div class="pull-right">
                         {{-- Share button --}}
                         <div class="fb-share-button"
-                             data-href="https://developers.facebook.com/docs/plugins/"
+                             data-href="{{ Request::url() }}"
                              data-layout="icon_link"></div>
 
                         <span>
