@@ -149,13 +149,16 @@ class Topic extends Model
         return $topic = DB::table('topics_reply')
             ->select('topics_reply.topic_uuid as topic_uuid',
                      'topics_reply.body',
+                     'topics_reply.id as topic_id' ,
                      'topics_reply.created_at as replycreated_at',
-                     'users.*'
+                     'users.*',
+                'reviews.scores',
+                'reviews.criteria'
             )
             ->orderBy('topics_reply.created_at', 'desc')
+            ->leftJoin('reviews', 'topics_reply.id', '=', 'reviews.topic_id')
             ->join('users', 'topics_reply.uid', '=', 'users.uuid')
             ->where('topics_reply.topic_uuid', $topic_uuid)
-            ->limit(10)
             ->get();
     }
 

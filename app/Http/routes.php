@@ -51,7 +51,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/{displayname}/{category}','TopicController@show');
     Route::post('/feedFollowStatus','TopicController@userFollowStatus');
     Route::post('/follow-cate','TopicController@follow_cate');
-    Route::post('/replyTopic','TopicController@replyTopic');
+    Route::post('/api/replyTopic','TopicController@replyTopic');
     Route::post('/userFollowStatus','TopicController@userFollowStatus');
     Route::post('/followUser','TopicController@followUser');
     Route::post('/upvote','TopicController@upvote');
@@ -62,6 +62,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/replyInReplyList','TopicController@replyInReplyList');
     Route::post('/removeTopic','TopicController@destroy');
     Route::post('/retrieve-review','TopicController@getReview');
+    Route::post('/reply-list','TopicController@getReplies');
 
 
 

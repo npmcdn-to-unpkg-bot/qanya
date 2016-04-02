@@ -41,9 +41,12 @@ class TopicController extends Controller
 {
 
 
+    //Get the review template - where is_template equal to one
     public function getReview(Request $request)
     {
-        return DB::table('reviews')->where('topic_uuid',$request->data)->get();
+        return DB::table('reviews')
+                ->where('is_template',1)
+                ->where('topic_uuid',$request->data)->get();
     }
 
 
@@ -111,26 +114,58 @@ class TopicController extends Controller
         }
     }
 
+
+    public function getReplies(Request $request)
+    {
+        $topic = new Topic();
+        return $topic_replies = $topic->getReplies($request->topic_uuid);
+    }
+
+
     //Reply to topic
     public function replyTopic(Request $request)
     {
         if(Auth::user())
         {
+
             $reply = new TopicReply();
             $reply->topic_uuid  =   $request->uuid;
             $reply->uid         =   Auth::user()->uuid;
             $reply->body        =   clean($request->data);
             $reply->save();
 
+
+            //Reviews
+            if($request->reviews)
+            {
+                $count=0;
+                foreach($request->reviews as $review)
+                {
+                    print_r($review);
+
+                    $review_data[$count] = array( 'topic_uuid'      => $request->uuid,
+                                                    'user_uuid'     => Auth::user()->uuid,
+                                                    'criteria'      => $review['criteria'],
+                                                    'scores'        => $review['scores'],
+                                                    'topic_id'      => $reply->id,
+                                                    'is_template'   => FALSE,
+                                                    'created_at'    => date("Y-m-d H:i:s")
+                                             );
+                    $count++;
+                }
+                Reviews::insert($review_data);
+            }
+
             $replyObj =TopicReply::find($reply->id);
 
+
             //Add to notification
-            $notification = new Notification();
+            /*$notification = new Notification();
             $notification->store(3,$request->topics_uid,
                                 Auth::user()->uuid,
                                 $request->topics_uid,
                                 'reply');
-            event(new \App\Events\TopicReplyEvent($request->uuid,$request->topics_uid,$replyObj));
+            event(new \App\Events\TopicReplyEvent($request->uuid,$request->topics_uid,$replyObj));*/
 
         }
         else
@@ -362,8 +397,8 @@ class TopicController extends Controller
             OpenGraph::addProperty('locale:alternate', ['th-th', 'en-us']);
 
 
-            $topic = new Topic();
-            $topic_replies = $topic->getReplies($uuid);
+            /*$topic = new Topic();
+            $topic_replies = $topic->getReplies($uuid);*/
 
             //Check if this is the owner
             if(!empty(Auth::user()->uuid))
@@ -382,7 +417,9 @@ class TopicController extends Controller
                         'slug',
                         'uuid','is_user','is_edited','topics_uid','user_descs',
                         'tags','poster_img','user_fname','cate_name','topic_updated_at',
-                        'topic_created_at','topic_replies','categories'));
+                        'topic_created_at',
+//                        'topic_replies',
+                        'categories'));
         }
     }
 

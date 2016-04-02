@@ -1,16 +1,22 @@
-<!-- review form -->
-<div class="container-fluid" ng-controller="PostCtrl as postCtrl">
+<!--
+Review form
+Todo: retrieve data from the main review and add criteria here
+-->
+<div class="container-fluid"
+     ng-init="postCtrl.userRateReview=data">
     <div class="pull-right">
-        Your score
-        <h3 class="md-display-1" ng-init="userAvg=0">
-            {{ userAvg }}
+        {{ 'KEY_USER_RATING' | translate }}
+        <h3 class="md-display-1">
+            {{ postCtrl.userAvg }}
         </h3>
     </div>
-    <div class="pull-left" ng-repeat="review in data">
+    <div class="pull-left" ng-repeat="review in postCtrl.userRateReview">
         <fieldset>
-            {{review.criteria}} - <input type="number" max="10" min="1" ng-model="review.userRateReview">
+
+            {{review.criteria}} - <input type="number" max="10" min="1"
+                                         ng-init="review.scores = 0"
+                                         ng-keyup="postCtrl.userAvg = postCtrl.avgScore(postCtrl.userRateReview)"
+                                         ng-model="review.scores">
         </fieldset>
     </div>
-    {{postCtrl.userRateReview}}
-
 </div>

@@ -17,13 +17,13 @@ angular.module('App')
         postCtrl.postFollow     =   'Follow';
         postCtrl.topicReply     =   '';
 
-        //Review criteria
+        //Review criteriagetReplies
         postCtrl.criteria       =   false;
         postCtrl.criteriaReply  =   null;
-
         postCtrl.reviewCriteria =   false;
         postCtrl.critReplyData  =   null;
         postCtrl.userRateReview =   null;
+        postCtrl.userAvg        =   0;
 
         //Material Open Menu
         postCtrl.openMenu = function($mdOpenMenu, ev) {
@@ -36,6 +36,7 @@ angular.module('App')
         postCtrl.getReview = function(topic_uuid) {
             $http.post('/retrieve-review/', {data: topic_uuid})
                 .then(function (response) {
+                    postCtrl.userRateReview = response.data;
                     var key = 'responseReview' + topic_uuid;
                     postCtrl[key] = response.data;
                 })
@@ -233,30 +234,45 @@ angular.module('App')
         }
 
 
+        postCtrl.getReplies = function(topic_uuid)
+        {
+            $http.post('/reply-list', { topic_uuid: topic_uuid
+            })
+            .then(function(response){
+                postCtrl.replyList = response.data;
+            })
+        }
+
 
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-            console.log(postCtrl.responseReview+uuid);
 
-          /*  $http.post('/replyTopic', {uuid: uuid,
-                                       topics_uid: topics_uid,
-                                       data: $('#topicReplyContainer').html() })
-                .then(function(response){
-                    $http.get("http://ipinfo.io")
-                        .then(function(response){
-                        var geo_data = response
-                        $http.post('/ip-logger', {  uuid: uuid,
-                            topics_uid: topics_uid,
-                            action: 'reply',
-                            geoResponse: geo_data
-                        })
+            console.log(postCtrl.userRateReview+uuid);
+
+            $http.post('/api/replyTopic', { uuid:           uuid,
+                                            topics_uid:     topics_uid,
+                                            data:           $('#topicReplyContainer').html() ,
+                                            reviews:        postCtrl.userRateReview
+            })
+            .then(function(response){
+
+                toastr.success('Save!');
+
+                $http.get("http://ipinfo.io")
+                    .then(function(response){
+                    var geo_data = response
+                    $http.post('/ip-logger', {  uuid: uuid,
+                        topics_uid: topics_uid,
+                        action: 'reply',
+                        geoResponse: geo_data
                     })
-                    var commentCounter = postCtrl.topics.ref.child('topic/'+uuid+'/comments')
-                    commentCounter.transaction(function (current_value) {
-                        return (current_value || 0) + 1;
-                    })
-                })*/
+                })
+                var commentCounter = postCtrl.topics.ref.child('topic/'+uuid+'/comments')
+                commentCounter.transaction(function (current_value) {
+                    return (current_value || 0) + 1;
+                })
+            })
         }
 
 
