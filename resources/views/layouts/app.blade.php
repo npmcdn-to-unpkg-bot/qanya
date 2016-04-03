@@ -184,157 +184,157 @@ QANYA
 
 
 
-
-
     <md-toolbar ng-controller="PostCtrl as postCtrl">
-
-        {{-- Collapsable mobile content --}}
-        <div class="collapse" id="navbar-header">
-            <div class="container-fluid bg-inverse p-a-1">
-                @if (Auth::guest())
-                    <md-button aria-label="Login" ng-href="{{ url('/login') }}">
-                        @{{ 'KEY_LOGIN_REGISTER' | translate }}
-                    </md-button>
-                @else
-                    {{-- Profile badge--}}
-                    @include('html.profile-badge')
-
-                    {{-- User tags--}}
-                    <user-tags data="postCtrl.userTags"></user-tags>
-                @endif
-
-            </div>
-        </div>
 
         <div class="md-toolbar-tools">
 
-            <md-button
-                    aria-label="menu"
-                    hide-gt-xs class="md-icon-button" type="button" data-toggle="collapse" data-target="#navbar-header">
-                <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_menu_white_24px.svg"></md-icon>
-            </md-button>
-
-
-            <a href="/">
-                <h2>
-                    <span>QANYA</span>
-                </h2>
-            </a>
-
-            <span flex></span>
-
-            {{-- Languages--}}
-            <md-menu>
-                <md-button aria-label="Languages"
-                           ng-click="postCtrl.openMenu($mdOpenMenu, $event)">
-                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_language_white_24px.svg"></md-icon>
-                    @{{ profileCtrl.userLang }}
-                </md-button>
-                <md-menu-content width="4">
-                    <md-menu-item>
-                        <md-button
-                                aria-label="Thai"
-                                ng-click="profileCtrl.toggleLang('ไทย')">
-                            ไทย
+            {{-- Collapsable mobile content --}}
+            <div class="collapse" id="navbar-header">
+                <div class="container-fluid bg-inverse p-a-1">
+                    @if (Auth::guest())
+                        <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                            @{{ 'KEY_LOGIN_REGISTER' | translate }}
                         </md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button
-                                aria-label="English"
-                                ng-click="profileCtrl.toggleLang('Eng')">
-                            Eng
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-divider></md-menu-divider>
-                </md-menu-content>
-            </md-menu>
+                    @else
+                        {{-- Profile badge--}}
+                        @include('html.profile-badge')
 
-            {{-- Profile and Login --}}
-            @if (Auth::guest())
-                <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
-                    @{{ 'KEY_LOGIN_REGISTER' | translate }}
-                </md-button>
-            @else
-                {{-- Notification--}}
+                        {{-- User tags--}}
+                        <user-tags data="postCtrl.userTags"></user-tags>
+                    @endif
+
+                </div>
+            </div>
+
+            <div class="md-toolbar-tools">
+
                 <md-button
-                        hide-xs
-                        aria-label="notification"
-                        ng-click="profileCtrl.ackNotificataion();
-                                      profileCtrl.toggleRight();
-                                      profileCtrl.listNotification()">
-
-                        <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
-
-                        <span id="notification_{{Auth::user()->uuid}}"
-                              ng-init="profileCtrl.userNotification()">
-                            @{{ profileCtrl.unreadNotification }}
-                        </span>
+                        aria-label="menu"
+                        ng-click="profileCtrl.toggleMobile();"
+                        hide-gt-xs class="md-icon-button"
+                        class="md-icon-button">
+                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_menu_white_24px.svg"></md-icon>
                 </md-button>
 
-                <md-button aria-label="{!! Auth::user()->displayname !!}"
-                           hide-xs href="/{!! Auth::user()->displayname !!}">
-                    {!! Auth::user()->firstname !!}
-                    <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
-                </md-button>
-            @endif
+
+                <a href="/">
+                    <h2>
+                        <span>QANYA</span>
+                    </h2>
+                </a>
+
+                <span flex></span>
+
+                {{-- Languages--}}
+                <md-menu>
+                    <md-button aria-label="Languages"
+                               ng-click="postCtrl.openMenu($mdOpenMenu, $event)">
+                        <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_language_white_24px.svg"></md-icon>
+                        @{{ profileCtrl.userLang }}
+                    </md-button>
+                    <md-menu-content width="4">
+                        <md-menu-item>
+                            <md-button
+                                    aria-label="Thai"
+                                    ng-click="profileCtrl.toggleLang('ไทย')">
+                                ไทย
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button
+                                    aria-label="English"
+                                    ng-click="profileCtrl.toggleLang('Eng')">
+                                Eng
+                            </md-button>
+                        </md-menu-item>
+                        <md-menu-divider></md-menu-divider>
+                    </md-menu-content>
+                </md-menu>
+
+                {{-- Profile and Login --}}
+                @if (Auth::guest())
+                    <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
+                        @{{ 'KEY_LOGIN_REGISTER' | translate }}
+                    </md-button>
+                @else
+                    {{-- Notification--}}
+                    <md-button
+                            hide-xs
+                            aria-label="notification"
+                            ng-click="profileCtrl.ackNotificataion();
+                                          profileCtrl.toggleRight();
+                                          profileCtrl.listNotification()">
+
+                            <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+
+                            <span id="notification_{{Auth::user()->uuid}}"
+                                  ng-init="profileCtrl.userNotification()">
+                                @{{ profileCtrl.unreadNotification }}
+                            </span>
+                    </md-button>
+
+                    <md-button aria-label="{!! Auth::user()->displayname !!}"
+                               hide-xs href="/{!! Auth::user()->displayname !!}">
+                        {!! Auth::user()->firstname !!}
+                        <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
+                    </md-button>
+                @endif
+            </div>
         </div>
     </md-toolbar>
 
     {{-- Main container--}}
-    <section layout="row" flex>
-        <md-content flex>
-            <div class="container">
-                @yield('content')
-            </div>
-        </md-content>
 
-        <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="mobile">
-            <md-toolbar class="md-theme-light">
-                <h1 class="md-toolbar-tools">Sidenav Right</h1>
-            </md-toolbar>
+    <md-content layout="column" flex>
+        <div class="container">
+            @yield('content')
+        </div>
+    </md-content>
+
+
+    {{-- Profile toggle for mobile --}}
+    @if(Auth::user())
+        <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="mobile">
             <md-content>
                 @include('html.profile-badge')
-
-                @if(Auth::user())
-                    <user-tags ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
-                               data="postCtrl.userTags"></user-tags>
-                @endif
-
+                <user-tags ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
+                           data="postCtrl.userTags"></user-tags>
             </md-content>
         </md-sidenav>
+    @endif
 
 
-        {{-- Sidebar notification --}}
-        @if(Auth::user())
-            <md-sidenav class="md-sidenav-right md-whiteframe-z2"
-                        md-component-id="alertSideNav">
-                <md-toolbar class="md-theme-light">
-                    <h1 class="md-toolbar-tools">
-                        <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
-                        @{{ 'KEY_NOTIFICATION' | translate }}</h1>
-                </md-toolbar>
-                <md-content>
-                    <md-list>
-                        <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
-                            <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
-                            <div class="md-list-item-text" layout="column">
-                                <p>
-                                    <a href="/@{{ notification.displayname }}">
-                                        @{{ notification.firstname }}
-                                    </a>
-                                    @{{ notification.body }}
-                                    {{Auth::user()->displayName}}
-                                    <a href="/{{Auth::user()->displayName}}/@{{ notification.slug }}"
-                                    @{{ notification.topic | htmlToPlaintext }}
-                                </p>
-                                {{--<span am-time-ago="{{ notification.created_at  | amParse:'YYYY-MM-DD HH:mm:ss}}"></span>--}}
-                            </div>
-                        </md-list-item>
-                    </md-list>
-                </md-content>
-            </md-sidenav>
-        @endif
-    </section>
+    {{-- Sidebar notification --}}
+    @if(Auth::user())
+        <md-sidenav class="md-sidenav-right md-whiteframe-z2"
+                    md-component-id="alertSideNav">
+            <md-toolbar class="md-theme-light">
+                <h1 class="md-toolbar-tools">
+                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+                    @{{ 'KEY_NOTIFICATION' | translate }}</h1>
+            </md-toolbar>
+            <md-content>
+                <md-list>
+                    <md-list-item class="md-3-line" ng-repeat="notification in profileCtrl.notificationList">
+                        <img ng-src="@{{item.face}}?@{{$index}}" class="md-avatar" alt="@{{item.who}}" />
+                        <div class="md-list-item-text" layout="column">
+                            <p>
+                                <a href="/@{{ notification.displayname }}">
+                                    @{{ notification.firstname }}
+                                </a>
+                                @{{ notification.body }}
+                                {{Auth::user()->displayName}}
+                                <a href="/{{Auth::user()->displayName}}/@{{ notification.slug }}"
+                                @{{ notification.topic | htmlToPlaintext }}
+                            </p>
+                            {{--<span am-time-ago="{{ notification.created_at  | amParse:'YYYY-MM-DD HH:mm:ss}}"></span>--}}
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        </md-sidenav>
+    @endif
+
 
 
     <script type="text/javascript">

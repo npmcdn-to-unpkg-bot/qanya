@@ -15,7 +15,7 @@ class Topic extends Model
 
     public function postImages($uuid)
     {
-        return  DB::table('topics_img')->where('topic_uuid',$uuid)->limit(4)->get();
+        return DB::table('topics_img')->where('topic_uuid', $uuid)->limit(4)->get();
     }
 
     //Get the recently created topics
@@ -23,8 +23,8 @@ class Topic extends Model
     {
 
         $time = date("Ymd");
-        $results = Cache::remember('topic_posts_cache_'.$time,1,function() use ($time) {
-            return $topic = $this->where('topics.flg',1)
+        $results = Cache::remember('topic_posts_cache_' . $time, 1, function () use ($time) {
+            return $topic = $this->where('topics.flg', 1)
                 ->select(
                     'topics.topic',
                     'topics.type as topic_type',
@@ -51,6 +51,15 @@ class Topic extends Model
         });
 
         return $results;
+    }
+
+
+    //Get user info from topic
+    public function getUserInfoFromTopic($topic_uuid)
+    {
+        return DB::table('users')
+                ->where('topics.uuid',$topic_uuid)
+                ->join('topics','topics.uid','=','users.uuid')->first();
     }
 
 
@@ -155,7 +164,6 @@ class Topic extends Model
                 'reviews.scores',
                 'reviews.criteria'
             )
-            ->orderBy('topics_reply.created_at', 'desc')
             ->leftJoin('reviews', 'topics_reply.id', '=', 'reviews.topic_id')
             ->join('users', 'topics_reply.uid', '=', 'users.uuid')
             ->where('topics_reply.topic_uuid', $topic_uuid)

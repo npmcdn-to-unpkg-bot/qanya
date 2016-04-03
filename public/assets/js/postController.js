@@ -252,7 +252,7 @@ angular.module('App')
 
             $http.post('/api/replyTopic', { uuid:           uuid,
                                             topics_uid:     topics_uid,
-                                            data:           $('#topicReplyContainer').html() ,
+                                            data:           postCtrl.topicReply,
                                             reviews:        postCtrl.userRateReview
             })
             .then(function(response){

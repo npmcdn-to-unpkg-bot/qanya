@@ -39,10 +39,14 @@
                 <div class="pull-right">
                 @if($is_user)
                     <md-fab-toolbar md-open="false" count="0" md-direction="left">
+
                         <md-fab-trigger class="align-with-text">
                             <md-button aria-label="edit" class="md-fab md-mini md-primary"
                                        ng-click="postCtrl.editable='true';"
                                        onclick='$("#topicContent").addClass("editBorder");'>
+                                    <md-tooltip md-direction="bottom">
+                                        Edit
+                                    </md-tooltip>
                                 <md-icon md-svg-src="/assets/icons/ic_mode_edit_white_24px.svg">></md-icon>
                             </md-button>
                         </md-fab-trigger>
@@ -157,12 +161,13 @@
                         {{ $user_descs }}
                     </div>
                     <div>
-                        <b> {{ profileCtrl.user_stat_<?=str_replace('-','',Auth::user()->uuid)?>.upvote }}</b>
+                        <b> {{ profileCtrl.user_stat_<?=str_replace('-','',$topics_uid)?>.upvote }}</b>
                         @{{ 'KEY_UPVOTE' | translate }}
                     </div>
                 </div>
 
                 <!-- Follow Button -->
+
                 <div class="media-right">
                     @if(is_null($is_user))
 
@@ -176,6 +181,7 @@
 
                     @endif
                 </div>
+
             </div>
             
         </div>
@@ -195,8 +201,7 @@
         </div>
 
 
-
-
+        {{-- Reply Section--}}
         @if (Auth::user())
             <md-content layout-padding layout="row"  layout-align="start end">
                 <md-list flex>
@@ -206,11 +211,28 @@
                              alt="{!! Auth::user()->displayname !!}">
                         <div class="md-list-item-text" layout="column">
                             <form ng-submit="postCtrl.postReply('{{$uuid}}','{{$topics_uid}}','{{Auth::user()->uuid }}')">
-                                <md-input-container class="md-block">
-                                    <label>@{{ 'KEY_WRITE_REPLY' | translate }}</label>
-                                    <textarea ng-model="user.biography" md-maxlength="150" rows="5"
-                                              md-select-on-focus></textarea>
-                                </md-input-container>
+                                <md-content layout-padding layout="row"  layout-align="start center">
+                                    <div flex>
+                                        <md-input-container class="md-block">
+                                            <label>@{{ 'KEY_WRITE_REPLY' | translate }}</label>
+                                            <textarea ng-model="postCtrl.topicReply"
+                                                      md-maxlength="150" rows="5"
+                                                      md-select-on-focus></textarea>
+                                        </md-input-container>
+                                    </div>
+
+                                    <div>
+                                        <md-button  type="submit"
+                                                    ng-disabled="false"
+                                                    class="md-fab md-mini md-primary"
+                                                    aria-label="@{{ 'KEY_POST' | translate }}">
+                                            <md-tooltip md-direction="bottom">
+                                                @{{ 'KEY_POST' | translate }}
+                                            </md-tooltip>
+                                            <md-icon md-svg-icon="/assets/icons/ic_send_white_24px.svg"></md-icon>
+                                        </md-button>
+                                    </div>
+                                </md-content>
 
                                 {{-- If there is review then allow user to rate here--}}
                                 <div ng-if="{{ $topic_type }} == 2" ng-init="postCtrl.getReview ('{{$uuid}}')">
@@ -218,13 +240,6 @@
                                                  data="postCtrl.responseReview{{$uuid}}"></review-form>
                                 </div>
 
-                                <div layout="row" layout-align="end center">
-                                    <md-button  type="submit"
-                                                ng-disabled="false"
-                                                class="md-mini md-icon-button" aria-label="@{{ 'KEY_POST' | translate }}">
-                                        <md-icon md-svg-icon="/assets/icons/ic_send_black_24px.svg"></md-icon>
-                                    </md-button>
-                                </div>
                             </form>
                         </div>
 
@@ -246,27 +261,33 @@
             <md-list id="reply_append_{{$uuid}}"></md-list>
 
             <md-content>
-                    <md-list flex ng-repeat="(key, value) in postCtrl.replyList | groupBy: 'topic_id'">
+                    <md-list flex ng-repeat="(key, value) in postCtrl.replyList  | groupBy: 'topic_id' ">
+                        <md-list-item>
+                            #@{{ $index + 1 }} -
+                            <a href="/@{{ value[0].displayname }}" target="_blank">
+                                @{{ value[0].firstname }}
+                            </a>
+                        </md-list-item>
                         <md-list-item class="md-3-line" id="reply_message">
                             <img ng-src="@{{ value[0].profile_img }}"
                                  class="md-avatar" alt="@{{ value[0].firstname }}" />
                             <div class="md-list-item-text" layout="column">
                                 <h3>
-                                    <a href="/@{{ value[0].displayname }}" target="_blank">
-                                        @{{ value[0].firstname }}
-                                    </a>
-                                    <small>
-
-                                    </small>
+                                    <span class="md-body-2"> @{{ value[0].body | htmlToPlaintext }}</span>
                                 </h3>
-                                <h3 class="md-body-1"> @{{ value[0].body }}</h3>
+                                <small>
+                                    <span am-time-ago="value[0].created_at | amParse:'YYYY-MM-DD H:i:s'"></span>
+                                </small>
                             </div>
 
-                            <div layout="row" layout-align="end">
-                                @{{ postCtrl.avgScore(value) }}
+                            <div layout="row" layout-align="end" ng-if="postCtrl.avgScore(value) != 'NaN'">
+                                <span class="md-title">
+                                    @{{ postCtrl.avgScore(value) }}
+                                </span>
                                 <div ng-repeat="review in value">
-                                    @{{ review.criteria }}
-                                    @{{ review.scores }}
+                                    <p>
+                                        @{{ review.criteria }} - @{{ review.scores }}
+                                    </p>
                                 </div>
                             </div>
 

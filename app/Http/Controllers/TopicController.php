@@ -29,6 +29,7 @@ use Carbon\Carbon as Carbon;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Redis;
 
+use Mail;
 
 //SEO
 use SEOMeta;
@@ -141,8 +142,6 @@ class TopicController extends Controller
                 $count=0;
                 foreach($request->reviews as $review)
                 {
-                    print_r($review);
-
                     $review_data[$count] = array( 'topic_uuid'      => $request->uuid,
                                                     'user_uuid'     => Auth::user()->uuid,
                                                     'criteria'      => $review['criteria'],
@@ -156,7 +155,20 @@ class TopicController extends Controller
                 Reviews::insert($review_data);
             }
 
+
             $replyObj =TopicReply::find($reply->id);
+
+            $topic = new Topic();
+            $author = $topic->getUserInfoFromTopic($request->uuid);
+
+
+            //Mail
+            $mailer = new MailController();
+            //Mail to poster
+            $mailer->notify_poster($request->uuid,$replyObj);
+            //Mail to ppl who reply
+            $mailer->notifiy_reply($request->uuid,$replyObj);
+
 
 
             //Add to notification
