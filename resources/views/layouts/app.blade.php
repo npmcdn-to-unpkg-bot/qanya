@@ -127,7 +127,7 @@ QANYA
         /*
          * SOCKETS
          */
-        var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3000');
+        var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3333');
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
             $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
@@ -257,27 +257,32 @@ QANYA
                         @{{ 'KEY_LOGIN_REGISTER' | translate }}
                     </md-button>
                 @else
-                    {{-- Notification--}}
-                    <md-button
-                            hide-xs
-                            aria-label="notification"
-                            ng-click="profileCtrl.ackNotificataion();
-                                          profileCtrl.toggleRight();
-                                          profileCtrl.listNotification()">
 
-                            <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+                    @if(Auth::user()->confirmed == 1)
 
-                            <span id="notification_{{Auth::user()->uuid}}"
-                                  ng-init="profileCtrl.userNotification()">
-                                @{{ profileCtrl.unreadNotification }}
-                            </span>
-                    </md-button>
+                        {{-- Notification--}}
+                        <md-button
+                                hide-xs
+                                aria-label="notification"
+                                ng-click="profileCtrl.ackNotificataion();
+                                              profileCtrl.toggleRight();
+                                              profileCtrl.listNotification()">
 
-                    <md-button aria-label="{!! Auth::user()->displayname !!}"
-                               hide-xs href="/{!! Auth::user()->displayname !!}">
-                        {!! Auth::user()->firstname !!}
-                        <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
-                    </md-button>
+                                <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+
+                                <span id="notification_{{Auth::user()->uuid}}"
+                                      ng-init="profileCtrl.userNotification()">
+                                    @{{ profileCtrl.unreadNotification }}
+                                </span>
+                        </md-button>
+
+                        <md-button aria-label="{!! Auth::user()->displayname !!}"
+                                   hide-xs href="/{!! Auth::user()->displayname !!}">
+                            {!! Auth::user()->firstname !!}
+                            <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
+                        </md-button>
+
+                    @endif
                 @endif
             </div>
         </div>
@@ -293,15 +298,21 @@ QANYA
 
 
     {{-- Profile toggle for mobile --}}
-    @if(Auth::user())
-        <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="mobile">
-            <md-content>
+
+    <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="mobile">
+        <md-content>
+            @if(Auth::user())
                 @include('html.profile-badge')
                 <user-tags ng-init="postCtrl.userTagList('{{Auth::user()->uuid}}')"
                            data="postCtrl.userTags"></user-tags>
-            </md-content>
-        </md-sidenav>
-    @endif
+            @else
+                <md-button aria-label="Login" ng-href="{{ url('/login') }}">
+                    @{{ 'KEY_LOGIN_REGISTER' | translate }}
+                </md-button>
+            @endif
+        </md-content>
+    </md-sidenav>
+
 
 
     {{-- Sidebar notification --}}

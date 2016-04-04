@@ -22,6 +22,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', 'HomeController@welcome');
     Route::get('/home', 'HomeController@index');
     Route::post('/getFeed','HomeController@getFeedCate');
+    Route::get('/verification','HomeController@verification');
+    Route::post('/api/send-verification','HomeController@sendVerification');
+    Route::post('/api/confirm-verification','HomeController@confirmVerification');
 
     //Tags
     Route::get('/tag/{tag}','TopicController@tag');

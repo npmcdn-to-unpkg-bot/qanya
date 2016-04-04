@@ -13,5 +13,5 @@ redis.on('pmessage', function(subscribed, channel, message) {
     io.emit(channel + ':' + message.event, message.data);
 });
 http.listen(3333, process.env.SERVER_ADDRESS, function(){
-    console.log('Listening on Port 3000');
+    console.log('Listening on Port 3333');
 });

@@ -1,5 +1,8 @@
 angular.module('App')
-    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,$firebaseObject,$firebaseArray,Topics,toastr){
+    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,
+                                    $firebaseObject,$firebaseArray,
+                                    $location,
+                                    Topics,toastr){
 
         var postCtrl = this;
 
@@ -24,6 +27,32 @@ angular.module('App')
         postCtrl.critReplyData  =   null;
         postCtrl.userRateReview =   null;
         postCtrl.userAvg        =   0;
+        postCtrl.email_confirmation_code = null;
+        postCtrl.email_is_confirmed      = null;
+
+        /**
+         * Email Verification
+         * */
+        postCtrl.sendVerificationCode = function()
+        {
+            $http.post('/api/send-verification');
+        }
+
+        postCtrl.confirmVerification = function()
+        {
+            $http.post('/api/confirm-verification', {data: postCtrl.email_confirmation_code})
+                .then(function(response){
+                    postCtrl.email_is_confirmed = response.data;
+                    if(postCtrl.email_is_confirmed == 0)
+                    {
+                        window.location = "/";
+                    }
+
+
+                })
+        }
+
+
 
         //Material Open Menu
         postCtrl.openMenu = function($mdOpenMenu, ev) {

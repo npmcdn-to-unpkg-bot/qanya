@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB as DB;
 use App\User;
 use App\Users_follow;
 use Auth;
+use Mail;
 
 class HomeController extends Controller
 {
@@ -22,6 +23,54 @@ class HomeController extends Controller
     {
 //        $this->middleware('auth');
     }
+
+
+    /* Checking for the valid email verification*/
+    public function verification()
+    {
+
+        $user =  User::find(Auth::user()->id);
+        if($user->confirmed ==0)
+        {
+            return view('auth.verification');
+        }
+    }
+
+
+    /**
+     * Confirm verification
+     */
+    public function confirmVerification(Request $request)
+    {
+        $request->data;
+
+        $user =  User::find(Auth::user()->id);
+        if($user->confirmation_code == $request->data){
+
+            //update the confirm status
+            $user->confirmed = 1;
+            $user->save();
+
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
+
+    //Create the confirmation code
+    public function sendVerification()
+    {
+        $confirmation_code = str_random(30);
+
+        $user =  User::find(Auth::user()->id);
+        $user->confirmation_code = $confirmation_code;
+        $user->save();
+
+        $mail = new MailController();
+        $mail->sendVerficationCode($confirmation_code);
+    }
+
 
     /**
      *
@@ -37,6 +86,13 @@ class HomeController extends Controller
 
         if(Auth::user())
         {
+            //if email is not confirm
+            if(Auth::user()->confirmed ==0)
+            {
+                return view('auth.verification');
+            }
+
+            //if displayname is not set
             if(empty(Auth::user()->displayname)){
                 return redirect()->action('ProfileController@createName');
             }

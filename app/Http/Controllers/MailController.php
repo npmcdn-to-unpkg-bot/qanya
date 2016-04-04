@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Topic;
 use Mail;
 use Illuminate\Http\Request;
@@ -16,6 +17,24 @@ class MailController extends Controller
 
     }
 
+
+    /**
+     * Send the verification code
+     */
+    public function sendVerficationCode($confirmation_code)
+    {
+        if(Auth::user()) {
+
+            Mail::send('emails.send-verification-code', ['recipient' => Auth::user(),
+                'code' => $confirmation_code], function ($m)  {
+                $m->from('hello@qanya.com', 'Qanya');
+                $m->to(Auth::user()->email, Auth::user()->firstname)
+                    ->subject("Activate your Qanya! account");
+            });
+        }else{
+            return "not auth";
+        }
+    }
 
     /**
      * Send email to the psrson that post the topic

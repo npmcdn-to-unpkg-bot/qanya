@@ -15,6 +15,11 @@ class UpdateReviewTable extends Migration
         Schema::table('reviews', function ($table) {
             $table->integer('topic_id');
         });
+
+        Schema::table('users', function ($table) {
+            $table->boolean('confirmed')->default(0);
+            $table->string('confirmation_code')->nullable();
+        });
     }
 
     /**
@@ -26,6 +31,11 @@ class UpdateReviewTable extends Migration
     {
         Schema::table('reviews', function ($table) {
             $table->dropColumn('topic_id');
+        });
+
+        Schema::table('users', function ($table) {
+            $table->dropColumn('confirmed')->default(0);
+            $table->dropColumn('confirmation_code')->nullable();
         });
     }
 }

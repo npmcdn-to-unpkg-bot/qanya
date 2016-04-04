@@ -23,6 +23,8 @@ class Authenticate
             } else {
                 return redirect()->guest('login');
             }
+        }else{
+            return redirect->route('/verification');
         }
 
         return $next($request);
