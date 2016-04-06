@@ -56,7 +56,7 @@ angular.module('App')
 
         //Material Open Menu
         postCtrl.openMenu = function($mdOpenMenu, ev) {
-            originatorEv = ev;
+            //originatorEv = ev;
             $mdOpenMenu(ev);
         };
 
@@ -690,6 +690,7 @@ angular.module('App')
 
         postCtrl.dwnvote =function(topic_uuid,topic_uid)
         {
+            console.log('downvote');
             postCtrl.upvoteReset(topic_uuid,topic_uid);
             var btn = "#dwnvote_btn_status_"+topic_uuid;
 
@@ -726,7 +727,9 @@ angular.module('App')
             topicRef.transaction(function (current_value) {
                 return negCurrentValueCheck(current_value);
             });
-            
+
+
+
         }
 
         //Reset downvote to zero
@@ -741,6 +744,11 @@ angular.module('App')
             topicRef.transaction(function (current_value) {
                 return negCurrentValueCheck(current_value);
             });
+
+            var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+            followStatus.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            })
         }
 
 
@@ -776,12 +784,7 @@ angular.module('App')
                     //Update stat for poster
                     var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
                     followStatus.transaction(function (current_value) {
-                        if(current_value < 0 || current_value == 0 )
-                        {
-                            return 0;
-                        }else{
-                            return current_value - 1;
-                        }
+                        return negCurrentValueCheck(current_value);
                     })
                 }
             })
@@ -790,6 +793,9 @@ angular.module('App')
 
 function negCurrentValueCheck(current_value)
 {
+    
+    console.log(current_value);
+
     if(current_value < 0 || current_value == 0 || current_value == '' || current_value == null)
     {
         return 0;

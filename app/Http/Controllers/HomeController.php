@@ -33,6 +33,8 @@ class HomeController extends Controller
         if($user->confirmed ==0)
         {
             return view('auth.verification');
+        }else{
+            return redirect('/');
         }
     }
 

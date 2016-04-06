@@ -3,14 +3,14 @@
 
 @section('content')
 
-    <div class="row" >
+    <section layout="row" flex>
 
-        <div class="col-md-7">
+        <md-content flex layout-padding>
+
 
             @if(Auth::user())
                 @include('html.post-create',compact('categories'))
             @endif
-
 
             <md-tabs md-dynamic-height md-border-bottom >
                 <md-tab label="@{{ 'KEY_LATEST_FEED' | translate }}">
@@ -50,22 +50,30 @@
 
                 @endif
             </md-tabs>
+        </md-content>
+
+        <md-sidenav
+                class="md-sidenav-right"
+                md-component-id="right"
+                md-is-locked-open="$mdMedia('gt-md')"
+                md-disable-backdrop>
 
 
-        </div>
 
-        <div hide-xs="" class="col-md-5 col-xs-12" ng-controller="PostCtrl as postCtrl">
-            
-            @include('html.profile-badge')
+            <div layout="column" layout-fill layout-align="top center" ng-controller="PostCtrl as postCtrl">
 
-            @if(Auth::user())
-                <user-tags data="postCtrl.userTags"></user-tags>
-            @endif
 
-            @include('html.category-nav',compact('categories'))
+                @include('html.profile-badge')
 
-        </div>
-    </div>
+                @if(Auth::user())
+                    <user-tags data="postCtrl.userTags"></user-tags>
+                @endif
+
+                @include('html.category-nav',compact('categories'))
+
+            </div>
+        </md-sidenav>
+    </section>
 
 
 @endsection

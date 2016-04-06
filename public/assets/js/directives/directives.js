@@ -114,3 +114,14 @@ angular.module('App')
         templateUrl: '/assets/templates/tag-list.html'
     }
 })
+
+
+//Language button
+.directive('langSelect', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        templateUrl: '/assets/templates/languages-button.html'
+    }
+})

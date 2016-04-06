@@ -34,6 +34,9 @@
                                     {{ $user->displayname }}
                                 </small>
                             </p>
+                            @if($is_user == 'TRUE')
+                                <small><a href="/logout">logout</a></small>
+                            @endif
                         </h2>
                         <div contenteditable="{{ $is_user }}"
                              class="md-title"

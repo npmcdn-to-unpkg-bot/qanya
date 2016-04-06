@@ -1,0 +1,25 @@
+<md-menu>
+    <md-button
+            aria-label="Languages"
+            ng-click="postCtrl.openMenu($mdOpenMenu, $event)">
+        <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_language_white_24px.svg"></md-icon>
+        {{ profileCtrl.userLang }}
+    </md-button>
+    <md-menu-content width="4">
+        <md-menu-item>
+            <md-button
+                    aria-label="Thai"
+                    ng-click="profileCtrl.toggleLang('ไทย')">
+                ไทย
+            </md-button>
+        </md-menu-item>
+        <md-menu-item>
+            <md-button
+                    aria-label="English"
+                    ng-click="profileCtrl.toggleLang('Eng')">
+                Eng
+            </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+    </md-menu-content>
+</md-menu>

@@ -20,7 +20,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
     Route::get('/', 'HomeController@welcome');
-    Route::get('/home', 'HomeController@index');
+    Route::get('/home', 'HomeController@welcome');
     Route::post('/getFeed','HomeController@getFeedCate');
     Route::get('/verification','HomeController@verification');
     Route::post('/api/send-verification','HomeController@sendVerification');

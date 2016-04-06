@@ -15,16 +15,16 @@
 
             {{-- Determine the header for the topic --}}
             <span ng-if="{{ $topic->topic_type }} == 1">
-                @{{ 'KEY_TOPIC' | translate }}
+                @{{ 'KEY_STORY' | translate }}
             </span>
 
             <span ng-if="{{ $topic->topic_type }} == 2;"
                   ng-init="postCtrl.getReview('{{$topic->topic_uuid}}')">
-                @{{ 'KEY_TOPIC' | translate }}
+                @{{ 'KEY_REVIEW' | translate }}
             </span>
 
             <span ng-if="{{ $topic->topic_type }} == 3">
-                @{{ 'KEY_REVIEW' | translate }}
+                @{{ 'KEY_QUESTION' | translate }}
             </span>
 
             &nbsp;

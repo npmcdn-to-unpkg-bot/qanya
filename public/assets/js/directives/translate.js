@@ -24,11 +24,12 @@ angular.module('App')
             'KEY_CANCEL':     'Cancel',
             'KEY_QUESTION':   'Question',
             'KEY_TOPIC':      'Topic',
-            'KEY_CHG_PWD':    'Change Password',
+            'KEY_STORY':      'Story',
+            'KEY_CHG_PWD':    'Reset Password',
             'KEY_PASSWORD':   'Password',
             'KEY_OLD_PWD':    'Old Password',
             'KEY_NEW_PWD':    'New Password',
-            'KEY_NEW_PWD_C':  'New password confirmation',
+            'KEY_NEW_PWD_C':  'Confirm password',
             'KEY_SAVE':       'Save',
             'KEY_SAVE_DRAFT': 'Save as draft',
             'KEY_TAGS':       'Tags',
@@ -45,6 +46,7 @@ angular.module('App')
             'KEY_TRENDING':   'Trending',
             'KEY_BOOKMARK':   'Bookmark',
             'KEY_MST_REC':    'Most recomended',
+            'KEY_ADD_FIELD':  'Add field',
 
             'KEY_HISTORY':    'History',
             'KEY_WRITE_REPLY':'Write a reply',
@@ -74,7 +76,8 @@ angular.module('App')
             'KEY_TAGS_FOLLOW':      'Tags you are following',
             'KEY_NAME_CHG_ONCE':    'Warning! You can only change displayname once',
             'KEY_SEL_CHN':          'Select channel',
-
+            'KEY_IT_IS_ABOUT':      'This is about...',
+            'KEY_PWD_RESET':        'Send Password Reset Link',
 
             //USER RATING
             'KEY_USER_RATING':  'User Rating',
@@ -131,6 +134,7 @@ angular.module('App')
             'KEY_CANCEL':     'ยกเลิก',
             'KEY_QUESTION':   'คำถาม',
             'KEY_TOPIC':      'หัวข้อ',
+            'KEY_STORY':      'เรื่องราว',
             'KEY_CHG_PWD':    'เปลี่ยนรหัสผ่าน',
             'KEY_PASSWORD':   'รหัสผ่าน',
             'KEY_OLD_PWD':    'รหัสผ่านเก่า',
@@ -152,6 +156,7 @@ angular.module('App')
             'KEY_TRENDING':   'กำลังนิยม',
             'KEY_BOOKMARK':   'บุคมาร์ค',
             'KEY_MST_REC':    'แนะนำมากสุด',
+            'KEY_ADD_FIELD':  'เพิ่ม',
 
             'KEY_HISTORY':    'ประวัติการเข้าชม',
             'KEY_WRITE_REPLY':'เขียนตอบ',
@@ -180,6 +185,8 @@ angular.module('App')
             'KEY_TAGS_FOLLOW':      'แท็กที่คุณกำลังติดตาม',
             'KEY_NAME_CHG_ONCE':    'คำเตือน! คุณสามารถเปลี่ยนชื่อผู้ใช้ได้ครั้งเดียว',
             'KEY_SEL_CHN':          'เลือกช่อง',
+            'KEY_IT_IS_ABOUT':      'เขียนเกี่ยวกับ...',
+            'KEY_PWD_RESET':        'ส่งลิงค์การเปลี่ยนรหัสผ่าน',
 
             //USER RATING
             'KEY_USER_RATING':  'คะแนนของผู้รีวิว',
