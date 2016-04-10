@@ -1,5 +1,6 @@
 angular.module('App')
-    .controller('PostCtrl',function($http,$scope, $sce, $mdDialog, $mdMedia,
+    .controller('PostCtrl',function($http,$scope, $sce,
+                                    $mdDialog, $mdMedia,
                                     $firebaseObject,$firebaseArray,
                                     $location,
                                     Topics,toastr){
@@ -24,18 +25,24 @@ angular.module('App')
         postCtrl.criteria       =   false;
         postCtrl.criteriaReply  =   null;
         postCtrl.reviewCriteria =   false;
+        postCtrl.reviewName     =   null;
         postCtrl.critReplyData  =   null;
         postCtrl.userRateReview =   null;
         postCtrl.userAvg        =   0;
         postCtrl.email_confirmation_code = null;
         postCtrl.email_is_confirmed      = null;
+        postCtrl.locationObject = 0;
 
         /**
          * Email Verification
          * */
         postCtrl.sendVerificationCode = function()
         {
-            $http.post('/api/send-verification');
+            $http.post('/api/send-verification')
+                .then(function(){
+                    postCtrl.codeSentMessage = true;
+                })
+
         }
 
         postCtrl.confirmVerification = function()
@@ -51,6 +58,8 @@ angular.module('App')
 
                 })
         }
+
+
 
 
 
@@ -97,6 +106,74 @@ angular.module('App')
         //--- END REVIEW ---
 
 
+
+        //Show price range
+        postCtrl.showPriceRange = function(ev) {
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.prompt()
+                .title('What would you name your dog?')
+                .textContent('Bowser is a common name.')
+                .placeholder('dog name')
+                .ariaLabel('Dog name')
+                .targetEvent(ev)
+                .ok('Okay!')
+                .cancel('I\'m a cat person');
+            $mdDialog.show(confirm).then(function(result) {
+                $scope.status = 'You decided to name your dog ' + result + '.';
+            }, function() {
+                $scope.status = 'You didn\'t name your dog.';
+            });
+        };
+
+        //Facebook search location
+        postCtrl.showLocation = function(ev) {
+            var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
+            $mdDialog.show({
+                    templateUrl: '/assets/templates/fb-location-search.html',
+                    //parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose:true,
+                })
+                .then(function(answer) {
+                    return answer;
+                }, function() {
+                    $scope.status = 'You cancelled the dialog.';
+                })
+
+                $scope.$watch(function() {
+                    return $mdMedia('xs') || $mdMedia('sm');
+                }, function(wantsFullScreen) {
+                    $scope.customFullscreen = (wantsFullScreen === true);
+                });
+        };
+
+        postCtrl.addLocation = function(location)
+        {
+
+            postCtrl.locationObject = location;
+            if(location.location.latitude != 'undefined')
+            {
+                postCtrl.locationMap = "https://maps.googleapis.com/maps/api/staticmap?center="+
+                                        location.location.latitude+","+
+                                        location.location.longitude+
+                                        "&markers=color:red%7C"+
+                                        location.location.latitude+","+
+                                        location.location.longitude+
+                                        "&zoom=12&size=600x150&maptype=roadmap&key=AIzaSyBuA7XmTheMlXVN8HlDi-c5b_HI3tF-WAE"
+                $mdDialog.hide(location);
+            }
+        }
+
+        postCtrl.searchLocation = function()
+        {
+            $http.post('/api/location-search', {term: postCtrl.locationName})
+                .then(function(response){
+                    postCtrl.fbResponse = response.data;
+                    console.log(response.data);
+                });
+
+        }
+
         //Display pop up login
         postCtrl.showLogin = function(ev) {
         var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
@@ -108,6 +185,8 @@ angular.module('App')
               fullscreen: useFullScreen
             })
         }
+
+
 
 
 
@@ -511,12 +590,13 @@ angular.module('App')
                          body:          $('#contentBody').html(),
                          text:          $('#contentBody').text(),
                          images:        imgIds,
-                         reviews:       postCtrl.reviewCriteria
+                         reviews:       postCtrl.reviewCriteria,
+                         location:      postCtrl.locationObject
                         };
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
                     console.log(response.data);
-                    $http.get("http://ipinfo.io")
+                    $http.get("//ipinfo.io")
                         .then(function(response){
                             var geo_data = response
                             $http.post('/ip-logger', {  uuid: uuid,
@@ -526,7 +606,7 @@ angular.module('App')
                             })
                         })
                     url = '/'+response.author+'/'+response.slug;
-                    window.location = url;
+                    //window.location = url;
                 })
 
         }
@@ -790,6 +870,19 @@ angular.module('App')
             })
         }
     })
+
+
+function DialogController($scope, $mdDialog) {
+    $scope.hide = function() {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function() {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function(answer) {
+        $mdDialog.hide(answer);
+    };
+}
 
 function negCurrentValueCheck(current_value)
 {

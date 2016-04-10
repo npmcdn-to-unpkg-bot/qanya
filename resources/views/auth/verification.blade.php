@@ -1,33 +1,42 @@
 @extends('layouts.app')
 
+
 @section('content')
-<div layout="row" ng-controller="PostCtrl as postCtrl">
-    <div flex="66" flex-offset="15">
 
-        <md-content layout="column" layout-padding>
-            Thanks for Sign up with Qanya!. Please activate your account by enter the code in the box.
+<div layout="column" layout-align="center center">
 
-            <form method="POST" action="{{ url('/confirm-verification') }}">
-                {!! csrf_field() !!}
-                <div layout="row">
-                    <md-input-container class="md-block" flex-gt-xs>
-                        <label>Confirmation Code</label>
-                        <input ng-model="postCtrl.email_confirmation_code">
-                    </md-input-container>
-                </div>
+    <img src="/assets/images/logo.jpg" width="100px">
 
-                <div ng-if="postCtrl.email_is_confirmed ==1">
-                    the code is incorrect
-                </div>
+    <md-content layout="column" layout-padding>
+        @{{ 'KEY_V_SIGN_UP' | translate }}
+        <form method="POST" action="{{ url('/confirm-verification') }}">
+            {!! csrf_field() !!}
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-xs>
+                    <label>@{{ 'KEY_CFM_CODE' | translate }}</label>
+                    <input ng-model="postCtrl.email_confirmation_code">
+                </md-input-container>
+            </div>
 
-                <div layout="row" layout-align="end center">
-                    <md-button class="md-primary" ng-click="postCtrl.sendVerificationCode()">resend code</md-button>
-                    <md-button class="md-primary" ng-click="postCtrl.confirmVerification()">confirmation</md-button>
-                </div>
-            </form>
+            <div ng-if="postCtrl.email_is_confirmed ==1">
+                @{{ 'KEY_CODE_INC' | translate }}
+            </div>
 
-        </md-content>
+            <div ng-init="postCtrl.codeSentMessage = false" ng-show="postCtrl.codeSentMessage">
+                @{{ 'KEY_CODE_SENT' | translate }}
+            </div>
 
-    </div>
+            <div layout="row" layout-align="end center">
+                <md-button class="md-primary"
+                           ng-click="postCtrl.sendVerificationCode()">
+                    @{{ 'KEY_RESEND_CODE' | translate }}</md-button>
+                <md-button class="md-primary" ng-click="postCtrl.confirmVerification()">
+                    @{{ 'KEY_CFM' | translate }}</md-button>
+            </div>
+        </form>
+
+    </md-content>
+
 </div>
+
 @endsection

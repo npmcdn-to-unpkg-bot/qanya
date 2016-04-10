@@ -2,7 +2,8 @@
 
 @section('content')
 
-<div class="row">
+<div layout="column" layout-align="center">
+
     <md-content ng-controller="PostCtrl as postCtrl">
 
         <div class="layoutSingleColumn md-padding">

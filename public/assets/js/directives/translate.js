@@ -40,6 +40,7 @@ angular.module('App')
             'KEY_REPLY':      'Reply',
             'KEY_PHOTO':      'Photo',
             'KEY_REVIEW':     'Review',
+            'KEY_REVIEW_NAME':'Name of the product/service review',
             'KEY_EDIT':       'Edit',
             'KEY_EDITED':     'Edited',
             'KEY_TREND':      'Trend',
@@ -78,6 +79,15 @@ angular.module('App')
             'KEY_SEL_CHN':          'Select channel',
             'KEY_IT_IS_ABOUT':      'This is about...',
             'KEY_PWD_RESET':        'Send Password Reset Link',
+            'KEY_WRITE_SOMETHING':  'Write something ( you can also copy + paste here)',
+            'KEY_CODE_SENT':        'Code sent, check your email',
+
+            //VERIFICATION CODE
+            'KEY_V_SIGN_UP':        'Thanks for Sign up with Qanya!. Please activate your account by enter the code in the box.',
+            'KEY_CFM_CODE':         'Confirmation Code',
+            'KEY_CODE_INC':         'the code is incorrect',
+            'KEY_CFM':              'Confirmation',
+            'KEY_RESEND_CODE':      'Resend code',
 
             //USER RATING
             'KEY_USER_RATING':  'User Rating',
@@ -150,6 +160,7 @@ angular.module('App')
             'KEY_REPLY':      'ตอบ',
             'KEY_PHOTO':      'รูป',
             'KEY_REVIEW':     'รีวิว',
+            'KEY_REVIEW_NAME':'ชื่อของสิ่งที่รีวิว',
             'KEY_EDIT':       'แก้ไข',
             'KEY_EDITED':     'ถูกแก้ไข',
             'KEY_TREND':      'เทรนด์',
@@ -187,6 +198,16 @@ angular.module('App')
             'KEY_SEL_CHN':          'เลือกช่อง',
             'KEY_IT_IS_ABOUT':      'เขียนเกี่ยวกับ...',
             'KEY_PWD_RESET':        'ส่งลิงค์การเปลี่ยนรหัสผ่าน',
+            'KEY_WRITE_SOMETHING':  'เริ่มเขียนเลย (สามารถ copy + paste ใส่ในนี้ได้)',
+            'KEY_CODE_SENT':        'ส่งโค๊ดไปแล้วทางอีเมล์',
+
+
+            //VERIFICATION CODE
+            'KEY_V_SIGN_UP':        'ขอบคุณที่สมัครใช้งานกับ Qanya กรุณาใส่รหัสผ่านที่เราส่งให้ไปทางอีเมล์ในช่องด้านล่าง',
+            'KEY_CFM_CODE':         'รหัสผ่าน',
+            'KEY_CODE_INC':         'รหัสไม่ถูกต้อง',
+            'KEY_CFM':              'ยืนยันรหัส',
+            'KEY_RESEND_CODE':      'ส่งรหัสอีกครั้ง',
 
             //USER RATING
             'KEY_USER_RATING':  'คะแนนของผู้รีวิว',
