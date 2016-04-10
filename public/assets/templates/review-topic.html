@@ -5,7 +5,7 @@
         </small>
     </span>
     <h3 class="md-display-1">
-        {{ postCtrl.avgScore(data) }}
+        {{ postCtrl.avgScore(data) | number:1 }}
     </h3>
     <small>
         <a  ng-click="review_detail=true" ng-init="review_detaill=false">
@@ -16,7 +16,7 @@
 
     <div ng-repeat="review in data" ng-show="review_detail" >
         <span>
-            <b>{{review.criteria}}</b> - {{review.scores}}
+            <b>{{review.criteria}}</b> - {{review.scores  | number:1 }}
         </span>
     </div>
 

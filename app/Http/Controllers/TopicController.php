@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\IpLogger;
+use App\Location;
 use App\Notification;
 use App\ReplyInReply;
 use App\Reviews;
@@ -31,6 +32,7 @@ use Redis;
 
 use Mail;
 
+use Illuminate\Support\Facades\Helpers;
 //SEO
 use SEOMeta;
 use OpenGraph;
@@ -41,6 +43,14 @@ use SEO;
 class TopicController extends Controller
 {
 
+    //Facebook location search
+    public function fbLocationSearch(Request $request)
+    {
+        $term = $request->term;
+        $fb = \FacebookHelper::fb_init();
+        $response       = $fb->get("/search?q=$term&type=place&center=15.8700,100.992&limit=5");
+        return $fb_response    = $response->getDecodedBody();
+    }
 
     //Get the review template - where is_template equal to one
     public function getReview(Request $request)
@@ -241,6 +251,9 @@ class TopicController extends Controller
 
         //Default for number of images in the post
         $num_img = 0;
+        $locationID = null;
+        $taglist = null;
+
 
         if (Auth::user()->uuid) {
             if ($request->data) {
@@ -255,26 +268,58 @@ class TopicController extends Controller
                     $count=0;
                     foreach($json['reviews'] as $review)
                     {
-                        print_r($review);
-
-                        $review_data[$count] = array( 'topic_uuid'    =>$topicUUID,
-                                                        'user_uuid'     => Auth::user()->uuid,
-                                                        'criteria'      => $review['name'],
-                                                        'scores'        => $review['rating'],
-                                                        'is_template'   => TRUE,
-                                                        'created_at'    => date("Y-m-d H:i:s")
-                                                 );
-                        $count++;
+                        //there is a bug that says name is empty sometime
+                        if(!empty($review['name'])) {
+                            $review_data[$count] = array('topic_uuid' => $topicUUID,
+                                'user_uuid' => Auth::user()->uuid,
+                                'criteria' => $review['name'],
+                                'scores' => $review['rating'],
+                                'is_template' => TRUE,
+                                'created_at' => date("Y-m-d H:i:s")
+                            );
+                            $count++;
+                        }
                     }
                     Reviews::insert($review_data);
                 }
 
 
-                //TAG
+                //Location
+                if(!empty($json['location']))
+                {
+
+                    $locationID = $json['location']['id'];
+
+                    //Check location exists, if not create
+                    $location_exist =
+                        DB::table('locations')
+                        ->where('external_id',$locationID)->count();
+
+                    if($location_exist == 0)
+                    {
+
+                        $location = new Location();
+                        $location->source       = 'facebook'; //hardcode for now
+                        $location->external_id  = $locationID;
+                        $location->name     = $json['location']['name'];
+                        $location->category     = !empty($json['location']['category'])?$json['location']['category']:null;
+                        $location->street       = !empty($json['location']['location']['street'])?$json['location']['location']['street']:null;
+                        $location->city         = !empty($json['location']['location']['city'])?$json['location']['location']['city']:null;
+                        $location->state        = !empty($json['location']['location']['state'])?$json['location']['location']['state']:null;
+                        $location->country      = !empty($json['location']['location']['country'])?$json['location']['location']['country']:null;
+                        $location->zip          = !empty($json['location']['location']['zip'])?$json['location']['location']['zip']:null;
+                        $location->latitude     = $json['location']['location']['latitude'];
+                        $location->longitude    = $json['location']['location']['longitude'];
+                        $location->save();
+                    }
+                    //GEt the ID
+                }
+
+
+                //Tag list - to store in the topic table
                 if(!empty($json['tags']))
                     $taglist = implode(",", $json['tags']);
-                else
-                    $taglist = null;
+
 
                 //Images
                 if(!empty($json['images']))
@@ -305,13 +350,14 @@ class TopicController extends Controller
                 $topic->slug        = $topicSlug;
                 $topic->num_img     = $num_img;
                 $topic->tags        = $taglist;
+                $topic->location_id  = $locationID;
                 $topic->save();
 
                 $tag_data = array();
                 $count=0;
 
 
-
+                //Tags - to store in tags table
                 if(!empty($json['tags']))
                 {
                     //Insert tags in another table

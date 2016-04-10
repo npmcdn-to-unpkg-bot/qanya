@@ -94,6 +94,7 @@ QANYA
     <script src="/bower_components/angular-cookies/angular-cookies.min.js"></script>
     <script src="/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/bower_components/angular-translate/angular-translate.min.js"></script>
+    <script src="/bower_components/angular-messages/angular-messages.js"></script>
 
     <script>
 
@@ -127,7 +128,7 @@ QANYA
         /*
          * SOCKETS
          */
-        var socket = io('http://<?php echo getenv('SERVER_ADDRESS')?>:3000');
+        var socket = io('//<?php echo getenv('SERVER_ADDRESS')?>:3000');
 
         socket.on("test-channel:App\\Events\\EventName", function(message){
             // increase the power everytime we load test route
@@ -175,7 +176,7 @@ QANYA
 
 </head>
 
-<body id="app-layout" ng-app="App" ng-controller="ProfileCtrl as profileCtrl" ng-cloak>
+<body id="app-layout" ng-app="App" ng-controller="ProfileCtrl as profileCtrl" ng-cloak layout='row'>
 
 
     <div id="fb-root"></div>
@@ -188,79 +189,108 @@ QANYA
     }(document, 'script', 'facebook-jssdk'));</script>
 
 
+    <div layout="column" flex>
 
-    <md-toolbar ng-controller="PostCtrl as postCtrl">
+        <md-toolbar ng-controller="PostCtrl as postCtrl" style="box-shadow: 1px 2px 8px rgba(0, 0, 0, .5);">
 
-        <div class="md-toolbar-tools">
+            <div class="md-toolbar-tools">
 
-            {{-- show/hide button when in mobile--}}
-            <md-button
-                    hide-gt-xs
-                    aria-label="menu"
-                    ng-click="profileCtrl.toggleMobile();"
-                    class="md-icon-button"
-                    class="md-icon-button">
-                <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_menu_white_24px.svg"></md-icon>
-            </md-button>
-
-
-            <a href="/">
-                <h2>
-                    <span>QANYA</span>
-                </h2>
-            </a>
-
-            <span flex></span>
-
-            {{-- Languages--}}
-            <lang-select  hide-xs></lang-select>
-
-            {{-- Profile and Login --}}
-            @if (Auth::guest())
-                <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
-                    @{{ 'KEY_LOGIN_REGISTER' | translate }}
+                {{-- show/hide button when in mobile--}}
+                <md-button
+                        hide-gt-xs
+                        aria-label="menu"
+                        ng-click="profileCtrl.toggleMobile();"
+                        class="md-icon-button"
+                        class="md-icon-button">
+                    <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_menu_white_24px.svg"></md-icon>
                 </md-button>
-            @else
 
-                @if(Auth::user()->confirmed == 1)
 
-                    {{-- Notification--}}
-                    <md-button
-                            hide-xs
-                            aria-label="notification"
-                            ng-click="profileCtrl.ackNotificataion();
-                                          profileCtrl.toggleRight();
-                                          profileCtrl.listNotification()">
+                <a href="/">
+                    <h2>
+                        <span>QANYA</span>
+                    </h2>
+                </a>
 
-                            <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+                <span flex></span>
 
-                            <span id="notification_{{Auth::user()->uuid}}"
-                                  ng-init="profileCtrl.userNotification()">
-                                @{{ profileCtrl.unreadNotification }}
-                            </span>
+                {{-- Languages--}}
+                <lang-select  hide-xs></lang-select>
+
+                {{-- Profile and Login --}}
+                @if (Auth::guest())
+                    <md-button hide-xs aria-label="Login" ng-href="{{ url('/login') }}">
+                        @{{ 'KEY_LOGIN_REGISTER' | translate }}
                     </md-button>
+                @else
 
-                    {{-- Profile button --}}
-                    <md-button
-                            hide-xs
-                            aria-label="{!! Auth::user()->displayname !!}"
-                            href="/{!! Auth::user()->displayname !!}">
-                            {!! Auth::user()->firstname !!}
-                            <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
-                    </md-button>
+                    @if(Auth::user()->confirmed == 1)
 
+                        {{-- Notification--}}
+                        <md-button
+                                hide-xs
+                                aria-label="notification"
+                                ng-click="profileCtrl.ackNotificataion();
+                                              profileCtrl.toggleRight();
+                                              profileCtrl.listNotification()">
+
+                                <md-icon md-menu-origin md-svg-icon="/assets/icons/ic_notifications_white_24px.svg"></md-icon>
+
+                                <span id="notification_{{Auth::user()->uuid}}"
+                                      ng-init="profileCtrl.userNotification()">
+                                    @{{ profileCtrl.unreadNotification }}
+                                </span>
+                        </md-button>
+
+                        {{-- Profile button --}}
+                        <md-button
+                                hide-xs
+                                aria-label="{!! Auth::user()->displayname !!}"
+                                href="/{!! Auth::user()->displayname !!}">
+                                {!! Auth::user()->firstname !!}
+                                <img ng-src="{!! Auth::user()->profile_img !!}" class="img-circle" width="27px">
+                        </md-button>
+
+                    @endif
                 @endif
-            @endif
-        </div>
-    </md-toolbar>
+            </div>
+        </md-toolbar>
 
-    {{-- Main container--}}
+        {{-- Main container--}}
+        <md-content layout-align="center">
 
-    <md-content layout="column" flex>
-        <div class="container">
-            @yield('content')
-        </div>
-    </md-content>
+
+                @yield('content')
+
+
+                {{--<div flex-auto="true">
+                    <md-sidenav
+                            class="md-sidenav-right"
+                            md-component-id="right"
+                            md-is-locked-open="$mdMedia('gt-sm')"
+                            md-disable-backdrop>
+
+                        @include('html.profile-badge')
+
+                        @if(Auth::user())
+                            <user-tags class="md-padding" data="postCtrl.userTags"></user-tags>
+                        @endif
+
+                        @include('html.category-nav',compact('categories'))
+
+                        <hr>
+                        <div>
+                            ©2016 Qanya
+                        </div>
+
+                    </md-sidenav>
+                </div>--}}
+        </md-content>
+
+
+
+
+    </div>
 
 
     {{-- Profile toggle for mobile --}}
@@ -295,6 +325,13 @@ QANYA
                             </span>
                     </md-button>
                 </div>
+
+                {{-- Log out button --}}
+                <div class="">
+                    <md-button class="md-primary" ng-href="{{ url('/logout') }}">
+                        @{{ 'KEY_LOGOUT' | translate }}
+                    </md-button>
+                </div>
             @else
                 <div class="md-padding">
                     <md-button aria-label="Login" ng-href="{{ url('/login') }}">
@@ -302,7 +339,7 @@ QANYA
                     </md-button>
                 </div>
             @endif
-            
+
             {{-- Languages--}}
             <div class="md-padding">
                 <lang-select></lang-select>
@@ -354,7 +391,7 @@ QANYA
        if(empty(Auth::user()->current_city)):?>
            {{--Local storage --}}
            if(typeof(Storage) !== "undefined") {
-            $.getJSON('http://ipinfo.io', function(data){
+            $.getJSON('//ipinfo.io', function(data){
                 console.log(data)
                 $.post( "/api/updateUserGeo/",
                         {   geo_city:       data.city,

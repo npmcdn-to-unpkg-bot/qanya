@@ -12,7 +12,7 @@
                     <div class="form-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
                         <md-input-container md-no-float class="md-block">
                             <input type="text" class="form-control" name="firstname"
-                                   placeholder="firstname"
+                                   placeholder="@{{ 'KEY_FIRSTNAME' | translate }}"
                                    value="{{ old('firstname') }}">
 
                             @if ($errors->has('firstname'))
@@ -26,7 +26,7 @@
                     <div class="form-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
                         <md-input-container md-no-float class="md-block">
                             <input type="text" class="form-control" name="lastname"
-                                   placeholder="lastname"
+                                   placeholder="@{{ 'KEY_LASTNAME' | translate }}"
                                    value="{{ old('lastname') }}">
 
                             @if ($errors->has('lastname'))
@@ -43,7 +43,7 @@
                     <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                         <md-input-container md-no-float class="md-block">
                             <input type="email" class="form-control" name="email"
-                                   placeholder="E-Mail"
+                                   placeholder="@{{ 'KEY_EMAIL' | translate }}"
                                    value="{{ old('email') }}">
                             @if ($errors->has('email'))
                                 <span class="help-block">
@@ -58,7 +58,7 @@
                     <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
                         <md-input-container md-no-float class="md-block">
                             <input type="password" class="form-control" name="password"
-                                  placeholder="Password">
+                                   placeholder="@{{ 'KEY_PASSWORD' | translate }}">
                             @if ($errors->has('password'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('password') }}</strong>
@@ -71,7 +71,7 @@
                 <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
                     <md-input-container md-no-float class="md-block">
                         <input type="password" class="form-control" name="password_confirmation"
-                               placeholder="Confirm Password">
+                               placeholder="@{{ 'KEY_NEW_PWD_C' | translate }}">
                         @if ($errors->has('password_confirmation'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('password_confirmation') }}</strong>
@@ -82,7 +82,7 @@
 
                 <div class="form-group md-block ">
                     <md-button type="submit" class="md-primary md-raised btn-block">
-                        Register
+                        @{{ 'KEY_REGISTER' | translate }}
                     </md-button>
                 </div>
             </form>

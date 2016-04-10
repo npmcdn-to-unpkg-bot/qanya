@@ -1,6 +1,7 @@
 //Angular config and modules
 
-var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
+var app = angular.module('App', ['ngMaterial', 'ngMessages',
+                                 'flow','angularMoment','firebase',
                                  'toastr',
                                  'angular.filter',
                                  'ngCookies','ngSanitize',
@@ -40,6 +41,7 @@ var app = angular.module('App', ['ngMaterial','flow','angularMoment','firebase',
     })
     $mdThemingProvider.theme('default')
         .primaryPalette('slack')
+        .accentPalette('pink');
 }])
 
 

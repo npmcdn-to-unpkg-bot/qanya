@@ -1,0 +1,39 @@
+<!-- Facebook location search -->
+
+<div layout-gt-sm="row" layout="column">
+<md-dialog aria-label="Mango (Fruit)"  ng-cloak ng-controller="PostCtrl as postCtrl">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Search</h2>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <!-- Use floating placeholder instead of label -->
+                    <md-icon md-svg-src="/assets/icons/ic_search_black_24px.svg"
+                             class="search"></md-icon>
+                    <input ng-model="postCtrl.locationName" type="input"
+                           ng-keyup="postCtrl.searchLocation()"
+                           placeholder="Search">
+                </md-input-container>
+
+                <!-- Results appear below -->
+                <div layout="column">
+                    <md-button ng-repeat="(key, value) in postCtrl.fbResponse.data" ng-click="postCtrl.addLocation(value)">
+                        {{ value.name }}
+                        {{ value.location.street }}
+                        {{ value.location.city }}
+                        {{ value.location.country }}
+                    </md-button>
+                </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+        </md-dialog-actions>
+    </form>
+
+</md-dialog>
+</div>

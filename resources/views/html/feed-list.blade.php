@@ -1,7 +1,7 @@
  {{-- Feed --}}
 
 
-<div ng-controller="PostCtrl as postCtrl" class="animated bounce"
+<div ng-controller="PostCtrl as postCtrl" class="animated bounce" layout="column"
      @if(Auth::check())
          {{--if user is login then get their current upvote and downvote --}}
          ng-init="profileCtrl.getUserUpvote('<?php echo Auth::user()->uuid?>');
@@ -76,10 +76,6 @@
                         <b> {{ profileCtrl.user_stat_<?=str_replace('-','',$topic->topics_uid)?>.upvote }}</b>
                         @{{ 'KEY_UPVOTE' | translate }}
 
-                        <b> {{ profileCtrl.user_stat_<?=str_replace('-','',$topic->topics_uid)?>.upvote }}</b>
-                        @{{ 'KEY_UPVOTE' | translate }}
-
-                      {{--{!! HTML::decode(trim($topic->description)) !!}--}}
                     </p>
                 </span>
             </md-card-header-text>
