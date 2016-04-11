@@ -5,7 +5,7 @@
         {{--<div class="panel-heading">Register</div>--}}
         <img src="/assets/images/logo.jpg" width="100px">
 
-            <form role="form" method="POST" action="{{ url('/register') }}">
+            <form role="form" method="POST" action="/register">
                 {!! csrf_field() !!}
 
                 <div layout-gt-sm="row">
