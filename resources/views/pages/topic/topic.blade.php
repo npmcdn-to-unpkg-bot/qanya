@@ -36,6 +36,8 @@
                     </span>
                 </div>
 
+                View: {{ $views }}
+
                 {{-- FAB buttons --}}
                 <div class="pull-right">
                 @if($is_user)

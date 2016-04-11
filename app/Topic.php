@@ -23,7 +23,7 @@ class Topic extends Model
     {
 
         $time = date("Ymd");
-        $results = Cache::remember('topic_posts_cache_' . $time, 1, function () use ($time) {
+        $results = Cache::remember('recentlyCreated_cache_' . $time, 1, function () use ($time) {
             return $topic = $this->where('topics.flg', 1)
                 ->select(
                     'topics.topic',

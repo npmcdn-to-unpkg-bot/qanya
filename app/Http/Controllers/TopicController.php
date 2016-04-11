@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Response;
 use Carbon\Carbon as Carbon;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Redis;
+use Illuminate\Support\Facades\Redis as Redis;
 
 use Mail;
 
@@ -412,18 +412,36 @@ class TopicController extends Controller
         $topic = new Topic();
         $topic = $topic->getTopic($slug);
 
+        /**
+         * Performance and redis check
+         */
+      /*  $log = DB::getQueryLog();
+        print_r($log);*/
+
         if(empty($topic)){
             return "not found".$topic;
         }else{
 
+            //Increment page view and keep track of what popular in redis
+            $storage = Redis::connection();
+            if($storage->zScore('postViews','post:'.$topic->topic_uuid))
+            {
+                $storage->pipeline(function($pipe) use ($topic)
+                {
+                    $pipe->zIncrBy('postViews',1,'post:' . $topic->topic_uuid);
+                    $pipe->incr('post:' . $topic->topic_uuid . ":views");
+                });
+            }
+            else
+            {
+                $views = $storage->incr('post:' . $topic->topic_uuid . ":views");
+                $storage->zIncrBy('postViews',1,'post:' . $topic->topic_uuid);
+            }
+            //Get post views from redis
+            $views = $storage->get('post:' . $topic->topic_uuid . ":views");
+
+
             $is_user = null;
-
-            /**
-             * Performance and redis check
-             */
-            /*$log = DB::getQueryLog();
-            print_r($log);*/
-
 
             $dt = Carbon::parse($topic->topic_created_at);
             $topic_id   = $topic->id;
@@ -484,6 +502,7 @@ class TopicController extends Controller
                         'uuid','is_user','is_edited','topics_uid','user_descs',
                         'tags','poster_img','user_fname','cate_name','topic_updated_at',
                         'topic_created_at',
+                        'views',
 //                        'topic_replies',
                         'categories'));
         }

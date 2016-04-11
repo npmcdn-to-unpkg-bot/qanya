@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB as DB;
 use App\User;
 use App\Users_follow;
 use Auth;
+use Illuminate\Support\Facades\Redis;
 use Mail;
 
 class HomeController extends Controller
@@ -21,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-//        $this->middleware('auth');
+//        $this->middleware('guest');
     }
 
 
@@ -86,6 +87,7 @@ class HomeController extends Controller
         $categories = new \App\Categories();
         $categories = $categories->all();
 
+        //If user then check if they have confirmed email and username
         if(Auth::user())
         {
             //if email is not confirm
@@ -98,6 +100,16 @@ class HomeController extends Controller
             if(empty(Auth::user()->displayname)){
                 return redirect()->action('ProfileController@createName');
             }
+        }
+
+        $storage    =   Redis::connection();
+        $mostView   =   $storage->zRevRange('postViews',0,1);
+        foreach($mostView as $value)
+        {
+
+            $id = str_replace('post:', '',$value);
+
+            echo "<br> post". $id;
         }
 
         return view('welcome',compact('topics','categories'));
