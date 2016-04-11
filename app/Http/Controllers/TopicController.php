@@ -459,7 +459,7 @@ class TopicController extends Controller
             $poster_img = $topic->profile_img;
             $topic_created_at = $topic->topic_created_at;
             $topic_updated_at = $topic->topic_updated_at;
-
+            $topic_location = $topic->location_id;
 
             if(!empty($topic->tags))
                 $tags       = explode(',', $topic->tags);
@@ -502,7 +502,7 @@ class TopicController extends Controller
                         'uuid','is_user','is_edited','topics_uid','user_descs',
                         'tags','poster_img','user_fname','cate_name','topic_updated_at',
                         'topic_created_at',
-                        'views',
+                        'views','topic_location',
 //                        'topic_replies',
                         'categories'));
         }

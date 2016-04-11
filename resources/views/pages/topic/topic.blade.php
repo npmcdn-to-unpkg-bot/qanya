@@ -100,6 +100,12 @@
             </div>
 
 
+            @if($topic_location)
+                <post-location ng-init="postCtrl.getPostedLocation('{{ $topic_location }}')"
+                               data="postCtrl.locationDetail"></post-location>
+            @endif
+
+
             {{-- If it has been edited--}}
             @if($is_edited)
                 @{{ 'KEY_EDITED' | translate }}
