@@ -159,7 +159,13 @@ class ProfileController extends Controller
      */
     public function createName()
     {
-        return view('pages.createName');
+        echo Auth::user()->displayname;
+        if(Auth::user()->displayname)
+        {
+            return redirect('/');
+        }else{
+            return view('pages.createName');
+        }
     }
 
 

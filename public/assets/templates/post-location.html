@@ -1,0 +1,17 @@
+<!--{{ data }}-->
+<md-card>
+    <img ng-src="https://maps.googleapis.com/maps/api/staticmap?center={{data.latitude}},{{data.longitude}}&markers=color:red%7C{{data.latitude}},{{data.longitude}}&zoom=12&size=600x150&maptype=roadmap&key=AIzaSyBuA7XmTheMlXVN8HlDi-c5b_HI3tF-WAE"
+         class="md-card-image img-fluid"
+         style="max-height:150px" alt="Washed Out">
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">{{ data.name }}</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <p>
+            <br>
+            {{ data.street }}&nbsp;{{ datacity }}&nbsp;{{ data.country }}
+        </p>
+    </md-card-content>
+</md-card>

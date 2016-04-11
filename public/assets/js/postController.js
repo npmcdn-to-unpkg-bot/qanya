@@ -125,6 +125,10 @@ angular.module('App')
             });
         };
 
+
+
+
+
         //Facebook search location
         postCtrl.showLocation = function(ev) {
             var useFullScreen = ($mdMedia('sm') || $mdMedia('xs'))  && $scope.customFullscreen;
@@ -172,6 +176,17 @@ angular.module('App')
                     console.log(response.data);
                 });
 
+        }
+
+
+        postCtrl.getPostedLocation = function(location_id)
+        {
+            console.log(location_id);
+            $http.post('/api/get-location', {data: location_id})
+                .then(function(response){
+                    console.log(response);
+                    postCtrl.locationDetail = response.data;
+                });
         }
 
         //Display pop up login
@@ -596,7 +611,7 @@ angular.module('App')
             $.post( "/api/postTopic/", { data: data} )
                 .done(function( response ) {
                     console.log(response.data);
-                    $http.get("//ipinfo.io")
+                    $http.get("http://ipinfo.io")
                         .then(function(response){
                             var geo_data = response
                             $http.post('/ip-logger', {  uuid: uuid,

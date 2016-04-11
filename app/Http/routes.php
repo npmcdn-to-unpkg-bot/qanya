@@ -67,6 +67,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/retrieve-review','TopicController@getReview');
     Route::post('/reply-list','TopicController@getReplies');
     Route::post('/api/location-search','TopicController@fbLocationSearch');
+    Route::post('/api/get-location','TopicController@getLocation');
 
 
 

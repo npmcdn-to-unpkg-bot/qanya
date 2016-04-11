@@ -52,6 +52,14 @@ class TopicController extends Controller
         return $fb_response    = $response->getDecodedBody();
     }
 
+
+    //Get lcoation details from external id
+    public function getLocation(Request $request)
+    {
+        return Location::where('external_id',$request->data)->first();
+    }
+
+
     //Get the review template - where is_template equal to one
     public function getReview(Request $request)
     {

@@ -111,6 +111,13 @@
                     </div>
                 </div>
 
+
+                @if($topic->location_id)
+                    <post-location ng-init="postCtrl.getPostedLocation('{{ $topic->location_id }}')"
+                                   data="postCtrl.locationDetail"></post-location>
+                @endif
+
+
                 <?php
                $tags = explode(',',$topic->tags);?>
                 @if($tags)

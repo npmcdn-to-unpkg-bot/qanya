@@ -115,6 +115,20 @@ angular.module('App')
     }
 })
 
+//Post Location
+.directive('postLocation', function () {
+    return {
+        controller: 'PostCtrl as postCtrl',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            data: '='
+        },
+        templateUrl: '/assets/templates/post-location.html'
+    }
+})
+
+
 
 //Language button
 .directive('langSelect', function () {
@@ -125,3 +139,4 @@ angular.module('App')
         templateUrl: '/assets/templates/languages-button.html'
     }
 })
+

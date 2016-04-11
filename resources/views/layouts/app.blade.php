@@ -391,7 +391,7 @@ QANYA
        if(empty(Auth::user()->current_city)):?>
            {{--Local storage --}}
            if(typeof(Storage) !== "undefined") {
-            $.getJSON('//ipinfo.io', function(data){
+            $.getJSON('http://ipinfo.io', function(data){
                 console.log(data)
                 $.post( "/api/updateUserGeo/",
                         {   geo_city:       data.city,
