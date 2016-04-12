@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FollowUserEvent;
 use App\IpLogger;
 use App\Notification;
 use App\TopicReply;
@@ -13,6 +14,9 @@ use App\User;
 use App\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class ProfileController extends Controller
 {
@@ -168,6 +172,25 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * Follow a user
+     * @param   $followingUser
+     * @return  Boolean
+     * */
+    public function follow(Request $request)
+    {
+        if(Auth::user()->uuid) {
+        /*    //Add user to the list of a person being follow
+            Redis::zAdd('followers:' . $request->author, time(), Auth::user()->uuid);
+
+            //Add follow user ID to following list
+            Redis::zAdd('following:' . Auth::user()->uuid, time(), $request->author);*/
+
+            $mail = new MailController();
+            $mail->notify_follow(Auth::user(), $request->author);
+//            Event::fire(new FollowUserEvent(Auth::user()->uuid,$request->author));
+        }
+    }
 
     //Check username during the registration
     public function checkName(Request $request)

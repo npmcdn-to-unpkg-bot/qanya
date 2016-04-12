@@ -9,7 +9,7 @@
             {{--<div class="md-headline">@{{ 'KEY_LOGIN'  | translate }}</div>--}}
             <img src="/assets/images/logo.jpg" width="100px">
 
-            <form role="form" method="POST" action="/login">
+            <form role="form" method="POST" action="{{ url('/login') }}">
                 {!! csrf_field() !!}
                 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 

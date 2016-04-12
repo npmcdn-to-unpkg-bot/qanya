@@ -285,6 +285,7 @@ angular.module('App')
         //@Params uuid - author ID
         postCtrl.followUser = function(user_uuid,uuid)
         {
+
             var followStatus = postCtrl.topics.userUrl(user_uuid).child('follow_user/'+uuid);
             followStatus.once("value", function(snapshot) {
                 if(snapshot.exists() == false)
@@ -297,6 +298,8 @@ angular.module('App')
                     followStatus.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     })
+                    //Send email event
+                    $http.post('/api/followuser',{author: uuid})
                 }
                 else
                 {

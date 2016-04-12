@@ -45,6 +45,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/ip-logger','ProfileController@ipLogger');
     Route::post('/api/updateUserGeo','ProfileController@updateCityCountry');
 
+    Route::post('/api/followuser','ProfileController@follow');
+
     //Channel Controller
     Route::get('/channel/{channel_name}','ChannelController@index');
 

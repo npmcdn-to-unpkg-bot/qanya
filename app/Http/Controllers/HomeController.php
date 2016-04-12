@@ -33,7 +33,8 @@ class HomeController extends Controller
         $user =  User::find(Auth::user()->id);
         if($user->confirmed ==0)
         {
-            return view('auth.verification');
+            if($this->sendVerification())
+                return view('auth.verification');
         }else{
             return redirect('/');
         }
@@ -72,6 +73,7 @@ class HomeController extends Controller
 
         $mail = new MailController();
         $mail->sendVerficationCode($confirmation_code);
+        return true;
     }
 
 
@@ -93,7 +95,7 @@ class HomeController extends Controller
             //if email is not confirm
             if(Auth::user()->confirmed ==0)
             {
-                return view('auth.verification');
+                return redirect('/verification');
             }
 
             //if displayname is not set
@@ -109,7 +111,7 @@ class HomeController extends Controller
 
             $id = str_replace('post:', '',$value);
 
-            echo "<br> post". $id;
+//            echo "<br> post". $id;
         }
 
         return view('welcome',compact('topics','categories'));

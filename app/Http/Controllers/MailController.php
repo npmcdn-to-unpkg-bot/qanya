@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Auth;
 use App\Topic;
 use Mail;
@@ -35,6 +36,23 @@ class MailController extends Controller
             return "not auth";
         }
     }
+
+
+    //Notify the person that they have a new follower
+    public function notify_follow($follower, $poster)
+    {
+        $recipient = User::where('uuid',$poster)->first();
+
+        Mail::send('emails.new-follower',
+                    [   'recipient'   => $recipient,
+                        'sender'      => $follower,], function ($m) use ($recipient) {
+            $m->from('hello@qanya.com', 'Qanya');
+            $m->to($recipient->email, $recipient->firstname)
+                ->subject("You have new follower!");
+        });
+
+    }
+
 
     /**
      * Send email to the psrson that post the topic

@@ -368,9 +368,15 @@ class TopicController extends Controller
                 //Tags - to store in tags table
                 if(!empty($json['tags']))
                 {
+
                     //Insert tags in another table
                     foreach($json['tags'] as $tag)
                     {
+                        Redis::zadd('post:tag'.$tag, $topic->uuid, $topic->uuid);
+                        Redis::sadd('post:' . $topic->uuid . ':tags' ,$tag);
+                        //Master link of tags
+                        Redis::sadd('post:tags',$tag);
+
                         $tag_data[$count] = array(  'topic_uuid'=>$topicUUID,
                             'title'=>clean($tag),
                             'created_at'=> date("Y-m-d H:i:s")
