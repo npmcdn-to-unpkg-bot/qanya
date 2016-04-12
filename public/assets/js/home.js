@@ -1,3 +1,9 @@
+$("#topicContent").find( "img" ).each(function(){
+    var t = $(this);
+    var src = t.attr('src');
+    t.attr('class','img-fluid');
+});
+
 function getFeedCate(slug){
     $.get( "/getFeed/", { slug: slug } )
         .done(function( data ) {

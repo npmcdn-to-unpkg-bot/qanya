@@ -9,6 +9,14 @@
         <div class="layoutSingleColumn md-padding">
 
             <script>
+
+                //track pages in most views
+                var ref = new Firebase("https://qanya.firebaseio.com/mostviews/{{$uuid}}/view");
+                ref.transaction(function (current_value) {
+                    return (current_value || 0) + 1;
+                })
+
+
                 {{-- Increment page view --}}
                 var ref = new Firebase("https://qanya.firebaseio.com/topic/{{$uuid}}/view");
                 ref.transaction(function (current_value) {

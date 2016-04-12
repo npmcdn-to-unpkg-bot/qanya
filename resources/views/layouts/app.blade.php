@@ -79,9 +79,6 @@ QANYA
     {{--https://github.com/a8m/angular-filter--}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.js"></script>
 
-    {{--Socket.io--}}
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-
 
 
     {{-- Toastr -> https://github.com/Foxandxss/angular-toastr --}}
@@ -95,82 +92,6 @@ QANYA
     <script src="/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="/bower_components/angular-translate/angular-translate.min.js"></script>
     <script src="/bower_components/angular-messages/angular-messages.js"></script>
-
-    <script>
-
-        /*
-        * Desktop notification
-        * */
-        document.addEventListener('DOMContentLoaded', function () {
-            //check if the browser supports notifications
-            if (!("Notification" in window)) {
-                return;
-            }
-            if (Notification.permission !== "granted"){
-                //if permission is not granted then ask user for permission
-                Notification.requestPermission();
-            }
-        });
-
-        function createNotificaiton(theTitle, theIcon, theBody){
-            var options = {
-                icon: theIcon,
-                body: theBody,
-            };
-            var notification = new Notification(theTitle, options);
-            //Disappear in 5 secs
-            setTimeout(notification.close.bind(notification), 5000);
-        }
-        /*End Desktop notification*/
-
-
-
-        /*
-         * SOCKETS
-         */
-        var socket = io('//<?php echo getenv('SERVER_ADDRESS')?>:3000');
-
-        socket.on("test-channel:App\\Events\\EventName", function(message){
-            // increase the power everytime we load test route
-            $('#power').text(parseInt($('#power').text()) + parseInt(message.data.power));
-        });
-
-        socket.on('end', function (){
-            socket.disconnect(0);
-        });
-
-        @if(Auth::check())
-
-            socket.on("reply_to_{{Auth::user()->uuid}}:App\\Events\\TopicReplyEvent", function(message){
-                createNotificaiton('New Reply!',
-                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
-                    'You have a new reply from your topic!');
-                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
-            });
-
-            socket.on("notification_{{Auth::user()->uuid}}:App\\Events\\FollowUserEvent", function(message){
-                createNotificaiton('New Follower!',
-                                    'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
-                                    'You have a new follower!');
-                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
-
-            });
-
-            socket.on("topic_upv_{{Auth::user()->uuid}}:App\\Events\\TopicUpvote", function(message){
-                if(message.is_upvote == true)
-                {
-                    createNotificaiton('Upvote!',
-                            'http://www.techigniter.in/wp-content/uploads/2015/07/logo-icon.png',
-                            'You have a new Upvote!');
-                }
-                console.log(message);
-                $('#notification_{!!  Auth::user()->uuid !!}').text(message.count);
-
-            });
-
-        @endif
-
-    </script>
 
     <script src="/js/all.js"></script>
 
@@ -227,7 +148,7 @@ QANYA
                     @if(Auth::user()->confirmed == 1)
 
                         {{-- Notification--}}
-                        <md-button
+                       {{-- <md-button
                                 hide-xs
                                 aria-label="notification"
                                 ng-click="profileCtrl.ackNotificataion();
@@ -240,7 +161,7 @@ QANYA
                                       ng-init="profileCtrl.userNotification()">
                                     @{{ profileCtrl.unreadNotification }}
                                 </span>
-                        </md-button>
+                        </md-button>--}}
 
                         {{-- Profile button --}}
                         <md-button
@@ -259,36 +180,9 @@ QANYA
         {{-- Main container--}}
         <md-content layout-align="center">
 
+            @yield('content')
 
-                @yield('content')
-
-
-                {{--<div flex-auto="true">
-                    <md-sidenav
-                            class="md-sidenav-right"
-                            md-component-id="right"
-                            md-is-locked-open="$mdMedia('gt-sm')"
-                            md-disable-backdrop>
-
-                        @include('html.profile-badge')
-
-                        @if(Auth::user())
-                            <user-tags class="md-padding" data="postCtrl.userTags"></user-tags>
-                        @endif
-
-                        @include('html.category-nav',compact('categories'))
-
-                        <hr>
-                        <div>
-                            ©2016 Qanya
-                        </div>
-
-                    </md-sidenav>
-                </div>--}}
         </md-content>
-
-
-
 
     </div>
 
@@ -389,8 +283,7 @@ QANYA
         });
         <?php
        if(empty(Auth::user()->current_city)):?>
-           {{--Local storage --}}
-           if(typeof(Storage) !== "undefined") {
+
             $.getJSON('http://ipinfo.io', function(data){
                 console.log(data)
                 $.post( "/api/updateUserGeo/",
@@ -398,22 +291,11 @@ QANYA
                             geo_country:    data.country
                         }
                 )})
-            } else {
-                // Sorry! No Web Storage support..
-            }
+
         <?php
         endif;
         ?>
 
-        $(document).ready(function(){
-
-            $("#topicContent").find( "img" ).each(function(){
-                var t = $(this);
-                var src = t.attr('src');
-                t.attr('class','img-fluid');
-            });
-
-        });
     </script>
 
 </body>
