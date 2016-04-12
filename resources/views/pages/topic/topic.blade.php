@@ -324,15 +324,4 @@
     </md-content>
 </div>
 
-<script>
-
-    socket.on("reply_append_{{ $uuid }}:App\\Events\\TopicReplyEvent", function(message){
-
-        $.get( "/replyView/", { replyReq: message } )
-                .done(function( data ) {
-                    $('#reply_append_{{ $uuid }}').prepend(data);
-                });
-    });
-
-</script>
 @endsection

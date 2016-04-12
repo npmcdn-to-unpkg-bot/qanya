@@ -207,7 +207,7 @@ class ProfileController extends Controller
         User::where('uuid',Auth::user()->uuid)
             ->update(['displayname'=> $username]);
 
-        return redirect('/suggest-explore');
+        return redirect('/');
     }
 
 

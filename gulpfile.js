@@ -33,10 +33,6 @@ elixir(function(mix) {
         hostname: '0.0.0.0' //use this for outside connection
     });
 
-    gulp.src('./**/**')
-        .pipe(exec('node socket.js'))
-
-
     mix.livereload([ 'app/**/*', 'public/**/*',
                      'resources/views/**/*',
                      'resources/assets/**/*']);

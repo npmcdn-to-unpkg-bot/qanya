@@ -173,7 +173,6 @@ angular.module('App')
             $http.post('/api/location-search', {term: postCtrl.locationName})
                 .then(function(response){
                     postCtrl.fbResponse = response.data;
-                    console.log(response.data);
                 });
 
         }
@@ -184,7 +183,7 @@ angular.module('App')
             console.log(location_id);
             $http.post('/api/get-location', {data: location_id})
                 .then(function(response){
-                    console.log(response);
+
                     postCtrl.locationDetail = response.data;
                 });
         }
@@ -268,7 +267,6 @@ angular.module('App')
 
             $http.post('/follow-cate/', {data: slug})
                 .then(function(response){
-                    console.log(response)
                     if(response.data== 0)
                     {
                         postCtrl.postFeedFollow ='follow';
@@ -373,8 +371,6 @@ angular.module('App')
         //Reply in the post
         postCtrl.postReply = function(uuid,topics_uid,sender)
         {
-
-            console.log(postCtrl.userRateReview+uuid);
 
             $http.post('/api/replyTopic', { uuid:           uuid,
                                             topics_uid:     topics_uid,
@@ -517,6 +513,7 @@ angular.module('App')
             })
         }
 
+
         postCtrl.replyInReplyDownvoteTally = function(reply_id)
         {
             var ttlUpvote = postCtrl.topics.ref.child('rir/'+reply_id+'/downvote_total')
@@ -525,6 +522,7 @@ angular.module('App')
                 postCtrl[key]  = snapshot.val();
             })
         }
+
 
         //Reset upvote to zero
         postCtrl.replyInReplyUpvoteReset =function(reply_id,user_uuid)
@@ -538,6 +536,7 @@ angular.module('App')
 
         }
 
+
         //Reset downvote to zero
         postCtrl.replyInReplyDownvoteReset =function(reply_id,user_uuid)
         {
@@ -548,6 +547,7 @@ angular.module('App')
                 return negCurrentValueCheck(current_value);
             });
         }
+
 
         postCtrl.showConfirmDelete = function(ev,topic_uuid,user_uuid) {
             // Appending dialog to document.body to cover sidenav in docs app
@@ -573,7 +573,6 @@ angular.module('App')
                 $scope.status = 'You decided to keep your debt.';
             });
         };
-
 
 
         //For Review
@@ -688,6 +687,7 @@ angular.module('App')
             })
         }
 
+
         //Get the post images
         postCtrl.getPostImage = function(uuid)
         {
@@ -695,8 +695,6 @@ angular.module('App')
                 .then(function(response) {
                     var key = 'previewImage_'+uuid;
                     postCtrl[key] = response.data;
-                    /*$(key).html(response.data);
-                    postCtrl[key] = response.data;*/
                 })
         }
 
@@ -712,6 +710,7 @@ angular.module('App')
         }
 
 
+        //Check if user bookmark this page
         postCtrl.userBookMarked = function(user_uuid,topic_uuid)
         {
             var key = 'user_bookmarked_'+topic_uuid;
@@ -727,6 +726,8 @@ angular.module('App')
             })
         }
 
+
+        //Click to bookmark
         postCtrl.bookMark = function(user_uuid,topic_uuid)
         {
             var userBookmark = postCtrl.topics.userUrl(user_uuid).child('bookmark/'+topic_uuid);
@@ -755,6 +756,8 @@ angular.module('App')
             })
         }
 
+
+        //Return number of comments
         postCtrl.commentsTally    =   function(topic_uuid)
         {
             var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/comments')
@@ -768,6 +771,8 @@ angular.module('App')
         /*
         *  Upvote Downvote topics fropm here
         * */
+
+        //Return with the number of upvotes per topic
         postCtrl.upvoteTally    =   function(topic_uuid)
         {
             var ref = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
@@ -788,7 +793,6 @@ angular.module('App')
 
         postCtrl.dwnvote =function(topic_uuid,topic_uid)
         {
-            console.log('downvote');
             postCtrl.upvoteReset(topic_uuid,topic_uid);
             var btn = "#dwnvote_btn_status_"+topic_uuid;
 
@@ -890,23 +894,9 @@ angular.module('App')
     })
 
 
-function DialogController($scope, $mdDialog) {
-    $scope.hide = function() {
-        $mdDialog.hide();
-    };
-    $scope.cancel = function() {
-        $mdDialog.cancel();
-    };
-    $scope.answer = function(answer) {
-        $mdDialog.hide(answer);
-    };
-}
-
+//Prevent negative value from decrementing
 function negCurrentValueCheck(current_value)
 {
-    
-    console.log(current_value);
-
     if(current_value < 0 || current_value == 0 || current_value == '' || current_value == null)
     {
         return 0;

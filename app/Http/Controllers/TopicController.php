@@ -418,6 +418,8 @@ class TopicController extends Controller
         $topic = new Topic();
         $topic = $topic->getTopic($slug);
 
+
+
         /**
          * Performance and redis check
          */
@@ -427,6 +429,9 @@ class TopicController extends Controller
         if(empty($topic)){
             return "not found".$topic;
         }else{
+
+
+            $data = TopicImages::where('topic_uuid',$topic->topic_uuid)->first();
 
             //Increment page view and keep track of what popular in redis
             $storage = Redis::connection();
@@ -479,10 +484,11 @@ class TopicController extends Controller
             $req = new Request();
 
             $url = $req->url();
+            
             OpenGraph::setTitle($title);
             OpenGraph::setDescription($body);
-
             OpenGraph::setUrl($url);
+            OpenGraph::addImage($data['filename']);
             OpenGraph::addProperty('type', 'articles');
             OpenGraph::addProperty('locale:alternate', ['th-th', 'en-us']);
 

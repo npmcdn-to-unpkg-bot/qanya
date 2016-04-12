@@ -138,7 +138,7 @@
                     </div>
 
                     {{-- Price range --}}
-                    <md-button
+                   {{-- <md-button
                             ng-click="postCtrl.showPriceRange($event)"
                             aria-label="Upload images"
                             class="md-fab md-mini md-primary"  name="money">
@@ -146,7 +146,7 @@
                             Price Range
                         </md-tooltip>
                         <md-icon md-svg-src="/assets/icons/ic_attach_money_white_24px.svg"></md-icon>
-                    </md-button>
+                    </md-button>--}}
 
                 {{-- Location search --}}
                     <md-button
