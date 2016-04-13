@@ -791,82 +791,23 @@ angular.module('App')
             });
         }
 
-        postCtrl.dwnvote =function(topic_uuid,topic_uid)
+        postCtrl.upvote =function(topic_uuid, topic_uid, user_uuid)
         {
-            postCtrl.upvoteReset(topic_uuid,topic_uid);
-            var btn = "#dwnvote_btn_status_"+topic_uuid;
-
-            //UserDownvote Value
-            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid);
-            userUpvoteRef.once("value", function(snapshot) {
-
-                //Chck if user already voted
-                if (snapshot.exists() == false) {
-
-                    postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).set(moment().format());
-
-                    //Topic Upvote tally
-                    var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
-                    topicRef.transaction(function (current_value) {
-                        return (current_value || 0) + 1;
-                    });
-                }else{ //value already exist
-                    postCtrl.dwnvoteReset(topic_uuid,topic_uid);
+            var userDownvoteRef = postCtrl.topics.userUrl(user_uuid).child('downvote/'+topic_uuid);
+            userDownvoteRef.once("value", function(snapshot) {
+                if (snapshot.exists() == true) {
+                    postCtrl.dwnvoteReset(topic_uuid, topic_uid, user_uuid);
+                    var btn = "#upvote_btn_status_"+topic_uuid;
                 }
             })
-        }
 
-
-        //Reset upvote to zero
-        postCtrl.upvoteReset =function(topic_uuid,topic_uid)
-        {
-            var btn = "#upvote_btn_status_"+topic_uuid;
-            //Remove voted user
-            postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).remove();
-
-            //Decrement the tally
-            var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
-            topicRef.transaction(function (current_value) {
-                return negCurrentValueCheck(current_value);
-            });
-
-
-
-        }
-
-        //Reset downvote to zero
-        postCtrl.dwnvoteReset =function(topic_uuid,topic_uid)
-        {
-            var btn = "#dwnvote_btn_status_"+topic_uuid;
-            //Remove voted user
-            postCtrl.topics.userUrl(topic_uid).child('downvote/'+topic_uuid).remove();
-
-            //Decrement the tally
-            var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
-            topicRef.transaction(function (current_value) {
-                return negCurrentValueCheck(current_value);
-            });
-
-            var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
-            followStatus.transaction(function (current_value) {
-                return negCurrentValueCheck(current_value);
-            })
-        }
-
-
-        postCtrl.upvote =function(topic_uuid,topic_uid)
-        {
-            postCtrl.dwnvoteReset(topic_uuid,topic_uid);
-            var btn = "#upvote_btn_status_"+topic_uuid;
-            
             //UserUpvote Value
-            var userUpvoteRef = postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid);
+            var userUpvoteRef = postCtrl.topics.userUrl(user_uuid).child('upvote/'+topic_uuid);
             userUpvoteRef.once("value", function(snapshot) {
-
                 //Chck if user already voted
                 if (snapshot.exists() == false) {
 
-                    postCtrl.topics.userUrl(topic_uid).child('upvote/'+topic_uuid).set(moment().format());
+                    postCtrl.topics.userUrl(user_uuid).child('upvote/'+topic_uuid).set(moment().format());
 
                     //Topic Upvote tally
                     var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
@@ -879,16 +820,84 @@ angular.module('App')
                     followStatus.transaction(function (current_value) {
                         return (current_value || 0) + 1;
                     })
-
                 }else{ //value already exist
-                    postCtrl.upvoteReset(topic_uuid,topic_uid);
-                    
-                    //Update stat for poster
-                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
-                    followStatus.transaction(function (current_value) {
-                        return negCurrentValueCheck(current_value);
-                    })
+                    postCtrl.upvoteReset(topic_uuid, topic_uid, user_uuid);
                 }
+            })
+        }
+
+        postCtrl.dwnvote =function(topic_uuid, topic_uid, user_uuid)
+        {
+            var userUpvoteRef = postCtrl.topics.userUrl(user_uuid).child('upvote/'+topic_uuid);
+            userUpvoteRef.once("value", function(snapshot) {
+                if (snapshot.exists() == true) {
+                    postCtrl.upvoteReset(topic_uuid, topic_uid, user_uuid);
+                    var btn = "#dwnvote_btn_status_"+topic_uuid;
+                }
+            })
+
+            //UserDownvote Value
+            var userDownvoteRef = postCtrl.topics.userUrl(user_uuid).child('downvote/'+topic_uuid);
+            userDownvoteRef.once("value", function(snapshot) {
+                //Chck if user already voted
+                if (snapshot.exists() == false) {
+
+                    postCtrl.topics.userUrl(user_uuid).child('downvote/'+topic_uuid).set(moment().format());
+
+                    //Topic Upvote tally
+                    var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
+                    topicRef.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    });
+
+                    //Update stat for poster
+                    var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/downvote/')
+                    followStatus.transaction(function (current_value) {
+                        return (current_value || 0) + 1;
+                    })
+                }else{ //value already exist
+                    postCtrl.dwnvoteReset(topic_uuid, topic_uid, user_uuid);
+                }
+            })
+        }
+
+
+        //Reset upvote to zero
+        postCtrl.upvoteReset =function(topic_uuid, topic_uid, user_uuid)
+        {
+            var btn = "#upvote_btn_status_"+topic_uuid;
+            //Remove voted user
+            postCtrl.topics.userUrl(user_uuid).child('upvote/'+topic_uuid).remove();
+
+            //Decrement the tally
+            var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/upvote')
+            topicRef.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            });
+
+            var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/upvote/')
+            followStatus.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            })
+
+        }
+
+        //Reset downvote to zero
+        postCtrl.dwnvoteReset =function(topic_uuid, topic_uid, user_uuid)
+        {
+            var btn = "#dwnvote_btn_status_"+topic_uuid;
+            //Remove voted user
+            postCtrl.topics.userUrl(user_uuid).child('downvote/'+topic_uuid).remove();
+
+            //Decrement the tally
+            var topicRef = postCtrl.topics.ref.child('topic/'+topic_uuid+'/downvote')
+            topicRef.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
+            });
+
+            var followStatus = postCtrl.topics.userUrl(topic_uid).child('stat/downvote/')
+            followStatus.transaction(function (current_value) {
+                return negCurrentValueCheck(current_value);
             })
         }
     })

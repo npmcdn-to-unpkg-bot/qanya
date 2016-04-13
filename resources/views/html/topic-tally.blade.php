@@ -12,8 +12,9 @@
                    @if(Auth::user()->uuid != $topics_uid)
                         href="#tally-container-{{ $uuid }}"
                     @endif
-                    ng-click="postCtrl.upvote('{{ $uuid }}','{!! $topics_uid !!}');
-                              profileCtrl.user_dwnvoted_<?php echo $uuid?> = false"
+                    ng-click="profileCtrl.user_upvoted_<?php echo $uuid?> = !profileCtrl.user_upvoted_<?php echo $uuid?>;
+                              postCtrl.upvote('{{ $uuid }}','{!! $topics_uid !!}', '{!! Auth::user()->uuid !!}');
+                              profileCtrl.user_dwnvoted_<?php echo $uuid?> = false;"
                     ng-class="profileCtrl.user_upvoted_<?php echo $uuid?> ? 'card-link label label-success' : 'card-link'"
                 @endif
                 ">
@@ -43,8 +44,9 @@
                     @if(Auth::user()->uuid != $topics_uid)
                         href="#tally-container-{{ $uuid }}"
                     @endif
-                    ng-click="postCtrl.dwnvote('{{ $uuid }}','{!! $topics_uid !!}');
-                              profileCtrl.user_upvoted_<?php echo $uuid?> = false"
+                    ng-click="profileCtrl.user_dwnvoted_<?php echo $uuid?> = !profileCtrl.user_dwnvoted_<?php echo $uuid?>;
+                              postCtrl.dwnvote('{{ $uuid }}','{!! $topics_uid !!}', '{!! Auth::user()->uuid !!}');
+                              profileCtrl.user_upvoted_<?php echo $uuid?> = false;"
                     ng-class="profileCtrl.user_dwnvoted_<?php echo $uuid?> ? 'card-link label label-success' : 'card-link'"
                 @endif
                 ">
