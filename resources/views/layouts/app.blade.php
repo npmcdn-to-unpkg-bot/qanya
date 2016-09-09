@@ -82,8 +82,8 @@ QANYA
 
 
     {{-- Toastr -> https://github.com/Foxandxss/angular-toastr --}}
-    <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
-    <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+    <script src="https://unpkg.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
 
 
     {{-- BOWER --}}
